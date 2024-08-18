@@ -5,7 +5,13 @@ require('dotenv').config();
 
 const postRoutes = require('./routes/postRoutes');
 
+
+
+
+
+
 const app = express();
+
 app.use(bodyParser.json());
 app.use(cors());
 

@@ -2,12 +2,6 @@ const Article = require('../models/articleModel');
 const logger = require('pino')()
 
 
-function dff(date, postDatee) {
-    const postDate = new Date(postDatee); // Convert post's date to a Date object
-    const searchDate = new Date(date); //
-    return postDate.getTime() === searchDate.getTime();
-
-}
 
 exports.getAllPosts = async (req, res) => {
     try {
@@ -47,7 +41,6 @@ exports.getAllPosts = async (req, res) => {
         res.status(500).send(err);
     }
 };
-
 exports.findPost = async (req, res) => {
     try {
         const {id} = req.params;
@@ -59,6 +52,36 @@ exports.findPost = async (req, res) => {
         res.status(500).send(err);
     }
 };
+exports.latestPosts = async (req, res) => {
+    try {
+        const posts = await Article.latestPosts();
+
+        res.json(posts);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+exports.latestPosts = async (req, res) => {
+    try {
+        const posts = await Article.latestPosts();
+
+        res.json(posts);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+exports.mostViewedArticles = async (req, res) => {
+    try {
+        const posts = await Article.mostViewedArticles();
+        res.json(posts);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
 
 
 // exports.createPost = async (req, res) => {

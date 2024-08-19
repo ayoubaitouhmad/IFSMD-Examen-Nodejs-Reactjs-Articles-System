@@ -5,13 +5,13 @@ import BlogPost from "../BlogPost/BlogPost";
 
 
 function BlogList({posts}) {
-    console.log(posts)
+
     return (
 
         <div className="row">
             {
-                posts.map((post) => (
-                    <BlogPost {...post} />
+                posts.map((post, index) => (
+                    <BlogPost key={index} {...post} />
                 ))
             }
         </div>

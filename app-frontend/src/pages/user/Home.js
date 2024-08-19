@@ -1,228 +1,48 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import FeaturedBlog from "../../components/FeaturedBlog/FeaturedBlog";
 import axios from "axios";
+import {getLatestPosts, getMostViewedArticles, getPosts} from "../../services/postService";
+import NoPostsFound from "../../components/BlogList/NoPostsFound";
+import BlogList from "../../components/BlogList/BlogList";
 
 
 function Home() {
 
-
-
+    const [latestArticles, setLatestArticles] = useState([]);
+    const [mostViewedArticles, setMostViewedArticles] = useState([]);
     useEffect(() => {
-
-        const login = async () => {
-            try {
-                try {
-                    const response = await axios.post('http://localhost:1000/api/login', {
-                        email: 'user1@example.com',
-                        password: 'password1',
-                    });
-                    console.log(response);
-                }catch (e){
-                    console.log(e);
-                }
-
-            } catch (error) {
-                console.error('Login failed:', error);
-            }
+        const fetchData = async () => {
+            setLatestArticles(await  getLatestPosts());
+            setMostViewedArticles(await getMostViewedArticles());
         };
-
-        login();
-    }, []); // Empty dependency array to run once when component mounts
+        fetchData();
+    }, []);
 
 
     return (
         <>
             <FeaturedBlog/>
-            <div className="row">
+            <div className="row p-3">
                 <div className="col-10 row">
                     <div className="row">
                         <h1 className="col-12 pb-2">
                             Latest Posts
                         </h1>
-                        <div className="col-12 col-md-6 col-xl-4 ">
-                            <div className="card mb-4 box-shadow">
-                                <img className="img card-img-top"
-                                     src="https://www.interviewbit.com/blog/wp-content/uploads/2021/12/Depth-First-Search.png"/>
 
-                                <div className="card-body">
-                                    <p className="card-text">This is a wider card with supporting text below as a
-                                        natural
-                                        lead-in to
-                                        additional content. This content is a little bit longer.</p>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <div className="btn-group">
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">View
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">Edit
-                                            </button>
-                                        </div>
-                                        <small className="text-muted">9 mins</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-12 col-md-6 col-xl-4 ">
-                            <div className="card mb-4 box-shadow">
-                                <img className="img card-img-top"
-                                     src="https://www.interviewbit.com/blog/wp-content/uploads/2021/12/Depth-First-Search.png"/>
+                        {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={latestArticles}/>}
 
-                                <div className="card-body">
-                                    <p className="card-text">This is a wider card with supporting text below as a
-                                        natural
-                                        lead-in to
-                                        additional content. This content is a little bit longer.</p>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <div className="btn-group">
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">View
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">Edit
-                                            </button>
-                                        </div>
-                                        <small className="text-muted">9 mins</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-12 col-md-6 col-xl-4 ">
-                            <div className="card mb-4 box-shadow">
-                                <img className="img card-img-top"
-                                     src="https://www.interviewbit.com/blog/wp-content/uploads/2021/12/Depth-First-Search.png"/>
-
-                                <div className="card-body">
-                                    <p className="card-text">This is a wider card with supporting text below as a
-                                        natural
-                                        lead-in to
-                                        additional content. This content is a little bit longer.</p>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <div className="btn-group">
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">View
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">Edit
-                                            </button>
-                                        </div>
-                                        <small className="text-muted">9 mins</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-12 col-md-6 col-xl-4 ">
-                            <div className="card mb-4 box-shadow">
-                                <img className="img card-img-top"
-                                     src="https://www.interviewbit.com/blog/wp-content/uploads/2021/12/Depth-First-Search.png"/>
-
-                                <div className="card-body">
-                                    <p className="card-text">This is a wider card with supporting text below as a
-                                        natural
-                                        lead-in to
-                                        additional content. This content is a little bit longer.</p>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <div className="btn-group">
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">View
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">Edit
-                                            </button>
-                                        </div>
-                                        <small className="text-muted">9 mins</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                     </div>
                     <div className="row">
                         <h1 className="col-12 pb-2">
-                            Latest Posts
+                            Most Viewed Posts
                         </h1>
-                        <div className="col-12 col-md-6 col-xl-4 ">
-                            <div className="card mb-4 box-shadow">
-                                <img className="img card-img-top"
-                                     src="https://www.interviewbit.com/blog/wp-content/uploads/2021/12/Depth-First-Search.png"/>
 
-                                <div className="card-body">
-                                    <p className="card-text">This is a wider card with supporting text below as a
-                                        natural
-                                        lead-in to
-                                        additional content. This content is a little bit longer.</p>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <div className="btn-group">
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">View
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">Edit
-                                            </button>
-                                        </div>
-                                        <small className="text-muted">9 mins</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-12 col-md-6 col-xl-4 ">
-                            <div className="card mb-4 box-shadow">
-                                <img className="img card-img-top"
-                                     src="https://www.interviewbit.com/blog/wp-content/uploads/2021/12/Depth-First-Search.png"/>
+                        {mostViewedArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={mostViewedArticles}/>}
 
-                                <div className="card-body">
-                                    <p className="card-text">This is a wider card with supporting text below as a
-                                        natural
-                                        lead-in to
-                                        additional content. This content is a little bit longer.</p>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <div className="btn-group">
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">View
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">Edit
-                                            </button>
-                                        </div>
-                                        <small className="text-muted">9 mins</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-12 col-md-6 col-xl-4 ">
-                            <div className="card mb-4 box-shadow">
-                                <img className="img card-img-top"
-                                     src="https://www.interviewbit.com/blog/wp-content/uploads/2021/12/Depth-First-Search.png"/>
-
-                                <div className="card-body">
-                                    <p className="card-text">This is a wider card with supporting text below as a
-                                        natural
-                                        lead-in to
-                                        additional content. This content is a little bit longer.</p>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <div className="btn-group">
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">View
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">Edit
-                                            </button>
-                                        </div>
-                                        <small className="text-muted">9 mins</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-12 col-md-6 col-xl-4 ">
-                            <div className="card mb-4 box-shadow">
-                                <img className="img card-img-top"
-                                     src="https://www.interviewbit.com/blog/wp-content/uploads/2021/12/Depth-First-Search.png"/>
-
-                                <div className="card-body">
-                                    <p className="card-text">This is a wider card with supporting text below as a
-                                        natural
-                                        lead-in to
-                                        additional content. This content is a little bit longer.</p>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <div className="btn-group">
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">View
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-secondary">Edit
-                                            </button>
-                                        </div>
-                                        <small className="text-muted">9 mins</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
+
                 <div className="col-2 ">
                     <div className="p-3">
                         <h4 className="font-italic">Archives</h4>

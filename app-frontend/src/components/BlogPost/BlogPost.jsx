@@ -26,7 +26,7 @@ function BlogPost({id, title ,content , createdAt  , description } ) {
     }
     return (
 
-        <div className="col-md-4 " onClick={handleBlogPostClick} >
+        <div className="col-12 col-md-4 col-lg-4  " onClick={handleBlogPostClick} >
             <div className="card mb-4 box-shadow">
                 <img
                     className="img card-img-top"

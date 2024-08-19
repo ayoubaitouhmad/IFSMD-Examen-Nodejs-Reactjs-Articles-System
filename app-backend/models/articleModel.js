@@ -65,6 +65,31 @@ class Article {
 
         }));
     }
+    static async latestPosts() {
+        const connection = await getConnection();
+        const [results] = await connection.execute('SELECT * FROM articles ORDER BY created_at DESC LIMIT 5');
+        await  connection.end();
+        return await Promise.all(results.map(async (post) => {
+            const postModel = new Article(post.id, post.title, post.content ,'', post.created_at   );
+            await postModel.fetchComments();
+            await postModel.fetchAuthor();
+            return postModel;
+
+        }));
+    }
+
+    static async mostViewedArticles() {
+        const connection = await getConnection();
+        const [results] = await connection.execute('SELECT * FROM articles ORDER BY created_at DESC LIMIT 6');
+        await  connection.end();
+        return await Promise.all(results.map(async (post) => {
+            const postModel = new Article(post.id, post.title, post.content ,'', post.created_at   );
+            await postModel.fetchComments();
+            await postModel.fetchAuthor();
+            return postModel;
+
+        }));
+    }
 
     static async filterByCreatedDate(date) {
         const connection = await getConnection();
@@ -86,6 +111,7 @@ class Article {
         await  connection.end();
         return new Article(results[0].id, results[0].title, results[0].content);
     }
+
 }
 
 module.exports = Article;

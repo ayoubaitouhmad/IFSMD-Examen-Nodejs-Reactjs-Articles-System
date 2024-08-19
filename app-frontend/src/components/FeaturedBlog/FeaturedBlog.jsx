@@ -19,7 +19,7 @@ function FeaturedBlog() {
 
 
     return (
-        <div className="jumbotron p-3 p-md-5 text-white rounded bg-dark ">
+        <div className="w-100 jumbotron p-3 p-md-5 text-white rounded bg-dark ">
             <div className="col-md-6 px-0 ">
                 {article && (
                     <>

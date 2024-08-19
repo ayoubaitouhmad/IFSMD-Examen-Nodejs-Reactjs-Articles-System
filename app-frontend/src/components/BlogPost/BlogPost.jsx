@@ -37,10 +37,10 @@ function BlogPost({id, title ,content , createdAt  , description } ) {
                     <h3>{title}</h3>
                     <p className="card-text" >{ description }</p>
                     <div className="d-flex justify-content-between align-items-center">
-                        <div className="btn-group">
-                            <button type="button" className="btn btn-sm btn-outline-secondary">View</button>
-                            <button type="button" className="btn btn-sm btn-outline-secondary">Edit</button>
-                        </div>
+                        {/*<div className="btn-group">*/}
+                        {/*    <button type="button" className="btn btn-sm btn-outline-secondary">View</button>*/}
+                        {/*    <button type="button" className="btn btn-sm btn-outline-secondary">Edit</button>*/}
+                        {/*</div>*/}
                         <small className="text-muted">{createdAtF}</small>
                     </div>
                 </div>

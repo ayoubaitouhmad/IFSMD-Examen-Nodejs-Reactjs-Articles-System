@@ -4,6 +4,7 @@ import axios from "axios";
 import {getLatestPosts, getMostViewedArticles, getPosts} from "../../services/postService";
 import NoPostsFound from "../../components/BlogList/NoPostsFound";
 import BlogList from "../../components/BlogList/BlogList";
+import CollapsiblePanel from "../../components/CollapsiblePanel/collapsiblePanel";
 
 
 function Home() {
@@ -22,25 +23,18 @@ function Home() {
     return (
         <>
             <FeaturedBlog/>
+
+
+
+
             <div className="row p-3">
                 <div className="col-10 row">
-                    <div className="row">
-                        <h1 className="col-12 pb-2">
-                            Latest Posts
-                        </h1>
-
+                    <CollapsiblePanel title="Latest Articles">
                         {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={latestArticles}/>}
-
-
-                    </div>
-                    <div className="row">
-                        <h1 className="col-12 pb-2">
-                            Most Viewed Posts
-                        </h1>
-
-                        {mostViewedArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={mostViewedArticles}/>}
-
-                    </div>
+                    </CollapsiblePanel>
+                    <CollapsiblePanel title="Most Viewed Articles">
+                        {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={mostViewedArticles}/>}
+                    </CollapsiblePanel>
                 </div>
 
                 <div className="col-2 ">

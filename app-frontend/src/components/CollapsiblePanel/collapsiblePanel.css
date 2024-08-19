@@ -1,0 +1,37 @@
+/* collapsiblePanel.css */
+
+.icon-circle {
+    background-color: #f06292; /* Matches the pink color in your image */
+    color: white;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.btn-link {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+.card-header {
+    background-color: #f8f9fa; /* Matches the light gray background */
+    border-bottom: none;
+}
+
+.card {
+    border: none;
+}
+
+.fas.fa-chevron-up {
+    color: #007bff; /* Matches the blue color of the chevron icon */
+    cursor: pointer;
+}
+
+.card-body {
+    border-top: 1px solid #e9ecef;
+}

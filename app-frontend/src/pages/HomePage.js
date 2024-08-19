@@ -3,11 +3,39 @@ import MainContent from "../components/MainContent";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
 import {Link} from "react-router-dom";
-import React from "react";
+import React, {useEffect} from "react";
 import FeaturedBlog from "../components/FeaturedBlog";
+import axios from "axios";
+import {getPosts} from "../services/postService";
 
 
 function App() {
+
+
+
+    useEffect(() => {
+
+        const login = async () => {
+            try {
+                try {
+                    const response = await axios.post('http://localhost:1000/api/login', {
+                        email: 'user1@example.com',
+                        password: 'password1',
+                    });
+                    console.log(response);
+                }catch (e){
+                    console.log(e);
+                }
+
+            } catch (error) {
+                console.error('Login failed:', error);
+            }
+        };
+
+        login();
+    }, []); // Empty dependency array to run once when component mounts
+
+
     return (
         <>
             <FeaturedBlog/>

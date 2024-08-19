@@ -1,14 +1,15 @@
 import React, {useContext, useState} from 'react';
-import '../../../css.css';
+import  './header.css';
 import {AuthContext} from "../../../utils/AuthContext";
 import ProfileDropDown from "../../ProfileDropDown/ProfileDropDown";
+import Logo from "../../Logo/Logo";
 
 
 function Header() {
     const {isAuthenticated} = useContext(AuthContext);
     const [showSearch, setShowSearch] = useState(false);
 
-    // Toggle the search input visibility
+
     const toggleSearch = () => {
         setShowSearch(!showSearch);
     };
@@ -17,11 +18,11 @@ function Header() {
         <header className="blog-header ">
             <div className="row flex-nowrap justify-content-between align-items-center">
                 <div className="col-4 ">
-                    <a className="blog-header-logo text-dark" href="#">Large</a>
+                    <Logo/>
                 </div>
                 <div className="col-8 d-flex justify-content-end align-items-center">
 
-                    { isAuthenticated ?   <ProfileDropDown/> : <>
+                    {isAuthenticated ? <ProfileDropDown/> : <>
                         <a className="btn btn-sm btn-outline-secondary mr-1" href="#">Registre</a>
                         <a className="btn btn-sm btn-outline-secondary" href="#">Login</a>
                     </>
@@ -33,7 +34,7 @@ function Header() {
 
 
             <div className="nav-scroller py-1 mb-2">
-            <nav className="row text-center flex-nowrap overflow-auto">
+                <nav className="row text-center flex-nowrap overflow-auto">
                     <a className="p-2 text-muted" href="#">World</a>
                     <a className="p-2 text-muted" href="#">U.S.</a>
                     <a className="p-2 text-muted" href="#">Technology</a>

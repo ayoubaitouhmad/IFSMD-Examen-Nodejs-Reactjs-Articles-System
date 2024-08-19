@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import '../css.css';
+import {AuthContext} from "./AuthContext";
+import ProfileDropDown from "./ProfileDropDown/ProfileDropDown";
 
 
 function Header() {
-    // State to control the visibility of the search input
+    const {isAuthenticated} = useContext(AuthContext);
     const [showSearch, setShowSearch] = useState(false);
 
     // Toggle the search input visibility
@@ -19,14 +21,19 @@ function Header() {
                 </div>
                 <div className="col-8 d-flex justify-content-end align-items-center">
 
-                    <a className="btn btn-sm btn-outline-secondary mr-1" href="#">Registre</a>
-                    <a className="btn btn-sm btn-outline-secondary" href="#">Login</a>
+                    { isAuthenticated ?   <ProfileDropDown/> : <>
+                        <a className="btn btn-sm btn-outline-secondary mr-1" href="#">Registre</a>
+                        <a className="btn btn-sm btn-outline-secondary" href="#">Login</a>
+                    </>
+                    }
+
+
                 </div>
             </div>
 
 
             <div className="nav-scroller py-1 mb-2">
-                <nav className="row text-center flex-nowrap overflow-auto">
+            <nav className="row text-center flex-nowrap overflow-auto">
                     <a className="p-2 text-muted" href="#">World</a>
                     <a className="p-2 text-muted" href="#">U.S.</a>
                     <a className="p-2 text-muted" href="#">Technology</a>
@@ -47,9 +54,6 @@ function Header() {
                     <a className="p-2 text-muted" href="#">Travel</a>
                 </nav>
             </div>
-
-
-
 
 
         </header>

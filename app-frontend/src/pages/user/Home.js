@@ -5,6 +5,7 @@ import {getLatestPosts, getMostViewedArticles, getPosts} from "../../services/po
 import NoPostsFound from "../../components/BlogList/NoPostsFound";
 import BlogList from "../../components/BlogList/BlogList";
 import CollapsiblePanel from "../../components/CollapsiblePanel/collapsiblePanel";
+import {Link} from "react-router-dom";
 
 
 function Home() {
@@ -31,9 +32,16 @@ function Home() {
                 <div className="col-10 row">
                     <CollapsiblePanel title="Latest Articles">
                         {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={latestArticles}/>}
+
+                        <Link to="/articles" >
+                            Show All
+                        </Link>
                     </CollapsiblePanel>
                     <CollapsiblePanel title="Most Viewed Articles">
                         {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={mostViewedArticles}/>}
+                        <Link to="/articles" >
+                            Show All
+                        </Link>
                     </CollapsiblePanel>
                 </div>
 

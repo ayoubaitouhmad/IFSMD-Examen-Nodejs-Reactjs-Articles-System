@@ -1,15 +1,9 @@
-import Header from "../components/Header";
-import MainContent from "../components/MainContent";
-import Sidebar from "../components/Sidebar";
-import Footer from "../components/Footer";
-import {Link} from "react-router-dom";
 import React, {useEffect} from "react";
-import FeaturedBlog from "../components/FeaturedBlog";
+import FeaturedBlog from "../../components/FeaturedBlog/FeaturedBlog";
 import axios from "axios";
-import {getPosts} from "../services/postService";
 
 
-function App() {
+function Home() {
 
 
 
@@ -261,4 +255,4 @@ function App() {
     );
 }
 
-export default App;
+export default Home;

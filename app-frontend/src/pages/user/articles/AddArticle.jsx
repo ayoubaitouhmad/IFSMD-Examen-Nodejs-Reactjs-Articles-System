@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 
 
 
-const AddPost = () => {
+const AddArticle = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 
@@ -68,4 +68,4 @@ const AddPost = () => {
     );
 };
 
-export default AddPost;
+export default AddArticle;

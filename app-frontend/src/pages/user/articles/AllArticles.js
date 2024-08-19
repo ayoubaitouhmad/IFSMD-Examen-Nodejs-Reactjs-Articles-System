@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {getPosts} from "../services/postService";
+import {getPosts} from "../../../services/postService";
 
 
-import NoPostsFound from "../components/BlogList/NoPostsFound";
+import NoPostsFound from "../../../components/BlogList/NoPostsFound";
 
-import BlogList from "../components/BlogList/BlogList";
+import BlogList from "../../../components/BlogList/BlogList";
 
 
 function App() {

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import {getPost} from "../services/postService";
+import {getPost} from "../../../services/postService";
 
-function BlogPost() {
+function FullArticle() {
     const { id } = useParams();
     const [article, setArticle] = useState(null);
 
@@ -111,4 +111,4 @@ function BlogPost() {
     );
 }
 
-export default BlogPost;
+export default FullArticle;

@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
-import '../css.css';
-import {AuthContext} from "./AuthContext";
-import ProfileDropDown from "./ProfileDropDown/ProfileDropDown";
+import '../../../css.css';
+import {AuthContext} from "../../../utils/AuthContext";
+import ProfileDropDown from "../../ProfileDropDown/ProfileDropDown";
 
 
 function Header() {

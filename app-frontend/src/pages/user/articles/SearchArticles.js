@@ -1,10 +1,4 @@
-import Header from "../components/Header";
-import MainContent from "../components/MainContent";
-import Sidebar from "../components/Sidebar";
-import Footer from "../components/Footer";
-import {Link} from "react-router-dom";
 import React from "react";
-import FeaturedBlog from "../components/FeaturedBlog";
 
 
 function App() {

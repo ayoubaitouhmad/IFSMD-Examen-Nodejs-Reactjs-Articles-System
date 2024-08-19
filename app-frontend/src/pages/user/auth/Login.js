@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { AuthContext } from "../components/AuthContext"; // Adjust the import path as necessary
+import { AuthContext } from "../../../utils/AuthContext"; // Adjust the import path as necessary
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -28,7 +28,7 @@ const Login = () => {
             });
             setToken(response.data.token);
             localStorage.setItem("token", response.data.token);
-            navigate("/dashboard");
+            navigate("/home");
         } catch (error) {
             console.error("Authentication failed:", error);
             setToken(null);

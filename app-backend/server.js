@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const postRoutes = require('./routes/postRoutes');
+const userRoutes = require('./routes/userRoutes');
 const getConnection = require("./config/db");
 const {sign} = require("jsonwebtoken");
 
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/api', postRoutes);
+app.use('/api', userRoutes);
 
 app.post('/api/login', async  (req, res) => {
     const { email, password } = req.body;

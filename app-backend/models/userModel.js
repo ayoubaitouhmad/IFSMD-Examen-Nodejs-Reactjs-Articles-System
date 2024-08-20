@@ -3,23 +3,46 @@ const getConnection = require("../config/db");
 
 
 class User {
-    constructor(id, created_at, email, name, password, profile_image_id, role, updated_at, username) {
+
+
+    constructor(id, email, name, password, role, username, profile_image_id, created_at, updated_at) {
         this.id = id;
-        this.created_at = created_at;
         this.email = email;
         this.name = name;
         this.password = password;
-        this.profile_image_id = profile_image_id;
         this.role = role;
-        this.updated_at = updated_at;
         this.username = username;
+        this.profileImageId = profile_image_id;
+        this.createdAt = created_at;
+        this.updatedAt = updated_at;
     }
 
-    async comments(){
+
+    async comments() {
         const connection = await getConnection();
         const [results] = await connection.execute('SELECT * FROM articles where author_id=?', [this.id]);
         this.posts = results;
         return results;
+    }
+
+    static async findById(id) {
+        const connection = await getConnection();
+        const [results] = await connection.execute('SELECT * FROM users where id=?', [id]);
+        let userData = results[0];
+        await connection.end();
+        const userMoedel  = new User(
+            userData.id,
+            userData.email,
+            userData.name,
+            userData.password,
+            userData.role,
+            userData.username,
+            userData.profile_image_id,
+            userData.created_at,
+            userData.updated_at,
+        );
+        await userMoedel.comments();
+        return userMoedel;
     }
 }
 

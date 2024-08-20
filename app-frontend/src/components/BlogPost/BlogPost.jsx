@@ -14,7 +14,7 @@ function BlogPost({id, title ,content , createdAt  , description } ) {
 
     useEffect(() => {
         if (show) {
-            navigate(`/posts/${id}/${title.replaceAll(' ', '-')}`);
+            navigate(`/articles/${id}/${title.replaceAll(' ', '-')}`);
         }
     }, [ show]);
     function handleBlogPostClick() {

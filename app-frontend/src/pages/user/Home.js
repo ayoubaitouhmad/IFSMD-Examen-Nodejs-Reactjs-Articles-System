@@ -24,10 +24,6 @@ function Home() {
     return (
         <>
             <FeaturedBlog/>
-
-
-
-
             <div className="row p-3">
                 <div className="col-10 row">
                     <CollapsiblePanel title="Latest Articles">

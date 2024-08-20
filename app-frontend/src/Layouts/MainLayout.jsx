@@ -9,6 +9,7 @@ import SearchPosts from "../pages/user/articles/SearchArticles";
 import FullArticle from "../pages/user/articles/FullArticle";
 import Footer from "../components/Layouts/Footer/Footer";
 import Home from "../pages/user/Home";
+import AuthorArticles from "../pages/user/articles/AuthorArticles";
 
 
 
@@ -25,8 +26,12 @@ function MainLayout() {
                     <Route path="/articles/search" element={<SearchPosts/>}/>
                     <Route path="/articles/:id/:name" element={<FullArticle/>}/>
 
+                    <Route path="/articles/author/:username" element={<AuthorArticles />} />
+
+
 
                     <Route path="/logout" element={<Logout/>}/>
+
                 </Routes>
             </div>
             <Footer/>

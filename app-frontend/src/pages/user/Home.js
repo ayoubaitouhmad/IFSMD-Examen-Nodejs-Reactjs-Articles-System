@@ -1,44 +1,59 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import FeaturedBlog from "../../components/FeaturedBlog/FeaturedBlog";
 import axios from "axios";
-import {getLatestPosts, getMostViewedArticles, getPosts} from "../../services/postService";
+import { getLatestPosts, getMostViewedArticles } from "../../services/postService";
 import NoPostsFound from "../../components/BlogList/NoPostsFound";
 import BlogList from "../../components/BlogList/BlogList";
 import CollapsiblePanel from "../../components/CollapsiblePanel/collapsiblePanel";
-import {Link} from "react-router-dom";
-
+import { Link } from "react-router-dom";
+import LoadingOverlay from "../../components/LoadingOverlay/loadingOverlay";
 
 function Home() {
-
     const [latestArticles, setLatestArticles] = useState([]);
     const [mostViewedArticles, setMostViewedArticles] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     useEffect(() => {
         const fetchData = async () => {
-            setLatestArticles(await  getLatestPosts());
-            setMostViewedArticles(await getMostViewedArticles());
+            try {
+                const [latest, mostViewed] = await Promise.all([
+                    getLatestPosts(),
+                    getMostViewedArticles(),
+                ]);
+                setLatestArticles(latest);
+                setMostViewedArticles(mostViewed);
+            } catch (err) {
+                setError("Failed to fetch articles. Please try again later.");
+            } finally {
+                setLoading(false);
+            }
         };
+
         fetchData();
     }, []);
 
+    if (loading) {
+        return <LoadingOverlay />;
+    }
+
+    if (error) {
+        return <div className="error-message">{error}</div>;
+    }
 
     return (
         <>
-            <FeaturedBlog/>
+
             <div className="row p-3">
                 <div className="col-10 row">
                     <CollapsiblePanel title="Latest Articles">
-                        {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={latestArticles}/>}
-
-                        <Link to="/articles" >
-                            Show All
-                        </Link>
+                        {latestArticles.length === 0 ? <NoPostsFound /> : <BlogList posts={latestArticles} />}
                     </CollapsiblePanel>
+                    <Link to="/articles">Show All</Link>
                     <CollapsiblePanel title="Most Viewed Articles">
-                        {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={mostViewedArticles}/>}
-                        <Link to="/articles" >
-                            Show All
-                        </Link>
+                        {mostViewedArticles.length === 0 ? <NoPostsFound /> : <BlogList posts={mostViewedArticles} />}
                     </CollapsiblePanel>
+                    <Link to="/articles">Show All</Link>
                 </div>
 
                 <div className="col-2 ">
@@ -48,15 +63,7 @@ function Home() {
                             <li><a href="#">March 2014</a></li>
                             <li><a href="#">February 2014</a></li>
                             <li><a href="#">January 2014</a></li>
-                            <li><a href="#">December 2013</a></li>
-                            <li><a href="#">November 2013</a></li>
-                            <li><a href="#">October 2013</a></li>
-                            <li><a href="#">September 2013</a></li>
-                            <li><a href="#">August 2013</a></li>
-                            <li><a href="#">July 2013</a></li>
-                            <li><a href="#">June 2013</a></li>
-                            <li><a href="#">May 2013</a></li>
-                            <li><a href="#">April 2013</a></li>
+                            {/* Add more links as needed */}
                         </ol>
                     </div>
                     <div className="p-3">

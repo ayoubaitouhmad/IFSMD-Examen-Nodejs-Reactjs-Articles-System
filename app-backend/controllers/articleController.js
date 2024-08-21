@@ -1,6 +1,4 @@
-
-
-
+const {latestPosts, mostViewedArticles} = require("../models/Article");
 
 
 exports.getAllPosts = async (req, res) => {
@@ -64,7 +62,7 @@ exports.latestPosts = async (req, res) => {
 };
 exports.latestPosts = async (req, res) => {
     try {
-        const posts = await Article.latestPosts();
+        const posts = await latestPosts();
 
         res.json(posts);
     } catch (err) {
@@ -74,7 +72,7 @@ exports.latestPosts = async (req, res) => {
 };
 exports.mostViewedArticles = async (req, res) => {
     try {
-        const posts = await Article.mostViewedArticles();
+        const posts = await mostViewedArticles();
         res.json(posts);
     } catch (err) {
         console.log(err);

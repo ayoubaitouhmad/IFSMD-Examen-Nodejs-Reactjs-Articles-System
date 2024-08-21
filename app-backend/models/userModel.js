@@ -1,52 +1,119 @@
-const connection = require('../config/db');
 const getConnection = require("../config/db");
-
+const logger = require("../utils/logger");
+const Article = require("./Article");
 
 class User {
+    #id;
+    #username;
+    #name;
+    #bio;
+    #role;
+    #email;
+    #password;
+    #profileImageId;
+    #createdAt;
+    #updatedAt;
 
-
-    constructor(id, email, name, password, role, username, profile_image_id, created_at, updated_at) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.role = role;
-        this.username = username;
-        this.profileImageId = profile_image_id;
-        this.createdAt = created_at;
-        this.updatedAt = updated_at;
+    constructor(
+        id,
+        username,
+        name,
+        bio,
+        role,
+        email,
+        password,
+        profileImageId,
+        createdAt,
+        updatedAt
+    ) {
+        this.#id = id;
+        this.#username = username;
+        this.#name = name;
+        this.#bio = bio;
+        this.#role = role;
+        this.#email = email;
+        this.#password = password;
+        this.#profileImageId = profileImageId;
+        this.#createdAt = createdAt;
+        this.#updatedAt = updatedAt;
     }
 
-
-    async comments() {
-        const connection = await getConnection();
-        const [results] = await connection.execute('SELECT * FROM articles where author_id=?', [this.id]);
-        this.posts = results;
-        return results;
+    details() {
+        return {
+            id: this.#id,
+            username: this.#username,
+            name: this.#name,
+            bio: this.#bio,
+            role: this.#role,
+            email: this.#email,
+            profileImageId: this.#profileImageId,
+            createdAt: this.#createdAt,
+            updatedAt: this.#updatedAt,
+            // Omitting password for security reasons
+        };
     }
 
     static async findById(id) {
-        const connection = await getConnection();
-        const [results] = await connection.execute('SELECT * FROM users where id=?', [id]);
-        let userData = results[0];
-        await connection.end();
-        const userMoedel  = new User(
-            userData.id,
-            userData.email,
-            userData.name,
-            userData.password,
-            userData.role,
-            userData.username,
-            userData.profile_image_id,
-            userData.created_at,
-            userData.updated_at,
+        try {
+            const connection = await getConnection();
+            const [results] = await connection.execute('SELECT * FROM users WHERE id=?', [id]);
+            await connection.end();
+
+            if (results.length === 0) {
+                return null; // Handle user not found
+            }
+
+            return this.fromDatabaseRecord(results[0]).details();
+        } catch (error) {
+            logger.error(`Error finding user by ID ${id}: ${error.message}`);
+            return null;
+        }
+    }
+
+    static async findByUsername(username) {
+        try {
+            const connection = await getConnection();
+            const [results] = await connection.execute('SELECT * FROM users WHERE username=?', [username]);
+            await connection.end();
+
+            if (results.length === 0) {
+                return null; // Handle user not found
+            }
+
+            return this.fromDatabaseRecord(results[0]).details();
+        } catch (error) {
+            logger.error(`Error finding user by username ${username}: ${error.message}`);
+            return null;
+        }
+    }
+
+    static async findUserArticles(id) {
+        try {
+            const connection = await getConnection();
+            const [results] = await connection.execute('SELECT * FROM articles WHERE author_id=?', [id]);
+            await connection.end();
+
+            return results.map(post => Article.loadFromDatabase(post).details());
+        } catch (error) {
+            logger.error(`Error finding articles for user ${id}: ${error.message}`);
+            return null;
+        }
+    }
+
+    static fromDatabaseRecord(user) {
+        return new User(
+            user.id,
+            user.username,
+            user.name,
+            user.bio,
+            user.role,
+            user.email,
+            user.password,
+            user.profile_image_id,
+            user.created_at,
+            user.updated_at,
         );
-        await userMoedel.comments();
-        return userMoedel;
     }
 }
 
-
 module.exports = User;
-
-

@@ -1,5 +1,4 @@
 const connection = require('../config/db');
-const Article = require("./articleModel");
 const getConnection = require("../config/db");
 const User = require("./userModel");
 

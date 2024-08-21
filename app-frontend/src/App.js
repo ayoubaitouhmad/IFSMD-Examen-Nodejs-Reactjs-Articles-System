@@ -6,6 +6,7 @@ import MainLayout from "./Layouts/MainLayout";
 import AuthLayout from "./Layouts/AuthLayout";
 
 const App = () => {
+    console.log(localStorage.getItem("token"))
 
 
     return (

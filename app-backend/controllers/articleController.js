@@ -1,4 +1,4 @@
-const {latestPosts, mostViewedArticles} = require("../models/Article");
+const {latestPosts, mostViewedArticles, articles} = require("../models/Article");
 
 
 exports.getAllPosts = async (req, res) => {
@@ -10,7 +10,7 @@ exports.getAllPosts = async (req, res) => {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
         const author = req.query.author || null;
-        let posts = await Article.posts();
+        let posts = await articles();
 
 
         posts = posts.filter(post =>
@@ -81,34 +81,3 @@ exports.mostViewedArticles = async (req, res) => {
 };
 
 
-
-// exports.createPost = async (req, res) => {
-//     const post = req.body;
-//     try {
-//         const result = await Post.create(post);
-//         res.status(201).send(result);
-//     } catch (err) {
-//         res.status(500).send(err);
-//     }
-// };
-//
-// exports.updatePost = async (req, res) => {
-//     const { id } = req.params;
-//     const post = req.body;
-//     try {
-//         const result = await Post.update(id, post);
-//         res.send(result);
-//     } catch (err) {
-//         res.status(500).send(err);
-//     }
-// };
-//
-// exports.deletePost = async (req, res) => {
-//     const { id } = req.params;
-//     try {
-//         const result = await Post.delete(id);
-//         res.send(result);
-//     } catch (err) {
-//         res.status(500).send(err);
-//     }
-// };

@@ -17,11 +17,12 @@ function MainLayout() {
     return (
         <div className="container">
             <Header/>
-            <div className="row">
+            <div className="row w-100">
                 <Routes>
                     <Route path="/home" element={<Home/>}/>
 
                     <Route path="/articles" element={<AllPosts/>}/>
+
                     <Route path="/articles/add" element={<AddArticle/>}/>
                     <Route path="/articles/search" element={<SearchPosts/>}/>
                     <Route path="/articles/:id/:name" element={<FullArticle/>}/>

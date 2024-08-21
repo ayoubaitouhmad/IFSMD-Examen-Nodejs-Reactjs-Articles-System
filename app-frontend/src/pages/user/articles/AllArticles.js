@@ -55,23 +55,21 @@ function App() {
         <>
 
 
-            <div className="w-100">
-                <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                        <li className="breadcrumb-item">
-                            <a href="#">Home</a>
-                        </li>
-                        <li className="breadcrumb-item">
-                            <a href="#">Library</a>
-                        </li>
-                        <li className="breadcrumb-item active" aria-current="page">Data</li>
-                    </ol>
-                </nav>
-            </div>
+            <nav className="w-100" aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item">
+                        <a href="#">Home</a>
+                    </li>
+                    <li className="breadcrumb-item">
+                        <a href="#">Library</a>
+                    </li>
+                    <li className="breadcrumb-item active" aria-current="page">Data</li>
+                </ol>
+            </nav>
 
 
-            <div className="w-100 mt-3 p-2">
-                <div className="d-flex justify-content-start align-items-center pb-2 ">
+            <div className="pt-2">
+                <div className="d-flex justify-content-start align-items-center mb-3 ">
 
                     <div className="mr-3">
                         <label htmlFor="date" className="text-nowrap">Start Date</label>
@@ -98,44 +96,37 @@ function App() {
 
 
                 </div>
-                <div className="row">
-                    {posts.length === 0 ? <NoPostsFound/> : <BlogList posts={ posts} />}
+                {posts.length === 0 ? <NoPostsFound/> : <BlogList posts={posts}/>}
+            </div>
+            <nav className={`w-100 d-flex justify-content-between align-items-center`} aria-label="Page navigation example">
+                <ul className="pagination ">
+                    <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={handlePreviousPage}>Previous</button>
+                    </li>
+                    {Array.from({length: totalPages}, (_, i) => (
+                        <li key={i + 1} className={`page-item ${page === i + 1 ? "active" : ""}`}>
+                            <button className="page-link" onClick={() => handlePageClick(i + 1)}>{i + 1}</button>
+                        </li>
+                    ))}
+                    <li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={handleNextPage}>Next</button>
+                    </li>
+                </ul>
+                <div className="">
+                    <select
+                        id="show"
+                        className="form-control"
+                        value={show}
+                        onChange={handleshowChange}>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value={totalPost}>all</option>
+                    </select>
                 </div>
 
-
-                <nav className={totalPages === 0 ? 'd-none' : ''} aria-label="Page navigation example">
-                    <ul className="pagination float-left">
-                        <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
-                            <button className="page-link" onClick={handlePreviousPage}>Previous</button>
-                        </li>
-                        {Array.from({length: totalPages}, (_, i) => (
-                            <li key={i + 1} className={`page-item ${page === i + 1 ? "active" : ""}`}>
-                                <button className="page-link" onClick={() => handlePageClick(i + 1)}>{i + 1}</button>
-                            </li>
-                        ))}
-                        <li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
-                            <button className="page-link" onClick={handleNextPage}>Next</button>
-                        </li>
-                    </ul>
-                    <div className="float-right">
-                        <div className="mr-3 d-flex">
-
-                            <select
-                                id="show"
-                                className="form-control"
-                                value={show}
-                                onChange={handleshowChange}>
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="50">50</option>
-                                <option value={totalPost}>all</option>
-                            </select>
-                        </div>
-                    </div>
-                </nav>
-
-            </div>
+            </nav>
 
 
         </>

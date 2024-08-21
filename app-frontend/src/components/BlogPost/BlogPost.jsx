@@ -26,7 +26,7 @@ function BlogPost({id, title ,content , createdAt  , description } ) {
     }
     return (
 
-        <div className="col-12 col-md-4 col-lg-4  " onClick={handleBlogPostClick} >
+        <div className="col-12 col-sm-6 col-xl-4" onClick={handleBlogPostClick} >
             <div className="card mb-4 box-shadow">
                 <img
                     className="img card-img-top"
@@ -37,10 +37,7 @@ function BlogPost({id, title ,content , createdAt  , description } ) {
                     <h3>{title}</h3>
                     <p className="card-text" >{ description }</p>
                     <div className="d-flex justify-content-between align-items-center">
-                        {/*<div className="btn-group">*/}
-                        {/*    <button type="button" className="btn btn-sm btn-outline-secondary">View</button>*/}
-                        {/*    <button type="button" className="btn btn-sm btn-outline-secondary">Edit</button>*/}
-                        {/*</div>*/}
+
                         <small className="text-muted">{createdAtF}</small>
                     </div>
                 </div>

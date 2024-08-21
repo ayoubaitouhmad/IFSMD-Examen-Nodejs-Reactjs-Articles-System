@@ -48,12 +48,14 @@ function Home() {
                 <div className="col-10 row">
                     <CollapsiblePanel title="Latest Articles">
                         {latestArticles.length === 0 ? <NoPostsFound /> : <BlogList posts={latestArticles} />}
+                        <Link to="/articles">Show All</Link>
                     </CollapsiblePanel>
-                    <Link to="/articles">Show All</Link>
+
                     <CollapsiblePanel title="Most Viewed Articles">
                         {mostViewedArticles.length === 0 ? <NoPostsFound /> : <BlogList posts={mostViewedArticles} />}
+                        <Link to="/articles">Show All</Link>
                     </CollapsiblePanel>
-                    <Link to="/articles">Show All</Link>
+
                 </div>
 
                 <div className="col-2 ">

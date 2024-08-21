@@ -79,8 +79,8 @@ class Article {
         }
     }
 
-    static async posts() {
-        return await this.fetchArticles('SELECT * FROM articles', []);
+    static async articles() {
+        return await Article.fetchArticles('SELECT * FROM articles', []);
     }
 
     static async latestPosts() {

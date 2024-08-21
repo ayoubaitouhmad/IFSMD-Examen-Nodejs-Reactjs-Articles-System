@@ -1,12 +1,16 @@
 import React, {useContext, useState} from 'react';
 import  './header.css';
-import {AuthContext} from "../../../utils/AuthContext";
+
 import ProfileDropDown from "../../ProfileDropDown/ProfileDropDown";
 import Logo from "../../Logo/Logo";
+import {useAuth} from "../../../contexts/AuthContext";
 
 
 function Header() {
-    const {isAuthenticated} = useContext(AuthContext);
+
+    const { user, isAuthenticated, logout } = useAuth();
+
+
     const [showSearch, setShowSearch] = useState(false);
 
 
@@ -22,12 +26,7 @@ function Header() {
                 </div>
                 <div className="col-8 d-flex justify-content-end align-items-center">
 
-                    {isAuthenticated ? <ProfileDropDown/> : <>
-                        <a className="btn btn-sm btn-outline-secondary mr-1" href="#">Registre</a>
-                        <a className="btn btn-sm btn-outline-secondary" href="#">Login</a>
-                    </>
-                    }
-
+                    <ProfileDropDown    />
 
                 </div>
             </div>

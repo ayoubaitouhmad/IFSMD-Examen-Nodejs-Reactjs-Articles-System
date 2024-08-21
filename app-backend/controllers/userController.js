@@ -38,7 +38,7 @@ exports.getUserArticles = async (req, res) => {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
 
-        const paginatedArticles = userArticles;
+        const paginatedArticles = userArticles.slice(startIndex, endIndex);
 
 
         logger.error(id)

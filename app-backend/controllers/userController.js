@@ -4,9 +4,9 @@ const logger = require('../utils/logger');
 
 exports.getById = async (req, res) => {
     try {
-        let { id } = req.params;
+        let {id} = req.params;
         let user = await User.findById(id);
-        if (!user) return res.status(404).send('User not found'); // If user not found, return 404
+        if (!user) return res.status(404).json({message: 'User not found'});
         return res.json(user);
     } catch (err) {
         logger.error(err.message);
@@ -15,9 +15,9 @@ exports.getById = async (req, res) => {
 };
 exports.getByUsername = async (req, res) => {
     try {
-        let { username } = req.params;
+        let {username} = req.params;
         let user = await User.findByUsername(username);
-        if (!user) return res.status(404).send('User not found');
+        if (!user) return res.status(404).json({message: 'User not found'});
         return res.json(user);
     } catch (err) {
         logger.error(err.message);
@@ -27,7 +27,7 @@ exports.getByUsername = async (req, res) => {
 
 exports.getUserArticles = async (req, res) => {
     try {
-        let { id } = req.params;
+        let {id} = req.params;
         let userArticles = await User.findUserArticles(id);
 
         const page = parseInt(req.query.page) || 1;
@@ -46,7 +46,7 @@ exports.getUserArticles = async (req, res) => {
             totalPages: Math.ceil(userArticles.length / limit),
             totalPosts: userArticles.length,
             date: new Date(),
-            articles : paginatedArticles
+            articles: paginatedArticles
         });
     } catch (err) {
         logger.error(err.message);

@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import { useEffect } from 'react';
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 
 
-function BlogPost({id, title ,content , createdAt  , description } ) {
+function BlogPost({id, title ,content , createdAt  , description  , authorId} ) {
     const navigate = useNavigate();
 
     const [show, setShow] = useState(false);
@@ -36,7 +36,13 @@ function BlogPost({id, title ,content , createdAt  , description } ) {
                 <div className="card-body">
                     <h3>{title}</h3>
                     <p className="card-text" >{ description }</p>
-                    <div className="d-flex justify-content-between align-items-center">
+                    <div className="">
+
+                        <p className="p-0 m-0">
+                            <Link to={`/articles/author/${authorId.username}`} >
+                                {authorId.username}
+                            </Link>
+                        </p>
 
                         <small className="text-muted">{createdAtF}</small>
                     </div>

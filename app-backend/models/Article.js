@@ -70,8 +70,15 @@ class Article {
         try {
             const connection = await getConnection();
             const [results] = await connection.execute(query, params);
+
             await connection.end();
-            return results.map(post => Article.loadFromDatabase(post).details());
+            return results.map(post => {
+                post.author_id = {
+                    id : post.author_id,
+                    username : post.author_username
+                };
+                return Article.fromDatabaseRecord(post).details()
+            });
 
         } catch (error) {
             logger.error(`Error fetching articles: ${error.message}`);
@@ -80,7 +87,7 @@ class Article {
     }
 
     static async articles() {
-        return await Article.fetchArticles('SELECT * FROM articles', []);
+        return await Article.fetchArticles(`select  articles.* , username as 'author_username' from  articles join users u on u.id = articles.author_id`, []);
     }
 
     static async latestPosts() {

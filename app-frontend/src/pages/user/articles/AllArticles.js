@@ -31,7 +31,7 @@ function App() {
         const fetchPosts = async () => {
             const data = await getPosts(page, show, date, search);
             setPosts(data.posts);
-            // console.log(data.posts)
+            console.log(data)
             setTotalPages(data.totalPages);
             setTotalPost(data.totalPosts);
         };

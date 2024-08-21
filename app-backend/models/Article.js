@@ -11,6 +11,7 @@ class Article {
     #content;
     #isFeaturedBlog;
     #authorId;
+    #views;
     #updatedAt;
     #createdAt;
 
@@ -31,6 +32,7 @@ class Article {
         content,
         isFeaturedBlog,
         authorId,
+        views,
         updatedAt,
         createdAt
     ) {
@@ -40,6 +42,7 @@ class Article {
         this.#content = content;
         this.#isFeaturedBlog = isFeaturedBlog;
         this.#authorId = authorId;
+        this.#views = views;
         this.#updatedAt = updatedAt;
         this.#createdAt = createdAt;
 
@@ -51,9 +54,10 @@ class Article {
             id: this.#id,
             title: this.#title,
             description: this.#description,
-            content: this.#content,
+            content: '',
             isFeaturedBlog: this.#isFeaturedBlog,
             authorId: this.#authorId,
+            views: this.#views,
             updatedAt: this.#updatedAt,
             createdAt: this.#createdAt,
         };
@@ -67,22 +71,8 @@ class Article {
             const connection = await getConnection();
             const [results] = await connection.execute(query, params);
             await connection.end();
+            return results.map(post => Article.loadFromDatabase(post).details());
 
-            return await Promise.all(results.map(async (post) => {
-                const postModel = new Article(
-                    post.id,
-                    post.title,
-                    post.description,
-                    post.content,
-                    post.is_featured_blog,
-                    post.author_id,
-                    post.updated_at,
-                    post.created_at
-                );
-                await postModel.fetchComments();
-                await postModel.fetchAuthor();
-                return postModel;
-            }));
         } catch (error) {
             logger.error(`Error fetching articles: ${error.message}`);
             return [];
@@ -94,15 +84,15 @@ class Article {
     }
 
     static async latestPosts() {
-        return await this.fetchArticles('SELECT * FROM articles ORDER BY created_at DESC LIMIT 5', []);
+        return await Article.fetchArticles('SELECT * FROM articles ORDER BY created_at DESC LIMIT 5', []);
     }
 
     static async mostViewedArticles() {
-        return await this.fetchArticles('SELECT * FROM articles ORDER BY views DESC LIMIT 6', []);
+        return await Article.fetchArticles('SELECT * FROM articles ORDER BY views DESC LIMIT 6', []);
     }
 
     static async filterByCreatedDate(date) {
-        return await this.fetchArticles('SELECT * FROM articles WHERE DATE(created_at) >= DATE(?)', [date]);
+        return await Article.fetchArticles('SELECT * FROM articles WHERE DATE(created_at) >= DATE(?)', [date]);
     }
 
     static async findById(id) {
@@ -142,6 +132,7 @@ class Article {
             article.content,
             article.is_featured_blog,
             article.author_id,
+            article.views,
             article.updated_at,
             article.created_at,
         );

@@ -77,3 +77,7 @@ alter table articles
 alter table articles
     drop column dates_format;
 
+
+alter table articles
+    add views int default 0 null after author_id;
+

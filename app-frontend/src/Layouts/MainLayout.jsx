@@ -24,7 +24,7 @@ function MainLayout() {
                     <Route path="/articles" element={<AllPosts/>}/>
 
                     <Route path="/articles/add" element={<AddArticle/>}/>
-                    <Route path="/articles/search" element={<SearchPosts/>}/>
+
                     <Route path="/articles/:id/:name" element={<FullArticle/>}/>
 
                     <Route path="/articles/author/:username" element={<AuthorArticles />} />

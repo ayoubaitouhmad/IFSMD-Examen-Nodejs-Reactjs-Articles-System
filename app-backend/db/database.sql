@@ -63,3 +63,17 @@ create table comments
         foreign key (author_id) references users (id)
 );
 
+
+
+alter table articles
+    modify updated_at datetime(6) null after is_featured_blog;
+
+alter table articles
+    modify created_at datetime(6) null after updated_at;
+
+alter table articles
+    modify author_id bigint null after description;
+
+alter table articles
+    drop column dates_format;
+

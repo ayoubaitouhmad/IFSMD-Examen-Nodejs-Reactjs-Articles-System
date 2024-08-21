@@ -124,7 +124,8 @@ class Article {
         }
     }
 
-    static loadFromDatabase(article) {
+
+    static fromDatabaseRecord(article) {
         return new Article(
             article.id,
             article.title,

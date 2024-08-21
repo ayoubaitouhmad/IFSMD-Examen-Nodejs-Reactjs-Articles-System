@@ -1,6 +1,6 @@
 const getConnection = require("../config/db");
 const logger = require("../utils/logger");
-const Article = require("./Article");
+
 
 class User {
     #id;
@@ -89,11 +89,12 @@ class User {
 
     static async findUserArticles(id) {
         try {
+            const Article = require("./Article");
             const connection = await getConnection();
             const [results] = await connection.execute('SELECT * FROM articles WHERE author_id=?', [id]);
             await connection.end();
 
-            return results.map(post => Article.loadFromDatabase(post).details());
+            return results.map(post => Article.fromDatabaseRecord(post).details());
         } catch (error) {
             logger.error(`Error finding articles for user ${id}: ${error.message}`);
             return null;

@@ -28,7 +28,9 @@ exports.getByUsername = async (req, res) => {
 exports.getUserArticles = async (req, res) => {
     try {
         let {id} = req.params;
-        let userArticles = await User.findUserArticles(id);
+        let userArticles = await User.findUserArticles(id) ;
+
+
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 5;
@@ -36,7 +38,7 @@ exports.getUserArticles = async (req, res) => {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
 
-        const paginatedArticles = userArticles.slice(startIndex, endIndex);
+        const paginatedArticles = userArticles;
 
 
         logger.error(id)

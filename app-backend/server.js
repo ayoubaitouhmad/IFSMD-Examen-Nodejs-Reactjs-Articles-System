@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes');
 const getConnection = require("./config/db");
 const {sign} = require("jsonwebtoken");
 const authenticateToken = require("./utils/Securtiy");
+const User = require("./models/userModel");
 
 
 
@@ -33,12 +34,16 @@ app.post('/api/login', async (req, res) => {
         [email, password]
     );
     if (rows.length === 0) return res.status(400).send('User not found');
-    const user = rows[0];
+    const user = User.fromDatabaseRecord(rows[0]).details() ;
     const token = sign({id: user.id}, process.env.JWT_SECRET, {
         expiresIn: '24h',
     });
 
-    res.json({token});
+
+    res.json({
+        token,
+        user
+    });
 
 
 });

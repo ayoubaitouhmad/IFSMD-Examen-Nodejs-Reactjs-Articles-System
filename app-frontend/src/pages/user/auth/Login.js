@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { AuthContext } from "../../../utils/AuthContext"; // Adjust the import path as necessary
+import { AuthContext } from "../../../contexts/AuthContext"; // Adjust the import path as necessary
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -8,7 +8,7 @@ const Login = () => {
     const [password, setPassword] = useState("password1");
     const [errorMessage, setErrorMessage] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { setToken } = useContext(AuthContext);
+    const { setToken , login } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -26,7 +26,7 @@ const Login = () => {
                 email,  // Send email instead of username
                 password,
             });
-            setToken(response.data.token);
+            login(response.data.token,response.data.user );
             localStorage.setItem("token", response.data.token);
             navigate("/home");
         } catch (error) {

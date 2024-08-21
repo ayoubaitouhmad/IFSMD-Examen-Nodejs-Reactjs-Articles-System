@@ -1,6 +1,6 @@
 import React from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import {AuthProvider} from "./utils/AuthContext";
+import {AuthProvider} from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./Layouts/MainLayout";
 import AuthLayout from "./Layouts/AuthLayout";

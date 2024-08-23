@@ -9,6 +9,10 @@ const getConnection = require("./config/db");
 const {sign} = require("jsonwebtoken");
 const authenticateToken = require("./utils/Securtiy");
 const User = require("./models/userModel");
+const {uploadImage} = require("./services/imageService");
+const {join} = require("node:path");
+const {IMAGES_UPLOAD_DUR} = require("./config/imageStorage");
+
 
 
 
@@ -17,7 +21,28 @@ const User = require("./models/userModel");
 const app = express();
 
 app.use(bodyParser.json());
+
 app.use(cors());
+
+
+app.use('/api/uploads', express.static(join(__dirname, 'uploads')));
+
+
+app.post('/api/upload', (req, res) => {
+    uploadImage(req, res, (err) => {
+        if (err) {
+            return res.status(404).json({message: err});
+        }
+        if (req.file == undefined) {
+            return res.status(400).json({message: 'No file selected'});
+        }
+        res.status(200).json({
+            message: 'File uploaded successfully',
+            filename: req.file.filename,
+            path: `${IMAGES_UPLOAD_DUR+req.file.filename}`
+        });
+    });
+});
 
 
 app.post('/api/login', async (req, res) => {
@@ -26,15 +51,10 @@ app.post('/api/login', async (req, res) => {
 
     const connection = await getConnection();
 
-    const [rows] = await connection.execute(
-        `SELECT *
-         FROM users
-         WHERE email = ?
-           and password = ?`,
-        [email, password]
-    );
-    if (rows.length === 0) return res.status(400).send('User not found');
-    const user = User.fromDatabaseRecord(rows[0]).details() ;
+    const user = await User.findByEmailAndPassword(email, password);
+
+
+    if (user === 0) return res.status(400).send('User not found');
     const token = sign({id: user.id}, process.env.JWT_SECRET, {
         expiresIn: '24h',
     });

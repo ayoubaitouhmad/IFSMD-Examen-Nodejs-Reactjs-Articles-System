@@ -20,7 +20,7 @@ const logger = createLogger({
     transports: [
         new transports.Console(), // Logs to console
         new DailyRotateFile({
-            filename: `logs/${env}-%DATE%.log`, // Environment-specific log file
+            filename: `logs/app.log`, // Environment-specific log file
             datePattern: 'YYYY-MM-DD',
             maxFiles: '14d',
         })

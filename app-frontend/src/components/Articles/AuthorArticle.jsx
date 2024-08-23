@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
-function AuthorArticle({id ,title,description , createdAt , isLastArticle }) {
+function AuthorArticle({id ,title,description , createdAt , isLastArticle , urlTitle }) {
 
     return (
         <div id={id} className={`media my-4  ${isLastArticle ? '' : 'border-bottom'}`}>
@@ -12,7 +12,7 @@ function AuthorArticle({id ,title,description , createdAt , isLastArticle }) {
                 style={{width: '100px', height: '100px'}}
             />
             <div className="media-body">
-                <Link to={`/articles/${id}/${title}`}> {title} </Link>
+                <Link to={`/articles/${id}/${urlTitle}`}> {title} </Link>
 
                 <p>{description}</p>
                 <p className="text-muted">{createdAt}</p>

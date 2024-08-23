@@ -70,10 +70,10 @@ function AuthorArticles() {
 
     return (
         <div>
-            <div className="row border-bottom pb-5">
+            <div className="row border-bottom pb-3 ">
                 <div className="col-md-3 text-center">
                     <img
-                        src="https://images.top10.com/f_auto,q_auto/v1/production/authors/uploads/photo/Frame1968.20240603103350.png"
+                        src={`http://localhost:1000/api/uploads/${author.profileImage.filePath}`}
                         alt="Profile"
                         className="rounded-circle img-fluid border border-danger"
                     />
@@ -95,27 +95,109 @@ function AuthorArticles() {
                     </div>
                 </div>
             </div>
-            <div className="row mt-5">
-                <div className="col-md-9">
-                    <PostsList
-                        articles={articles}
-                        author={author}
-                        page={page}
-                        totalPages={totalPages}
-                        handlePreviousPage={handlePreviousPage}
-                        handleNextPage={handleNextPage}
-                        handlePageClick={handlePageClick}
-                    />
+            <div className="row pt-3">
+                <div className="col-12">
+                    <nav>
+                        <div className="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a className="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                               role="tab" aria-controls="nav-home" aria-selected="true">
+                                Posts by {author?.name}
+                            </a>
+                            <a className="nav-item nav-link" id="nav-books-tab" data-toggle="tab" href="#nav-books"
+                               role="tab" aria-controls="nav-books" aria-selected="false">INFOS</a>
+                            <a className="nav-item nav-link" id="nav-lists-tab" data-toggle="tab" href="#nav-lists"
+                               role="tab" aria-controls="nav-lists" aria-selected="false">Lists</a>
+                            <a className="nav-item nav-link" id="nav-about-tab" data-toggle="tab" href="#nav-about"
+                               role="tab" aria-controls="nav-about" aria-selected="false">About</a>
+                        </div>
+                    </nav>
+                    <div className="tab-content" id="nav-tabContent">
+                        <div className="tab-pane fade show active" id="nav-home" role="tabpanel"
+                             aria-labelledby="nav-home-tab">
+
+                            <div className="row">
+                                <div className="col-9">
+                                    <PostsList
+                                        articles={articles}
+                                        author={author}
+                                        page={page}
+                                        totalPages={totalPages}
+                                        handlePreviousPage={handlePreviousPage}
+                                        handleNextPage={handleNextPage}
+                                        handlePageClick={handlePageClick}
+                                    />
+                                </div>
+                                <div className="col-3">
+                                    <div className="row pt-4">
+                                        <div className="col-12 mb-2 ">
+                                            <div className="card text-white bg-info o-hidden">
+                                                <div className="card-body">
+                                                    <div className="card-body-icon">
+                                                        <i className="fa fa-fw fa-comments"></i>
+                                                    </div>
+                                                    <div className="mr-5">26 New Messages!</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-12 mb-2 ">
+                                            <div className="card text-white bg-info o-hidden">
+                                                <div className="card-body">
+                                                    <div className="card-body-icon">
+                                                        <i className="fa fa-fw fa-comments"></i>
+                                                    </div>
+                                                    <div className="mr-5">26 New Messages!</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-12 mb-2 ">
+                                            <div className="card text-white bg-info o-hidden">
+                                                <div className="card-body">
+                                                    <div className="card-body-icon">
+                                                        <i className="fa fa-fw fa-comments"></i>
+                                                    </div>
+                                                    <div className="mr-5">26 New Messages!</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-12 mb-2 ">
+                                            <div className="card text-white bg-info o-hidden">
+                                                <div className="card-body">
+                                                    <div className="card-body-icon">
+                                                        <i className="fa fa-fw fa-comments"></i>
+                                                    </div>
+                                                    <div className="mr-5">26 New Messages!</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div className="tab-pane fade" id="nav-books" role="tabpanel" aria-labelledby="nav-books-tab">
+                            {/* Books content */}
+                            <p>Content for Books tab goes here.</p>
+                        </div>
+                        <div className="tab-pane fade" id="nav-lists" role="tabpanel" aria-labelledby="nav-lists-tab">
+                            {/* Lists content */}
+                            <p>Content for Lists tab goes here.</p>
+                        </div>
+                        <div className="tab-pane fade" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                            {/* About content */}
+                            <p>Content for About tab goes here.</p>
+                        </div>
+                    </div>
+
                 </div>
-                <div className="col-md-3">
-                    <AdCard />
-                </div>
+
             </div>
         </div>
     );
 }
 
-const PostsList = ({ articles, author, page, totalPages, handlePreviousPage, handleNextPage, handlePageClick }) => {
+const PostsList = ({articles, author, page, totalPages, handlePreviousPage, handleNextPage, handlePageClick}) => {
     if (articles.length === 0) {
         return (
             <div className="pt-5 no-articles-container text-center">
@@ -128,9 +210,9 @@ const PostsList = ({ articles, author, page, totalPages, handlePreviousPage, han
 
     return (
         <div>
-            <h3>Posts by {author?.name}</h3>
+
             {articles.map((post) => (
-                <PostItem key={post.id} post={post} isLastArticle={articles[articles.length - 1].id === post.id} />
+                <PostItem key={post.id} post={post} isLastArticle={articles[articles.length - 1].id === post.id}/>
             ))}
             <Pagination
                 page={page}
@@ -143,11 +225,11 @@ const PostsList = ({ articles, author, page, totalPages, handlePreviousPage, han
     );
 };
 
-const PostItem = ({ post, isLastArticle }) => (
-    <AuthorArticle {...post} isLastArticle={isLastArticle} />
+const PostItem = ({post, isLastArticle}) => (
+    <AuthorArticle {...post} isLastArticle={isLastArticle}/>
 );
 
-const Pagination = ({ page, totalPages, handlePreviousPage, handleNextPage, handlePageClick }) => (
+const Pagination = ({page, totalPages, handlePreviousPage, handleNextPage, handlePageClick}) => (
     <nav className={totalPages === 0 ? 'd-none' : ''} aria-label="Page navigation example">
         <ul className="pagination float-left">
             <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
@@ -155,7 +237,7 @@ const Pagination = ({ page, totalPages, handlePreviousPage, handleNextPage, hand
                     Previous
                 </button>
             </li>
-            {Array.from({ length: totalPages }, (_, i) => (
+            {Array.from({length: totalPages}, (_, i) => (
                 <li key={i + 1} className={`page-item ${page === i + 1 ? 'active' : ''}`}>
                     <button className="page-link" onClick={() => handlePageClick(i + 1)}>
                         {i + 1}
@@ -177,7 +259,7 @@ const AdCard = () => (
             <h5 className="card-title">Master the art of making better choices</h5>
             <p className="card-text">Read this post!</p>
         </div>
-        <img className="card-img-bottom" src="https://via.placeholder.com/150" alt="Ad" />
+        <img className="card-img-bottom" src="https://via.placeholder.com/150" alt="Ad"/>
     </div>
 );
 

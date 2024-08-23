@@ -10,6 +10,7 @@ import FullArticle from "../pages/user/articles/FullArticle";
 import Footer from "../components/Layouts/Footer/Footer";
 import Home from "../pages/user/Home";
 import AuthorArticles from "../pages/user/articles/AuthorArticles";
+import Profile from "../pages/user/profile";
 
 
 
@@ -23,11 +24,18 @@ function MainLayout() {
 
                     <Route path="/articles" element={<AllPosts/>}/>
 
+                    <Route path="/profile" element={<Profile/>}/>
+
                     <Route path="/articles/add" element={<AddArticle/>}/>
 
                     <Route path="/articles/:id/:name" element={<FullArticle/>}/>
 
                     <Route path="/articles/author/:username" element={<AuthorArticles />} />
+
+
+                    <Route path="/gggggg" element="content" />
+
+
 
 
 

@@ -1,26 +1,29 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import {getPost} from "../../../services/postService";
+import LoadingOverlay from "../../../components/LoadingOverlay/loadingOverlay";
 
 function FullArticle() {
     const { id } = useParams();
     const [article, setArticle] = useState(null);
 
 
+
     useEffect(() => {
         const fetchPost = async () => {
             try {
                 const data = await getPost(id);
+
                 setArticle(data);
             } catch (error) {
                 console.error('Failed to fetch post:', error);
             }
         };
         fetchPost();
-    }, [id]);
+    }, []);
 
     if (!article) {
-        return <div>Loading...</div>;
+        return <LoadingOverlay/>;
     }
 
     return (

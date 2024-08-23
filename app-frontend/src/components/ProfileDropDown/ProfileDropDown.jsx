@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import './ProfileDropDown.module.css';
 import {Link} from "react-router-dom";
-import {useAuth} from "../../contexts/AuthContext";
+import {AuthContext} from "../../contexts/AuthContext";
 
 function ProfileDropDown() {
-    const { user, isAuthenticated, logout } = useAuth();
+    const { user } = useContext(AuthContext);
+
+
+
     return (
         <ul className="bg-light rounded p-0 mt-2">
             <li className="d-flex dropdown">
@@ -12,7 +15,7 @@ function ProfileDropDown() {
                    aria-expanded="false">
                     <img
                         height={40} width={40}
-                        src="https://images.top10.com/f_auto,q_auto/v1/production/authors/uploads/photo/Frame1968.20240603103350.png"
+                        src={`http://localhost:1000/api/uploads/${user.profileImage.filePath}`}
                         alt="Profile"
                         className="mr-2 rounded-circle img-fluid border border-danger"
                     />

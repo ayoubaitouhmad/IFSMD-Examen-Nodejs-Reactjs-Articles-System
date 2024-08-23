@@ -1,4 +1,4 @@
-const {latestPosts, mostViewedArticles, articles} = require("../models/Article");
+const {latestPosts, mostViewedArticles, articles, findById} = require("../models/Article");
 
 
 exports.getAllPosts = async (req, res) => {
@@ -42,8 +42,8 @@ exports.getAllPosts = async (req, res) => {
 exports.findPost = async (req, res) => {
     try {
         const {id} = req.params;
-        const post = await Article.findById(id);
-        await post.fetchAuthor();
+        const post = await findById(id);
+
         res.json(post);
     } catch (err) {
         console.log(err);

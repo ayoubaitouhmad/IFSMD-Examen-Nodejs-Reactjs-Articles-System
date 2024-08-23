@@ -16,8 +16,13 @@ class Article {
     #createdAt;
 
 
+
     get title() {
         return this.#title;
+    }
+
+    get urlTitle() {
+        return this.#title.replaceAll(' ','-');
     }
 
     set title(value) {
@@ -53,8 +58,9 @@ class Article {
         return {
             id: this.#id,
             title: this.#title,
+            urlTitle: this.urlTitle,
             description: this.#description,
-            content: '',
+            content: this.#content,
             isFeaturedBlog: this.#isFeaturedBlog,
             authorId: this.#authorId,
             views: this.#views,
@@ -111,20 +117,9 @@ class Article {
             if (results.length === 0) {
                 return null; // Handle not found
             }
+            return Article.fromDatabaseRecord( results[0]).details();
 
-            const article = new Article(
-                results[0].id,
-                results[0].title,
-                results[0].description,
-                results[0].content,
-                results[0].is_featured_blog,
-                results[0].author_id,
-                results[0].updated_at,
-                results[0].created_at
-            );
-            await article.fetchComments();
-            await article.fetchAuthor();
-            return article;
+
         } catch (error) {
             logger.error(`Error finding article by ID ${id}: ${error.message}`);
             return null;

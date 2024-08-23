@@ -1,5 +1,6 @@
 const getConnection = require("../config/db");
 const logger = require("../utils/logger");
+const FileDocument = require("./fileDocument");
 
 
 class User {
@@ -38,7 +39,12 @@ class User {
         this.#updatedAt = updatedAt;
     }
 
+    async getProfileImage() {
+        return this.profileImage =  await FileDocument.findById(this.#profileImageId);
+    }
+
     details() {
+
         return {
             id: this.#id,
             username: this.#username,
@@ -46,7 +52,10 @@ class User {
             bio: this.#bio,
             role: this.#role,
             email: this.#email,
-            profileImageId: this.#profileImageId,
+            // profileImageId: this.#profileImageId,
+            profileImage: this.profileImage ?? {
+                filePath: 'images/blank.png'
+            },
             createdAt: this.#createdAt,
             updatedAt: this.#updatedAt,
             // Omitting password for security reasons
@@ -63,7 +72,33 @@ class User {
                 return null; // Handle user not found
             }
 
-            return this.fromDatabaseRecord(results[0]).details();
+
+            let user = this.fromDatabaseRecord(results[0]);
+            await user.getProfileImage();
+            return user.details();
+        } catch (error) {
+            logger.error(`Error finding user by ID ${id}: ${error.message}`);
+            return null;
+        }
+    }
+
+    static async findByEmailAndPassword(email, password) {
+        try {
+            const connection = await getConnection();
+            const [results] = await connection.execute(`SELECT *
+                                                        FROM users
+                                                        WHERE email = ?
+                                                          and password = ?`, [email, password]);
+            await connection.end();
+            if (results.length === 0) {
+                return null; // Handle user not found
+            }
+            let user = this.fromDatabaseRecord(results[0]);
+            await user.getProfileImage();
+
+
+            return user.details();
+
         } catch (error) {
             logger.error(`Error finding user by ID ${id}: ${error.message}`);
             return null;
@@ -79,8 +114,9 @@ class User {
             if (results.length === 0) {
                 return null; // Handle user not found
             }
-
-            return this.fromDatabaseRecord(results[0]).details();
+            const user = this.fromDatabaseRecord(results[0]);
+            await user.getProfileImage();
+            return user.details();
         } catch (error) {
             logger.error(`Error finding user by username ${username}: ${error.message}`);
             return null;

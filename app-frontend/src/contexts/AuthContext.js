@@ -1,4 +1,5 @@
 import React, {createContext, useState, useEffect, useContext} from 'react';
+import {getUserById, getUserByUsername} from "../services/userService";
 
 export const AuthContext = createContext();
 
@@ -8,6 +9,11 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
+
+
+
+
+
         const storedToken = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
         if (storedToken && storedUser) {
@@ -15,7 +21,25 @@ export const AuthProvider = ({ children }) => {
             setUser(JSON.parse(storedUser));
             setIsAuthenticated(true);
         }
+
+
+
+
     }, []);
+
+    const updateUser = async () => {
+        const authorData = await getUserById(user.id);
+        setUser(authorData);
+        console.log(
+            authorData
+        )
+        localStorage.setItem('user', JSON.stringify(authorData));
+
+    }
+
+
+
+
 
     const login = (userToken, userData) => {
         setToken(userToken);
@@ -33,7 +57,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
     };
     return (
-        <AuthContext.Provider value={{ token, setToken, isAuthenticated, login, logout  , user}}>
+        <AuthContext.Provider value={{ token, setToken, isAuthenticated, login, logout  , user , setUser , updateUser}}>
             {children}
         </AuthContext.Provider>
     );

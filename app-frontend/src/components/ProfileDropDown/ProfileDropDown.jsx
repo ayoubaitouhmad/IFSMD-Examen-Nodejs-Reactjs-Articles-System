@@ -26,9 +26,10 @@ function ProfileDropDown() {
                 </a>
                 <div className="dropdown-menu dropdown-menu-right position-absolute"
                      aria-labelledby="navbarDropdown">
-                    <a className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="/profile">
                         Profile
-                    </a>
+                    </Link>
+
                     <Link className="dropdown-item" to={`/articles/author/${user.username}`}>
                         My Articles
                     </Link>

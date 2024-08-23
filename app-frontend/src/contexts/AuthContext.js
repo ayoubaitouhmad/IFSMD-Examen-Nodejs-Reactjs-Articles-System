@@ -30,9 +30,7 @@ export const AuthProvider = ({ children }) => {
     const updateUser = async () => {
         const authorData = await getUserById(user.id);
         setUser(authorData);
-        console.log(
-            authorData
-        )
+
         localStorage.setItem('user', JSON.stringify(authorData));
 
     }

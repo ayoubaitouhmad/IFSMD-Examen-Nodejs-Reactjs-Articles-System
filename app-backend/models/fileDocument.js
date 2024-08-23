@@ -1,5 +1,7 @@
 const getConnection = require("../config/db");
 const logger = require("../utils/logger");
+const {deleteImage} = require("../services/imageService");
+
 
 class FileDocument {
 
@@ -117,38 +119,40 @@ class FileDocument {
     async save() {
         try {
             const connection = await getConnection();
-            if (this.#id) {
-                // Update existing file document
-                const query = `
-                    UPDATE file_document 
-                    SET file_name=?, file_type=?, file_path=?, updated_at=NOW() 
-                    WHERE id=?
-                `;
-                await connection.execute(query, [
-                    this.#fileName,
-                    this.#fileType,
-                    this.#filePath,
-                    this.#id
-                ]);
-            } else {
-                // Insert new file document
-                const query = `
-                    INSERT INTO file_document (file_name, file_type, file_path, created_at, updated_at) 
-                    VALUES (?, ?, ?, NOW(), NOW())
-                `;
-                const [result] = await connection.execute(query, [
-                    this.#fileName,
-                    this.#fileType,
-                    this.#filePath
-                ]);
-                this.#id = result.insertId; // Set the ID of the newly inserted file document
-            }
+            const query = `
+                INSERT INTO file_document (file_name, file_type, file_path, created_at, updated_at)
+                VALUES (?, ?, ?, NOW(), NOW())
+            `;
+            const [result] = await connection.execute(query, [
+                this.#fileName,
+                this.#fileType,
+                this.#filePath
+            ]);
+            this.#id = result.insertId;
             await connection.end();
             return true;
         } catch (error) {
             logger.error(`Error saving file document: ${error.message}`);
             return false;
         }
+    }
+
+    static async deleteFileDocument(id) {
+        try {
+            const connection = await getConnection();
+            const query = 'DELETE FROM file_document WHERE id = ?';
+            await connection.execute(query, [id]);
+            await connection.end();
+            return true;
+        } catch (error) {
+            logger.error(`Error saving file document: ${error.message}`);
+            return false;
+        }
+    }
+
+    async delete() {
+        deleteImage(this.#filePath);
+        await FileDocument.deleteFileDocument(this.#id);
     }
 
     static fromUpload(filename, path, mimetype) {
@@ -161,7 +165,6 @@ class FileDocument {
             null
         );
     }
-
 
 
 }

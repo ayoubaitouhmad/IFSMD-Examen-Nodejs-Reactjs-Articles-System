@@ -2,6 +2,7 @@
 const multer = require("multer");
 const path = require("path");
 const { imageStorage } = require('../config/imageStorage');
+const {unlink} = require("node:fs");
 
 function checkFileType(file, cb) {
     const filetypes = /jpeg|jpg|png|gif/;
@@ -23,4 +24,17 @@ const uploadImage = multer({
     }
 }).single('image');
 
-module.exports = { uploadImage };
+
+const deleteImage = (path)=>{
+    let fullPath = "uploads/"+path;
+    unlink(fullPath, (err) => {
+        if (err) {
+            console.error(`Error deleting file: ${err.message}`);
+        } else {
+            console.log(`File deleted: ${fullPath}`);
+        }
+    });
+}
+
+
+module.exports = { uploadImage  , deleteImage};

@@ -2,7 +2,7 @@ const User = require("../models/userModel");
 const jwt = require('jsonwebtoken');
 const logger = require('../utils/logger');
 const {uploadImage} = require("../services/imageService")
-const {fromUpload} = require("../models/fileDocument");
+const {fromUpload, deleteFileDocument, findById} = require("../models/fileDocument");
 
 
 exports.getById = async (req, res) => {
@@ -63,15 +63,13 @@ exports.updateProfile = async (req, res) => {
     uploadImage(req, res, async (err) => {
         const id = req.params.id;
 
+        logger.info(id);
         if (err) {
             console.error('Multer error:', err);
             return res.status(400).json({message: err.message});
         }
+        //
 
-        if (!req.file) {
-            console.error('File not uploaded');
-            return res.status(400).json({message: 'No file uploaded'});
-        }
 
         let user = await User.findById(id);
 
@@ -79,14 +77,23 @@ exports.updateProfile = async (req, res) => {
         user.email = req.body.email || user.email;
         user.bio = req.body.bio || user.bio;
 
+        if (req.file) {
+            if (user.profileImageId) {
+                const avatarFile = await findById(user.profileImageId);
+                avatarFile.delete();
 
-        let file = fromUpload(
-            req.file.filename, "images/" + req.file.filename, req.file.mimetype
-        );
+            }
 
-        // the problem is how to get file id and its still not record in db even if happend how to get this file id
-        await file.save();
-        user.profileImageId = file.id;
+            let file = fromUpload(
+                req.file.filename, "images/" + req.file.filename, req.file.mimetype
+            );
+
+            await file.save();
+            user.profileImageId = file.id;
+
+        }
+
+
         await user.save();
         let alert = {
             type: "success",

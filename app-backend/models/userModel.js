@@ -69,7 +69,11 @@ class User {
     }
 
     async getProfileImage() {
-        return this.#profileImage =  (await FileDocument.findById(this.#profileImageId)).details();
+        return this.#profileImage =
+            this.#profileImageId ?
+            (await FileDocument.findById(this.#profileImageId)).details()
+                : null
+            ;
     }
 
     details() {
@@ -127,7 +131,7 @@ class User {
             return user.details();
 
         } catch (error) {
-            logger.error(`Error finding user by ID ${id}: ${error.message}`);
+            logger.error(`findByEmailAndPassword ${id}: ${error.message}`);
             return null;
         }
     }

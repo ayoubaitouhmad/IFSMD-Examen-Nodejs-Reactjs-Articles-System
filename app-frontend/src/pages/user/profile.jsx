@@ -10,6 +10,7 @@ const ProfilePage = () => {
     const { user, setUser , updateUser } = useAuth();
 
 
+
     const [preview, setPreview] = useState(`http://localhost:1000/api/uploads/${user.profileImage.filePath}`);
     const [alert , setAlert] = useState(null);
 
@@ -57,7 +58,7 @@ const ProfilePage = () => {
 
                 formik.setFieldValue('profilePicture', res.data.imageUrl);
 
-                //
+
                 setAlert(res.data.alert);
                 await updateUser();
 

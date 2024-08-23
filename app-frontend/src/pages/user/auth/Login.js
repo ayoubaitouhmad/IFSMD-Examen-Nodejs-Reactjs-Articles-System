@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { AuthContext } from "../../../contexts/AuthContext"; // Adjust the import path as necessary
+import {AuthContext, useAuth} from "../../../contexts/AuthContext"; // Adjust the import path as necessary
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -8,7 +8,7 @@ const Login = () => {
     const [password, setPassword] = useState("password1");
     const [errorMessage, setErrorMessage] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { setToken , login } = useContext(AuthContext);
+    const { setToken , login } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {

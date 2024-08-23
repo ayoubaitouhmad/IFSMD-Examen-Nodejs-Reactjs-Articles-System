@@ -1,14 +1,16 @@
 const User = require("../models/userModel");
 const jwt = require('jsonwebtoken');
 const logger = require('../utils/logger');
-const {uploadImage} =require("../services/imageService")
+const {uploadImage} = require("../services/imageService")
+const {fromUpload} = require("../models/fileDocument");
+
 
 exports.getById = async (req, res) => {
     try {
         let {id} = req.params;
         let user = await User.findById(id);
         if (!user) return res.status(404).json({message: 'User not found'});
-        return res.json(user);
+        return res.json(user.details());
     } catch (err) {
         logger.error(err.message);
         return res.status(500).send('Server error'); // Send a 500 status for server errors
@@ -58,26 +60,39 @@ exports.getUserArticles = async (req, res) => {
 };
 
 exports.updateProfile = async (req, res) => {
-    uploadImage(req, res, (err) => {
+    uploadImage(req, res, async (err) => {
+        const id = req.params.id;
+
         if (err) {
             console.error('Multer error:', err);
-            return res.status(400).json({ message: err.message });
+            return res.status(400).json({message: err.message});
         }
 
         if (!req.file) {
             console.error('File not uploaded');
-            return res.status(400).json({ message: 'No file uploaded' });
+            return res.status(400).json({message: 'No file uploaded'});
         }
 
-        // Access file info and form fields
-        console.log('File:', req.file);
-        console.log('Name:', req.body.name);
-        console.log('Email:', req.body.email);
-        console.log('Bio:', req.body.bio);
+        let user = await User.findById(id);
 
-        res.status(200).json({
-            message: 'File uploaded successfully',
-            imageUrl: `/uploads/${req.file.filename}`,
-        });
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+        user.bio = req.body.bio || user.bio;
+
+
+        let file = fromUpload(
+            req.file.filename, "images/" + req.file.filename, req.file.mimetype
+        );
+
+        // the problem is how to get file id and its still not record in db even if happend how to get this file id
+        await file.save();
+        user.profileImageId = file.id;
+        await user.save();
+        let alert = {
+            type: "success",
+            title: "Success!",
+            body: "Profile updated successfully."
+        }
+        res.status(200).json({alert, 'user': user.details()});
     });
 };

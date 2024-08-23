@@ -73,9 +73,10 @@ function AuthorArticles() {
             <div className="row border-bottom pb-3 ">
                 <div className="col-md-3 text-center">
                     <img
+                        height={160} width={160}
                         src={`http://localhost:1000/api/uploads/${author.profileImage.filePath}`}
                         alt="Profile"
-                        className="rounded-circle img-fluid border border-danger"
+                        className="rounded-circle  border"
                     />
                 </div>
                 <div className="col-md-9">

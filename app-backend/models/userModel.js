@@ -12,8 +12,37 @@ class User {
     #email;
     #password;
     #profileImageId;
+    #profileImage;
     #createdAt;
     #updatedAt;
+
+    get profileImageId(){
+        return this.#profileImageId;
+    }
+    set profileImageId(profileImageId){
+        this.#profileImageId = profileImageId;
+    }
+    get bio(){
+        return this.#bio;
+    }
+    set bio(bio){
+        this.#bio = bio;
+    }
+
+    get email(){
+        return this.#email;
+    }
+    set email(email){
+        this.#email = email;
+    }
+
+    get name(){
+        return this.#name;
+    }
+    set name(name){
+        this.#name = name;
+    }
+
 
     constructor(
         id,
@@ -40,7 +69,7 @@ class User {
     }
 
     async getProfileImage() {
-        return this.profileImage =  await FileDocument.findById(this.#profileImageId);
+        return this.#profileImage =  (await FileDocument.findById(this.#profileImageId)).details();
     }
 
     details() {
@@ -52,8 +81,8 @@ class User {
             bio: this.#bio,
             role: this.#role,
             email: this.#email,
-            // profileImageId: this.#profileImageId,
-            profileImage: this.profileImage ?? {
+            profileImageId: this.#profileImageId,
+            profileImage: this.#profileImage ?? {
                 filePath: 'images/blank.png'
             },
             createdAt: this.#createdAt,
@@ -71,11 +100,9 @@ class User {
             if (results.length === 0) {
                 return null; // Handle user not found
             }
-
-
             let user = this.fromDatabaseRecord(results[0]);
             await user.getProfileImage();
-            return user.details();
+            return user;
         } catch (error) {
             logger.error(`Error finding user by ID ${id}: ${error.message}`);
             return null;
@@ -151,6 +178,34 @@ class User {
             user.updated_at,
         );
     }
+
+
+    async save() {
+        try {
+            const connection = await getConnection();
+            const query = `
+                    UPDATE users 
+                    SET username=?, name=?, bio=?, role=?, email=?, profile_image_id=?, updated_at=NOW() 
+                    WHERE id=?
+                `;
+            await connection.execute(query, [
+                this.#username,
+                this.#name,
+                this.#bio,
+                this.#role,
+                this.#email,
+                this.#profileImageId,
+                this.#id
+            ]);
+            await connection.end();
+            return true;
+        } catch (error) {
+            logger.error(`Error saving user: ${error.message}`);
+            return false;
+        }
+    }
+
+
 }
 
 module.exports = User;

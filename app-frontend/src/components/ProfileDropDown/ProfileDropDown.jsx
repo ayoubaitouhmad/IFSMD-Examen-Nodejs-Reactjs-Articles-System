@@ -17,7 +17,7 @@ function ProfileDropDown() {
                         height={40} width={40}
                         src={`http://localhost:1000/api/uploads/${user.profileImage.filePath}`}
                         alt="Profile"
-                        className="mr-2 rounded-circle img-fluid border border-danger"
+                        className="mr-2 rounded-circle  border "
                     />
 
                     <span className="text-muted">

@@ -1,0 +1,7 @@
+.required-field:after{
+    content: '*';
+    margin: 5px;
+    width: 10px;
+    height: 10px;
+    color: red;
+}

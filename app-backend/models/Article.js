@@ -64,7 +64,7 @@ class Article {
             title: this.#title,
             urlTitle: this.urlTitle,
             description: this.#description,
-            content: '',
+            content: this.#content,
             isFeaturedBlog: this.#isFeaturedBlog,
             authorId: this.#authorId,
             views: this.#views,
@@ -88,11 +88,7 @@ class Article {
 
             return  await Promise.all(results.map(async (post) => {
                 let postModel = Article.fromDatabaseRecord(post);
-
-                // If getImage is asynchronous and needs to be awaited, uncomment the line below
                 await postModel.getImage();
-
-                // Replace author_id with an object containing the author's details
                 post.author_id = {
                     id: post.author_id,
                     username: post.author_username

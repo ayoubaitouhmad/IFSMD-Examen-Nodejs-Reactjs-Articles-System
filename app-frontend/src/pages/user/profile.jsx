@@ -4,14 +4,16 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axiosInstance from "../../utils/axios";
 import { useAuth } from "../../contexts/AuthContext";
+import route from "../../utils/route";
 
 
 const ProfilePage = () => {
     const { user, setUser , updateUser } = useAuth();
 
+    let userAvatar = route('streamImage' , {'image' :user.profileImage.filePath});
 
 
-    const [preview, setPreview] = useState(`http://localhost:1000/api/uploads/${user.profileImage.filePath}`);
+    const [preview, setPreview] = useState(userAvatar);
     const [alert , setAlert] = useState(null);
 
     const formik = useFormik({

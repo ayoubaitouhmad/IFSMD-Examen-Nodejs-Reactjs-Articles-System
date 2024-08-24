@@ -68,7 +68,7 @@ exports.updateProfile = async (req, res) => {
             console.error('Multer error:', err);
             return res.status(400).json({message: err.message});
         }
-        //
+
 
 
         let user = await User.findById(id);
@@ -85,7 +85,7 @@ exports.updateProfile = async (req, res) => {
             }
 
             let file = fromUpload(
-                req.file.filename, "images/" + req.file.filename, req.file.mimetype
+                req.file.filename,  req.file.filename, req.file.mimetype
             );
 
             await file.save();

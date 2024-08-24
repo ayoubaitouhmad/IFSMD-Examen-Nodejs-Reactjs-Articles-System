@@ -2,11 +2,15 @@ import React, {useContext} from 'react';
 import './ProfileDropDown.module.css';
 import {Link} from "react-router-dom";
 import {AuthContext} from "../../contexts/AuthContext";
+import route from "../../utils/route";
 
 function ProfileDropDown() {
     const { user } = useContext(AuthContext);
 
 
+    console.log(
+        route('userProfile' , {id:1 , o:555})
+    )
 
     return (
         <ul className="bg-light rounded p-0 mt-2">
@@ -15,7 +19,7 @@ function ProfileDropDown() {
                    aria-expanded="false">
                     <img
                         height={40} width={40}
-                        src={`http://localhost:1000/api/uploads/${user.profileImage.filePath}`}
+                        src={route('streamImage' , {'image' :user.profileImage.filePath})}
                         alt="Profile"
                         className="mr-2 rounded-circle  border "
                     />

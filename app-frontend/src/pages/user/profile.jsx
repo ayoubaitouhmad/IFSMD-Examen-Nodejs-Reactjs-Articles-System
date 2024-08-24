@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import axiosInstance from "../../utils/axios";
 import { useAuth } from "../../contexts/AuthContext";
 import route from "../../utils/route";
+import LoadingOverlay from "../../components/LoadingOverlay/loadingOverlay";
 
 
 const ProfilePage = () => {
@@ -89,6 +90,10 @@ const ProfilePage = () => {
     };
 
 
+
+    if (!user) {
+        return <LoadingOverlay />;
+    }
 
     return (
         <div className="container mt-5">
@@ -177,6 +182,7 @@ const ProfilePage = () => {
                         <div className="form-group">
                             <label className="required-field" htmlFor="bio">Bio</label>
                             <textarea
+                                style={{ height: '250px' }}
                                 id="bio"
                                 name="bio"
                                 className="form-control"

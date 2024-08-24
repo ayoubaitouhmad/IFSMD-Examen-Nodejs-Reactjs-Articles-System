@@ -17,7 +17,7 @@ const route = (name, params = {}) => {
         throw new Error(`Route "${name}" is not defined.`);
     }
 
-    // Replace the dynamic segments with actual parameters
+
     Object.keys(params).forEach((key) => {
         path = path.replace(`:${key}`, params[key]);
     });

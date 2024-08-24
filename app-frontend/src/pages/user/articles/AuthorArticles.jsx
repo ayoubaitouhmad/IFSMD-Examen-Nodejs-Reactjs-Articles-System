@@ -3,6 +3,7 @@ import { Link, useParams ,useNavigate  } from 'react-router-dom';
 import { getUserArticles, getUserByUsername } from '../../../services/userService';
 import LoadingOverlay from '../../../components/LoadingOverlay/loadingOverlay';
 import AuthorArticle from '../../../components/Articles/AuthorArticle';
+import route from "../../../utils/route";
 
 function AuthorArticles() {
     const { username } = useParams();
@@ -74,7 +75,7 @@ function AuthorArticles() {
                 <div className="col-md-3 text-center">
                     <img
                         height={160} width={160}
-                        src={`http://localhost:1000/api/uploads/${author.profileImage.filePath}`}
+                        src={route('streamImage' , {image:author.profileImage.filePath} )}
                         alt="Profile"
                         className="rounded-circle  border"
                     />

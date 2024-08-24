@@ -1,10 +1,14 @@
 import React, {useState} from 'react';
 import { useEffect } from 'react';
 import {Link, useNavigate} from "react-router-dom";
+import route from "../../utils/route";
 
 
 
-function BlogPost({id, title ,content , createdAt  , description  , authorId} ) {
+function BlogPost({id, title ,content , createdAt  , description  , authorId , articleImage} ) {
+    console.log(
+        articleImage
+    )
     const navigate = useNavigate();
 
     const [show, setShow] = useState(false);
@@ -30,7 +34,7 @@ function BlogPost({id, title ,content , createdAt  , description  , authorId} ) 
             <div className="card mb-4 box-shadow">
                 <img
                     className="img card-img-top"
-                    src="https://www.interviewbit.com/blog/wp-content/uploads/2021/12/Depth-First-Search.png"
+                    src={route('streamImage' , {image:articleImage.filePath})}
                     alt="Card cap"
                 />
                 <div className="card-body">

@@ -43,8 +43,7 @@ exports.findPost = async (req, res) => {
     try {
         const {id} = req.params;
         const post = await findById(id);
-
-        res.json(post);
+        res.json(post.details());
     } catch (err) {
         console.log(err);
         res.status(500).send(err);

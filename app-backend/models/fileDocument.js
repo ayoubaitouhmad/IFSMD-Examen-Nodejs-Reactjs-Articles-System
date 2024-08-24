@@ -98,6 +98,8 @@ class FileDocument {
             }
 
 
+
+
             return FileDocument.fromDatabaseRecord(results[0]);
         } catch (error) {
             logger.error(`Error finding FileDocument by ID ${id}: ${error.message}`);

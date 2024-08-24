@@ -2,6 +2,7 @@ const getConnection = require("../config/db");
 const Comment = require("../models/commentModel");
 const User = require("./userModel");
 const logger = require("../utils/logger");
+const FileDocument = require("./fileDocument");
 
 class Article {
 
@@ -12,9 +13,10 @@ class Article {
     #isFeaturedBlog;
     #authorId;
     #views;
+    #articleImageId;
+    #articleImage;
     #updatedAt;
     #createdAt;
-
 
 
     get title() {
@@ -22,7 +24,7 @@ class Article {
     }
 
     get urlTitle() {
-        return this.#title.replaceAll(' ','-');
+        return this.#title.replaceAll(' ', '-');
     }
 
     set title(value) {
@@ -38,6 +40,7 @@ class Article {
         isFeaturedBlog,
         authorId,
         views,
+        articleImageId,
         updatedAt,
         createdAt
     ) {
@@ -48,6 +51,7 @@ class Article {
         this.#isFeaturedBlog = isFeaturedBlog;
         this.#authorId = authorId;
         this.#views = views;
+        this.#articleImageId = articleImageId;
         this.#updatedAt = updatedAt;
         this.#createdAt = createdAt;
 
@@ -60,31 +64,43 @@ class Article {
             title: this.#title,
             urlTitle: this.urlTitle,
             description: this.#description,
-            content: this.#content,
+            content: '',
             isFeaturedBlog: this.#isFeaturedBlog,
             authorId: this.#authorId,
             views: this.#views,
+            // articleImageId: this.#articleImage,
+            articleImage: this.#articleImage,
             updatedAt: this.#updatedAt,
             createdAt: this.#createdAt,
         };
     }
 
 
-
+    async getImage() {
+        this.#articleImage = (await FileDocument.findById(77)).details();
+    }
 
     static async fetchArticles(query, params) {
         try {
             const connection = await getConnection();
             const [results] = await connection.execute(query, params);
-
             await connection.end();
-            return results.map(post => {
+
+            return  await Promise.all(results.map(async (post) => {
+                let postModel = Article.fromDatabaseRecord(post);
+
+                // If getImage is asynchronous and needs to be awaited, uncomment the line below
+                await postModel.getImage();
+
+                // Replace author_id with an object containing the author's details
                 post.author_id = {
-                    id : post.author_id,
-                    username : post.author_username
+                    id: post.author_id,
+                    username: post.author_username
                 };
-                return Article.fromDatabaseRecord(post).details()
-            });
+
+                return postModel.details();
+            }));
+
 
         } catch (error) {
             logger.error(`Error fetching articles: ${error.message}`);
@@ -93,7 +109,9 @@ class Article {
     }
 
     static async articles() {
-        return await Article.fetchArticles(`select  articles.* , username as 'author_username' from  articles join users u on u.id = articles.author_id`, []);
+        return await Article.fetchArticles(`select articles.*, username as 'author_username'
+                                            from articles
+                                                     join users u on u.id = articles.author_id`, []);
     }
 
     static async latestPosts() {
@@ -117,8 +135,11 @@ class Article {
             if (results.length === 0) {
                 return null; // Handle not found
             }
-            return Article.fromDatabaseRecord( results[0]).details();
+            let article = Article.fromDatabaseRecord(results[0]);
 
+            await article.getImage();
+
+            return article;
 
         } catch (error) {
             logger.error(`Error finding article by ID ${id}: ${error.message}`);
@@ -136,6 +157,7 @@ class Article {
             article.is_featured_blog,
             article.author_id,
             article.views,
+            article.article_image,
             article.updated_at,
             article.created_at,
         );

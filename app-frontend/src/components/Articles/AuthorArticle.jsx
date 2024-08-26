@@ -4,8 +4,6 @@ import route from "../../utils/route";
 import frontendRoute from "../../utils/frontendRoute";
 
 function AuthorArticle({id, title, description, createdAt, isLastArticle, urlTitle, canEdit , articleImage}) {
-
-    console.log(articleImage)
     return (
         <div id={id} className={`media my-4  ${isLastArticle ? '' : 'border-bottom'}`}>
             <img

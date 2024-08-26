@@ -135,5 +135,30 @@ exports.updateArticle = async (req, res) => {
 
     });
 };
+exports.addArticle = async (req, res) => {
+    uploadImage(req, res, async (err) => {
+        const articleModel = Article.fromAddArticle(
+            req.body.title,
+            req.body.description,
+            req.body.content,
+            req.user.id,
+        );
+        if (req.file) {
+            let file = fromUpload(
+                req.file.filename, req.file.filename, req.file.mimetype
+            );
+            await file.save();
+            articleModel.articleImageId = file.id;
+        }
+        await articleModel.save();
+        let alert = {
+            type: "success",
+            title: "Success!",
+            body: "Profile updated successfully."
+        }
+        res.status(200).json(articleModel.details());
+
+    });
+};
 
 

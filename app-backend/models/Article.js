@@ -3,6 +3,7 @@ const Comment = require("../models/commentModel");
 const User = require("./userModel");
 const logger = require("../utils/logger");
 const FileDocument = require("./fileDocument");
+const {IMAGE_PLACEHOLDER, IMAGE_PLACEHOLDER_280x187} = require("../services/imageService");
 
 class Article {
 
@@ -63,6 +64,17 @@ class Article {
     }
 
 
+    get createdAt() {
+        let date = new Date(this.#createdAt);
+        if (date instanceof Date && !isNaN(date)) {
+            const options = {day: 'numeric', month: 'long', year: 'numeric'};
+            return date.toLocaleDateString('en-US', options);
+        }
+        return  this.createdAt;
+
+    }
+
+
     constructor(
         id,
         title,
@@ -95,16 +107,16 @@ class Article {
             title: this.#title,
             urlTitle: this.urlTitle,
             description: this.#description,
-            content: this.#content,
+            content: 'this.#content',
             isFeaturedBlog: this.#isFeaturedBlog,
             authorId: this.#authorId,
             views: this.#views,
             // articleImageId: this.#articleImage,
             articleImage: this.#articleImage ?? {
-                filePath: ''
+                filePath: IMAGE_PLACEHOLDER_280x187
             },
             updatedAt: this.#updatedAt,
-            createdAt: this.#createdAt,
+            createdAt: this.createdAt,
         };
     }
 
@@ -198,11 +210,28 @@ class Article {
         );
     }
 
+    static fromAddArticle(title, description, content ,author_id) {
+        return new Article(
+            null,
+            title,
+            description,
+            content,
+            null,
+            author_id,
+            null,
+            null,
+            null,
+            null,
+        );
+    }
+
 
     async save() {
         try {
             const connection = await getConnection();
-            const query = `
+
+            if (this.#id) {
+                const query = `
                 UPDATE articles
                 SET title=?,
                     description=?,
@@ -211,15 +240,32 @@ class Article {
                     updated_at=NOW()
                 WHERE id = ?
             `;
-            await connection.execute(query, [
-                this.#title,
-                this.#description,
-                this.#content,
-                this.#articleImageId,
-                this.#id
-            ]);
+                await connection.execute(query, [
+                    this.#title,
+                    this.#description,
+                    this.#content,
+                    this.#articleImageId,
+                    this.#id
+                ]);
+
+            } else {
+
+                const query = `
+                    INSERT INTO articles (title,description,content,article_image,author_id) 
+                    VALUES (?,?,?,?,?)
+                `;
+                const [result] = await connection.execute(query, [
+                    this.#title,
+                    this.#description,
+                    this.#content,
+                    this.#articleImageId,
+                    this.#authorId
+                ]);
+                this.#id = result.insertId;
+            }
             await connection.end();
             return true;
+
         } catch (error) {
             logger.error(`Error saving user: ${error.message}`);
             return false;

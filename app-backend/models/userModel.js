@@ -102,7 +102,7 @@ class User {
             email: this.#email,
             profileImageId: this.#profileImageId,
             profileImage: this.#profileImage ?? {
-                filePath: 'images/blank.png'
+                filePath: 'blank.png'
             },
             createdAt: this.createdAt,
             updatedAt: this.#updatedAt,
@@ -173,7 +173,7 @@ class User {
         try {
             const Article = require("./Article");
             const connection = await getConnection();
-            const [results] = await connection.execute('SELECT * FROM articles WHERE author_id=?', [id]);
+            const [results] = await connection.execute('SELECT * FROM articles WHERE author_id=? order by created_at desc', [id]);
             await connection.end();
             return await Promise.all(results.map(async (post) => {
                 let postModel = Article.fromDatabaseRecord(post);

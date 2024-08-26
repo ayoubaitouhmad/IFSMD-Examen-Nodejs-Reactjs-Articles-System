@@ -3,6 +3,7 @@ const routes = {
     userProfile: '/users/:id/profile/:o',
     postDetails: '/posts/:id',
     editArticle: 'http://localhost:1000/api/articles/:id/update',
+    addArticle: 'http://localhost:1000/api/articles/add',
     login: '/login',
     register: '/register',
     streamImage: 'http://localhost:1000/api/image/:image',

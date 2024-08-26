@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams ,useNavigate  } from 'react-router-dom';
-import { getUserArticles, getUserByUsername } from '../../../services/userService';
+import React, {useEffect, useState} from 'react';
+import {Link, useParams, useNavigate} from 'react-router-dom';
+import {getUserArticles, getUserByUsername} from '../../../services/userService';
 import LoadingOverlay from '../../../components/LoadingOverlay/loadingOverlay';
 import AuthorArticle from '../../../components/Articles/AuthorArticle';
 import route from "../../../utils/route";
 import {useAuth} from "../../../contexts/AuthContext";
 import loadImageFile from "react-avatar-editor/src/utils/load-image-file";
+import frontendRoute from "../../../utils/frontendRoute";
 
 function AuthorArticles() {
     const {user} = useAuth();
-    const { username } = useParams();
-    const navigate = useNavigate ();
+    const {username} = useParams();
+    const navigate = useNavigate();
 
     const [author, setAuthor] = useState(null);
     const [articles, setArticles] = useState([]);
@@ -65,10 +66,8 @@ function AuthorArticles() {
     };
 
     if (loading) {
-        return <LoadingOverlay />;
+        return <LoadingOverlay/>;
     }
-    console.log(articles)
-
 
 
 
@@ -88,7 +87,8 @@ function AuthorArticles() {
             <div>
                 {articles.map((post) => (
 
-                    <AuthorArticle key={post.id} {...post} canEdit={author.id === user.id} isLastArticle={articles[articles.length - 1].id === post.id} />
+                    <AuthorArticle key={post.id} {...post} canEdit={author.id === user.id}
+                                   isLastArticle={articles[articles.length - 1].id === post.id}/>
                 ))}
                 <Pagination
                     page={page}
@@ -100,7 +100,6 @@ function AuthorArticles() {
             </div>
         );
     };
-
 
 
     const Pagination = ({page, totalPages, handlePreviousPage, handleNextPage, handlePageClick}) => (
@@ -139,9 +138,9 @@ function AuthorArticles() {
 
 
     return (
-        <div>
-            <div className="pb-1 w-100">
-                <nav aria-label="breadcrumb">
+        <>
+            <div className="pb-1 w-100 ">
+                <nav aria-label="breadcrumb bg-dark">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item">
                             <a href="#">Home</a>
@@ -156,8 +155,8 @@ function AuthorArticles() {
 
 
             <div className="row border-bottom pb-3 ">
-                <div className="col-7 row">
-                    <div className="col-3 text-center">
+                <div className="col-12 col-sm-7 row">
+                    <div className="col-12 col-xl-3 text-center">
                         <div className="">
                             <img
                                 height={150} width={150}
@@ -168,7 +167,7 @@ function AuthorArticles() {
                         </div>
 
                     </div>
-                    <div className="col-9">
+                    <div className="col-12 col-xl-9">
                         <h1>{author?.name}</h1>
                         <h4>{author?.email}</h4>
                         <p>{author?.bio}</p>
@@ -185,9 +184,9 @@ function AuthorArticles() {
                         </div>
                     </div>
                 </div>
-                <div className="col-5">
+                <div className="col-12 col-sm-5">
                     <div className="row pt-4">
-                        <div className="col-6 mb-2 ">
+                        <div className="col-12 col-md-6 mb-2 ">
                             <div className="card text-white bg-dark o-hidden">
                                 <div className="card-body">
                                     <div className="card-body-icon">
@@ -197,7 +196,7 @@ function AuthorArticles() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-6 mb-2 ">
+                        <div className="col-12 col-md-6 mb-2 ">
                             <div className="card text-white bg-dark o-hidden">
                                 <div className="card-body">
                                     <div className="card-body-icon">
@@ -207,7 +206,7 @@ function AuthorArticles() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-6 mb-2 ">
+                        <div className="col-12 col-md-6 mb-2 ">
                             <div className="card text-white bg-dark o-hidden">
                                 <div className="card-body">
                                     <div className="card-body-icon">
@@ -227,22 +226,20 @@ function AuthorArticles() {
             </div>
 
 
-            <div className="row bg-light mt-3">
+            <div className="w-100 row bg-light mt-3">
                 <div className="col-12">
-                    <nav className="">
-                        <div className="nav nav-tabs" id="nav-tab" role="tablist">
-                            <a className="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
-                               role="tab" aria-controls="nav-home" aria-selected="true">
-                                Posts
-                            </a>
-                            <a className="nav-item nav-link" id="nav-books-tab" data-toggle="tab" href="#nav-books"
-                               role="tab" aria-controls="nav-books" aria-selected="false">INFOS</a>
-                            <a className="nav-item nav-link" id="nav-lists-tab" data-toggle="tab" href="#nav-lists"
-                               role="tab" aria-controls="nav-lists" aria-selected="false">Lists</a>
-                            <a className="nav-item nav-link" id="nav-about-tab" data-toggle="tab" href="#nav-about"
-                               role="tab" aria-controls="nav-about" aria-selected="false">About</a>
-                        </div>
-                    </nav>
+                    <div className="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a className="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                           role="tab" aria-controls="nav-home" aria-selected="true">
+                            Posts
+                        </a>
+                        <a className="nav-item nav-link" id="nav-books-tab" data-toggle="tab" href="#nav-books"
+                           role="tab" aria-controls="nav-books" aria-selected="false">INFOS</a>
+                        <a className="nav-item nav-link" id="nav-lists-tab" data-toggle="tab" href="#nav-lists"
+                           role="tab" aria-controls="nav-lists" aria-selected="false">Lists</a>
+                        <a className="nav-item nav-link" id="nav-about-tab" data-toggle="tab" href="#nav-about"
+                           role="tab" aria-controls="nav-about" aria-selected="false">About</a>
+                    </div>
                     <div className="tab-content bg-light" id="nav-tabContent">
                         <div className="tab-pane fade show active" id="nav-home" role="tabpanel"
                              aria-labelledby="nav-home-tab">
@@ -254,9 +251,10 @@ function AuthorArticles() {
                                             Posts by {author?.name}
                                         </div>
                                         <div className="">
-                                            <button type="button" className="btn btn-sm btn-outline-success">
-                                                Add
-                                            </button>
+                                            {
+                                                author.id == user.id ? <Link className="btn btn-sm btn-outline-success" to={frontendRoute('addArticle')}>Add</Link> : ''
+                                            }
+
                                         </div>
                                     </div>
                                     <PostsList
@@ -291,9 +289,8 @@ function AuthorArticles() {
                     </div>
 
                 </div>
-
             </div>
-        </div>
+        </>
     );
 }
 

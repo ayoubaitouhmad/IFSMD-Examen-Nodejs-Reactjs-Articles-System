@@ -1,7 +1,24 @@
-.required-field:after{
+.required-field:after {
     content: '*';
     margin: 5px;
     width: 10px;
     height: 10px;
     color: red;
+}
+
+.image-container {
+    position: relative;
+}
+
+.image-container img {
+    height : 300px;
+    width : 300px;
+}
+
+.bg-app{
+    background-color: #2accff !important;
+}
+
+.blog-header{
+    /*box-shadow: 1px 1px 100px 1px rgb(223, 223, 223);*/
 }

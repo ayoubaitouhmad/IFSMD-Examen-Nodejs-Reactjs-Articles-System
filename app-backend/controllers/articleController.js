@@ -1,4 +1,10 @@
 const {latestPosts, mostViewedArticles, articles, findById} = require("../models/Article");
+const {uploadImage} = require("../services/imageService");
+const logger = require("../utils/logger");
+const User = require("../models/userModel");
+const Article = require("../models/Article");
+const FileDocument = require("../models/fileDocument");
+const {fromUpload} = require("../models/fileDocument");
 
 
 exports.getAllPosts = async (req, res) => {
@@ -25,7 +31,6 @@ exports.getAllPosts = async (req, res) => {
         const paginatedPosts = posts.slice(startIndex, endIndex);
 
 
-
         res.json({
             page,
             startIndex,
@@ -42,8 +47,16 @@ exports.getAllPosts = async (req, res) => {
 exports.findPost = async (req, res) => {
     try {
         const {id} = req.params;
+        const userId = req.user.id;
         const post = await findById(id);
-        res.json(post.details());
+
+
+        if (post.authorId === userId) {
+            res.json(post.details());
+        } else {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
@@ -77,6 +90,50 @@ exports.mostViewedArticles = async (req, res) => {
         console.log(err);
         res.status(500).send(err);
     }
+};
+
+exports.updateArticle = async (req, res) => {
+    uploadImage(req, res, async (err) => {
+
+        const id = req.params.id;
+        const userId = req.user.id;
+
+
+        let articleModel = await Article.findById(id);
+
+
+        if (articleModel.authorId != userId) {
+            res.status(404).json({message: 'Post not found'});
+        }
+
+
+        articleModel.title = req.body.title || articleModel.title;
+        articleModel.description = req.body.description || articleModel.description;
+        articleModel.content = req.body.content || articleModel.content;
+
+
+        if (req.file) {
+            if (articleModel.articleImageId) {
+                let articleImageFile = await FileDocument.findById(articleModel.articleImageId);
+                await articleImageFile.delete();
+            }
+
+            let file = fromUpload(
+                req.file.filename, req.file.filename, req.file.mimetype
+            );
+
+            await file.save();
+            articleModel.articleImageId = file.id;
+        }
+        await articleModel.save();
+        let alert = {
+            type: "success",
+            title: "Success!",
+            body: "Profile updated successfully."
+        }
+        res.status(200).json({alert, articleModel});
+
+    });
 };
 
 

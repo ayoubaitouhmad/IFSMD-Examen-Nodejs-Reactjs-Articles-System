@@ -1,7 +1,7 @@
 // imageService.js
 const multer = require("multer");
 const path = require("path");
-const { imageStorage } = require('../config/imageStorage');
+const { imageStorage, IMAGES_UPLOAD_DUR} = require('../config/imageStorage');
 const {unlink} = require("node:fs");
 
 function checkFileType(file, cb) {
@@ -26,7 +26,7 @@ const uploadImage = multer({
 
 
 const deleteImage = (path)=>{
-    let fullPath = "uploads/"+path;
+    let fullPath = IMAGES_UPLOAD_DUR+path;
     unlink(fullPath, (err) => {
         if (err) {
             console.error(`Error deleting file: ${err.message}`);

@@ -20,7 +20,7 @@ function Header() {
 
     return (
         <header className="blog-header ">
-            <div className="row flex-nowrap justify-content-between align-items-center">
+            <div className="row flex-nowrap justify-content-between align-items-center ">
                 <div className="col-4 ">
                     <Logo/>
                 </div>

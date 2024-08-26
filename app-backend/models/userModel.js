@@ -16,33 +16,48 @@ class User {
     #createdAt;
     #updatedAt;
 
-    get profileImageId(){
+    get profileImageId() {
         return this.#profileImageId;
     }
-    set profileImageId(profileImageId){
+
+    set profileImageId(profileImageId) {
         this.#profileImageId = profileImageId;
     }
-    get bio(){
+
+    get bio() {
         return this.#bio;
     }
-    set bio(bio){
+
+    set bio(bio) {
         this.#bio = bio;
     }
 
-    get email(){
+    get email() {
         return this.#email;
     }
-    set email(email){
+
+    set email(email) {
         this.#email = email;
     }
 
-    get name(){
+    get name() {
         return this.#name;
     }
-    set name(name){
+
+    set name(name) {
         this.#name = name;
     }
 
+
+    get createdAt() {
+        let date = new Date(this.#createdAt);
+        if (date instanceof Date && !isNaN(date)) {
+            const options = {day: 'numeric', month: 'long', year: 'numeric'};
+            return date.toLocaleDateString('en-US', options);
+        }
+        return  this.createdAt;
+
+    }
 
     constructor(
         id,
@@ -71,7 +86,7 @@ class User {
     async getProfileImage() {
         return this.#profileImage =
             this.#profileImageId ?
-            (await FileDocument.findById(this.#profileImageId)).details()
+                (await FileDocument.findById(this.#profileImageId)).details()
                 : null
             ;
     }
@@ -89,7 +104,7 @@ class User {
             profileImage: this.#profileImage ?? {
                 filePath: 'images/blank.png'
             },
-            createdAt: this.#createdAt,
+            createdAt: this.createdAt,
             updatedAt: this.#updatedAt,
             // Omitting password for security reasons
         };
@@ -160,8 +175,13 @@ class User {
             const connection = await getConnection();
             const [results] = await connection.execute('SELECT * FROM articles WHERE author_id=?', [id]);
             await connection.end();
+            return await Promise.all(results.map(async (post) => {
+                let postModel = Article.fromDatabaseRecord(post);
+                await postModel.getImage();
+                return postModel.details();
+            }));
 
-            return results.map(post => Article.fromDatabaseRecord(post).details());
+
         } catch (error) {
             logger.error(`Error finding articles for user ${id}: ${error.message}`);
             return null;
@@ -188,10 +208,16 @@ class User {
         try {
             const connection = await getConnection();
             const query = `
-                    UPDATE users 
-                    SET username=?, name=?, bio=?, role=?, email=?, profile_image_id=?, updated_at=NOW() 
-                    WHERE id=?
-                `;
+                UPDATE users
+                SET username=?,
+                    name=?,
+                    bio=?,
+                    role=?,
+                    email=?,
+                    profile_image_id=?,
+                    updated_at=NOW()
+                WHERE id = ?
+            `;
             await connection.execute(query, [
                 this.#username,
                 this.#name,

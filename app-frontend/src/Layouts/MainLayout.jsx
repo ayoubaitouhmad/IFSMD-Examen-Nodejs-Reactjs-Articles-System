@@ -11,6 +11,7 @@ import Footer from "../components/Layouts/Footer/Footer";
 import Home from "../pages/user/Home";
 import AuthorArticles from "../pages/user/articles/AuthorArticles";
 import Profile from "../pages/user/profile";
+import EditArticle from "../pages/user/articles/editArticle";
 
 
 
@@ -29,6 +30,7 @@ function MainLayout() {
                     <Route path="/articles/add" element={<AddArticle/>}/>
 
                     <Route path="/articles/:id/:name" element={<FullArticle/>}/>
+                    <Route path="/articles/:id/edit" element={<EditArticle/>}/>
 
                     <Route path="/articles/author/:username" element={<AuthorArticles />} />
 

@@ -6,6 +6,6 @@ router.get('/articles', postController.getAllPosts);
 router.get('/articles/latest', postController.latestPosts);
 router.get('/articles/most-viewed-articles', postController.mostViewedArticles);
 router.get('/articles/:id', postController.findPost);
-
+router.post('/articles/:id/update', postController.updateArticle);
 
 module.exports = router;

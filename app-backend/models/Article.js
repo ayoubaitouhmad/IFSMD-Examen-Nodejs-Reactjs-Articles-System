@@ -18,17 +18,48 @@ class Article {
     #updatedAt;
     #createdAt;
 
+    get id() {
+        return this.#id;
+    }
+    get authorId() {
+        return this.#authorId;
+    }
 
     get title() {
         return this.#title;
     }
 
-    get urlTitle() {
-        return this.#title.replaceAll(' ', '-');
+    get articleImageId() {
+        return this.#articleImageId;
+    }
+
+    set articleImageId(id) {
+        this.#articleImageId = id;
     }
 
     set title(value) {
         this.#title = value;
+    }
+
+    get description() {
+        return this.#description;
+    }
+
+    set description(value) {
+        this.#description = value;
+    }
+
+    get content() {
+        return this.#content;
+    }
+
+    set content(value) {
+        this.#content = value;
+    }
+
+
+    get urlTitle() {
+        return this.#title.replaceAll(' ', '-');
     }
 
 
@@ -69,7 +100,9 @@ class Article {
             authorId: this.#authorId,
             views: this.#views,
             // articleImageId: this.#articleImage,
-            articleImage: this.#articleImage,
+            articleImage: this.#articleImage ?? {
+                filePath: ''
+            },
             updatedAt: this.#updatedAt,
             createdAt: this.#createdAt,
         };
@@ -77,7 +110,13 @@ class Article {
 
 
     async getImage() {
-        this.#articleImage = (await FileDocument.findById(77)).details();
+        try {
+
+            let articleImageModel = await FileDocument.findById(this.#articleImageId);
+            this.#articleImage = articleImageModel ? articleImageModel.details() : null;
+        }catch (e){
+            this.#articleImage = null;
+        }
     }
 
     static async fetchArticles(query, params) {
@@ -86,7 +125,7 @@ class Article {
             const [results] = await connection.execute(query, params);
             await connection.end();
 
-            return  await Promise.all(results.map(async (post) => {
+            return await Promise.all(results.map(async (post) => {
                 let postModel = Article.fromDatabaseRecord(post);
                 await postModel.getImage();
                 post.author_id = {
@@ -158,6 +197,40 @@ class Article {
             article.created_at,
         );
     }
+
+
+    async save() {
+        try {
+            const connection = await getConnection();
+            const query = `
+                UPDATE articles
+                SET title=?,
+                    description=?,
+                    content=?,
+                    article_image=?,
+                    updated_at=NOW()
+                WHERE id = ?
+            `;
+            await connection.execute(query, [
+                this.#title,
+                this.#description,
+                this.#content,
+                this.#articleImageId,
+                this.#id
+            ]);
+            await connection.end();
+            return true;
+        } catch (error) {
+            logger.error(`Error saving user: ${error.message}`);
+            return false;
+        }
+    }
+
+    async checkArticleOwnership(authorId, ArticleId) {
+
+    }
+
+
 }
 
 module.exports = Article;

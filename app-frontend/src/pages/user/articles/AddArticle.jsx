@@ -16,7 +16,7 @@ const AddArticle = () => {
     return (
 
         <>
-            <div className="pb-5 w-100">
+            <div className="pb-1 w-100">
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item">
@@ -29,7 +29,7 @@ const AddArticle = () => {
                     </ol>
                 </nav>
             </div>
-            <div className="container ">
+            <div className=" ">
 
 
                 <h2>Add New Post</h2>

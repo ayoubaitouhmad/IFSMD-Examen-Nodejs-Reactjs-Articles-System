@@ -2,10 +2,11 @@ const routes = {
     home: '/',
     userProfile: '/users/:id/profile/:o',
     postDetails: '/posts/:id',
-    editPost: '/posts/:id/edit/:o',
+    editArticle: 'http://localhost:1000/api/articles/:id/update',
     login: '/login',
     register: '/register',
     streamImage: 'http://localhost:1000/api/image/:image',
+
     // Add more routes as needed
 };
 

@@ -163,7 +163,7 @@ function AuthorArticles() {
                                 height={150} width={150}
                                 src={route('streamImage', {image: author?.profileImage?.filePath})}
                                 alt="Profile"
-                                className="rounded-circle  border"
+                                className="rounded-circle  shadow"
                             />
                         </div>
 

@@ -15,7 +15,7 @@ function ProfileDropDown() {
                         height={40} width={40}
                         src={route('streamImage' , {'image' :user.profileImage.filePath})}
                         alt="Profile"
-                        className="mr-2 rounded-circle  border "
+                        className="mr-2 rounded-circle border  shadow-sm "
                     />
 
                     <span className="text-muted">

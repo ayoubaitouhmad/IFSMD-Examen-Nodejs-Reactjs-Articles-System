@@ -113,7 +113,7 @@ const ProfilePage = () => {
                             <img
                                 src={preview}
                                 alt="Profile"
-                                className="img-fluid rounded-circle mb-3"
+                                className="img-fluid shadow rounded-circle mb-3"
                                 style={{width: '150px', height: '150px', objectFit: 'cover'}}
                             />
                             <label

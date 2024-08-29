@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./Layouts/MainLayout";
 import AuthLayout from "./Layouts/AuthLayout";
 import axios from 'axios';
+import Logo from "./components/Logo/Logo";
 
 const App = () => {
     return (
@@ -14,12 +15,58 @@ const App = () => {
                     <Route path="/upload" element={<ImageUpload />} />
                     <Route path="/login" element={<AuthLayout />} />
                     <Route path="/*" element={<ProtectedRoute element={<MainLayout />} />} />
+                    <Route path="/c" element={<Sad/>}/>
                     <Route path="*" element={<NotFound />} /> {/* Catch-all route for 404 */}
                 </Routes>
             </Router>
         </AuthProvider>
     );
 };
+
+
+const Sad = ()  => (
+    <div className="">
+        <div className="container  ">
+            <div className="row justify-content-center align-items-center vh-100 ">
+                <div className="col-10 col-sm-9 col-md-5 ">
+                    <form className="  ">
+                        <div className="text-center mb-4">
+                            <Logo  width={300} height={80} />
+
+
+                        </div>
+
+                        <div className="form-label-group mb-3">
+                            <label htmlFor="inputEmail">Email address</label>
+                            <input type="email" id="inputEmail" className="form-control" placeholder="Email address"
+                                   required=""
+                                   autoFocus=""/>
+                        </div>
+
+                        <div className="form-label-group mb-3">
+                            <label htmlFor="inputPassword">Password</label>
+                            <input type="password" id="inputPassword" className="form-control" placeholder="Password"
+                                   required=""/>
+                        </div>
+
+                        <div className="checkbox mb-3">
+                            <label>
+                                <input type="checkbox" value="remember-me"/> Remember me
+                            </label>
+                        </div>
+                        <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                        <p className="mt-5 mb-3 text-muted text-center">
+                            ©2017-2018
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+);
+
 
 const NotFound = () => {
     return (
@@ -60,8 +107,8 @@ const ImageUpload = () => {
 
     return (
         <div>
-            <input type="file" onChange={handleFileChange} />
-            {preview && <img src={preview} alt="Preview" style={{ width: '200px', height: '200px' }} />}
+            <input type="file" onChange={handleFileChange}/>
+            {preview && <img src={preview} alt="Preview" style={{width: '200px', height: '200px'}}/>}
             <button onClick={handleUpload}>Upload Image</button>
         </div>
     );

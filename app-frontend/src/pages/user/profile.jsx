@@ -8,10 +8,17 @@ import route from "../../utils/route";
 import LoadingOverlay from "../../components/LoadingOverlay/loadingOverlay";
 import frontendRoute from "../../utils/frontendRoute";
 import Breadcrumb from "../../utils/breadcrumb";
+import {usePageTitle} from "../../utils/page";
 
 
 const ProfilePage = () => {
     const {user, setUser, updateUser} = useAuth();
+    const breadcrumbItems = [
+        {name: 'Home', href: frontendRoute('home')},
+        {name: 'Profile', href: frontendRoute('userProfile'), active: true}
+    ];
+
+    usePageTitle("Profile");
 
     let userAvatar = route('streamImage', {'image': user.profileImage.filePath});
 
@@ -95,10 +102,7 @@ const ProfilePage = () => {
     if (!user) {
         return <LoadingOverlay/>;
     }
-    const breadcrumbItems = [
-        {name: 'Home', href: frontendRoute('home')},
-        {name: 'Profile', href: frontendRoute('userProfile'), active: true}
-    ];
+
 
 
     return (

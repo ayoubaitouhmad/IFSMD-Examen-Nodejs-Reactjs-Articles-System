@@ -1,14 +1,14 @@
 import React from 'react';
 
-function Logo() {
+function Logo({width = 150, height = 50}) {
     return (
         <svg
             className="ni-1gvhhas e183gy230"
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
             viewBox="0 0 133 35"
-            width="150"  // Set the desired width
-            height="50"  // Set the desired height
+            width={width}  // Set the desired width
+            height={height}  // Set the desired height
             fill="#f06292"
         >
             <title>top10.com</title>

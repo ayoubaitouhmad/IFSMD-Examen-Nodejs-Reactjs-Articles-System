@@ -78,7 +78,7 @@ app.post('/api/login', async (req, res) => {
 
     const user = await User.findByEmailAndPassword(email, password);
 
-    logger.info(user.id);
+
 
     if (user === 0) return res.status(400).send('User not found');
     const token = sign({id: user.id}, process.env.JWT_SECRET, {

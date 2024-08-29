@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useParams, useNavigate} from 'react-router-dom';
+import {Link, useNavigate, useParams} from 'react-router-dom';
 import {getUserArticles, getUserByUsername} from '../../../services/userService';
 import LoadingOverlay from '../../../components/LoadingOverlay/loadingOverlay';
 import AuthorArticle from '../../../components/Articles/AuthorArticle';
 import route from "../../../utils/route";
 import {useAuth} from "../../../contexts/AuthContext";
-import loadImageFile from "react-avatar-editor/src/utils/load-image-file";
 import frontendRoute from "../../../utils/frontendRoute";
 import Breadcrumb from "../../../utils/breadcrumb";
+import {usePageTitle} from "../../../utils/page";
 
 function AuthorArticles() {
+    usePageTitle("Author Profile");
     const {user} = useAuth();
     const {username} = useParams();
     const navigate = useNavigate();
@@ -128,6 +129,8 @@ function AuthorArticles() {
             </ul>
         </nav>
     );
+
+
 
     const AdCard = () => (
         <div className="card mt-5 ">

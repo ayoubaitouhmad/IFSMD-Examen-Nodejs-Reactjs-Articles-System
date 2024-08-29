@@ -43,11 +43,14 @@ function MainLayout() {
 
                     <Route path="/logout" element={<Logout/>}/>
 
+
                 </Routes>
             </div>
             <Footer/>
         </div>
     );
 }
+
+
 
 export default MainLayout;

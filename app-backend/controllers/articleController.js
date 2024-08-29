@@ -49,14 +49,7 @@ exports.findPost = async (req, res) => {
         const {id} = req.params;
         const userId = req.user.id;
         const post = await findById(id);
-
-
-        if (post.authorId === userId) {
-            res.json(post.details());
-        } else {
-            return res.status(404).json({message: 'Post not found'});
-        }
-
+        res.json(post.details());
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
@@ -91,6 +84,17 @@ exports.mostViewedArticles = async (req, res) => {
         res.status(500).send(err);
     }
 };
+exports.deleteArticle = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const articleModel = await findById(id);
+        await  articleModel.delete();
+        res.json(articleModel.details());
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
 
 exports.updateArticle = async (req, res) => {
     uploadImage(req, res, async (err) => {
@@ -99,8 +103,9 @@ exports.updateArticle = async (req, res) => {
         const userId = req.user.id;
 
 
-        let articleModel = await Article.findById(id);
 
+        let articleModel = await Article.findById(id);
+        logger.info(articleModel.id)
 
         if (articleModel.authorId != userId) {
             res.status(404).json({message: 'Post not found'});
@@ -112,19 +117,7 @@ exports.updateArticle = async (req, res) => {
         articleModel.content = req.body.content || articleModel.content;
 
 
-        if (req.file) {
-            if (articleModel.articleImageId) {
-                let articleImageFile = await FileDocument.findById(articleModel.articleImageId);
-                await articleImageFile.delete();
-            }
 
-            let file = fromUpload(
-                req.file.filename, req.file.filename, req.file.mimetype
-            );
-
-            await file.save();
-            articleModel.articleImageId = file.id;
-        }
         await articleModel.save();
         let alert = {
             type: "success",
@@ -136,6 +129,7 @@ exports.updateArticle = async (req, res) => {
     });
 };
 exports.addArticle = async (req, res) => {
+
     uploadImage(req, res, async (err) => {
         const articleModel = Article.fromAddArticle(
             req.body.title,
@@ -159,6 +153,22 @@ exports.addArticle = async (req, res) => {
         res.status(200).json(articleModel.details());
 
     });
+};
+
+exports.incrementViews = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const userId = req.user.id;
+        const post = await findById(id);
+        post.views++;
+        await  post.save();
+        res.json(post.details());
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+
 };
 
 

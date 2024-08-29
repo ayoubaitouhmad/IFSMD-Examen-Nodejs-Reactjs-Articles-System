@@ -5,6 +5,8 @@ import {getPosts} from "../../../services/postService";
 import NoPostsFound from "../../../components/BlogList/NoPostsFound";
 
 import BlogList from "../../../components/BlogList/BlogList";
+import Breadcrumb from "../../../utils/breadcrumb";
+import frontendRoute from "../../../utils/frontendRoute";
 
 
 function App() {
@@ -51,24 +53,16 @@ function App() {
         setPage(pageNum);
     };
 
+    const breadcrumbItems = [
+        {name: 'Home', href: frontendRoute('home')},
+        {name: 'All Article',  active: true}
+    ];
+
+
     return (
         <>
-
-
-            <nav className="w-100" aria-label="breadcrumb">
-                <ol className="breadcrumb">
-                    <li className="breadcrumb-item">
-                        <a href="#">Home</a>
-                    </li>
-                    <li className="breadcrumb-item">
-                        <a href="#">Library</a>
-                    </li>
-                    <li className="breadcrumb-item active" aria-current="page">Data</li>
-                </ol>
-            </nav>
-
-
-            <div className="pt-2 bg-light">
+            <Breadcrumb items={breadcrumbItems}/>
+            <div className="p-2 bg-light">
                 <div className=" d-flex justify-content-start align-items-center p-2 mb-3 ">
 
                     <div className="mr-3">
@@ -128,8 +122,6 @@ function App() {
 
                 </nav>
             </div>
-
-
         </>
     );
 }

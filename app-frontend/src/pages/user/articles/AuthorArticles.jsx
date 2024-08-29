@@ -7,6 +7,7 @@ import route from "../../../utils/route";
 import {useAuth} from "../../../contexts/AuthContext";
 import loadImageFile from "react-avatar-editor/src/utils/load-image-file";
 import frontendRoute from "../../../utils/frontendRoute";
+import Breadcrumb from "../../../utils/breadcrumb";
 
 function AuthorArticles() {
     const {user} = useAuth();
@@ -19,6 +20,7 @@ function AuthorArticles() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalPost, setTotalPost] = useState(0);
+    const [totalViews, setTotalViews] = useState(0);
 
     useEffect(() => {
         const fetchAuthorAndArticles = async () => {
@@ -34,9 +36,11 @@ function AuthorArticles() {
 
                 setAuthor(authorData);
                 const articlesData = await getUserArticles(authorData.id, page);
+                console.log(articlesData)
                 setArticles(articlesData.articles);
                 setTotalPages(articlesData.totalPages);
                 setTotalPost(articlesData.totalPosts);
+                setTotalViews(articlesData.totalViews);
             } catch (error) {
                 // navigate('/404');
                 console.error('Error fetching author or articles:', error);
@@ -68,7 +72,6 @@ function AuthorArticles() {
     if (loading) {
         return <LoadingOverlay/>;
     }
-
 
 
     const PostsList = ({articles, author, page, totalPages, handlePreviousPage, handleNextPage, handlePageClick}) => {
@@ -136,28 +139,20 @@ function AuthorArticles() {
         </div>
     );
 
+    const breadcrumbItems = [
+        {name: 'Home', href: frontendRoute('home')},
+        {name: 'Author Profile', href: frontendRoute('userArticles', {username: author.username}), active: true},
+    ];
+
 
     return (
         <>
-            <div className="pb-1 w-100 ">
-                <nav aria-label="breadcrumb bg-dark">
-                    <ol className="breadcrumb">
-                        <li className="breadcrumb-item">
-                            <a href="#">Home</a>
-                        </li>
-                        <li className="breadcrumb-item">
-                            <a href="#">Library</a>
-                        </li>
-                        <li className="breadcrumb-item active" aria-current="page">Data</li>
-                    </ol>
-                </nav>
-            </div>
-
-
+            <Breadcrumb items={breadcrumbItems}/>
             <div className="row border-bottom pb-3 ">
                 <div className="col-12 col-sm-7 row">
                     <div className="col-12 col-xl-3 text-center">
-                        <div className="">
+
+                        <div className="text-center text-md-left">
                             <img
                                 height={150} width={150}
                                 src={route('streamImage', {image: author?.profileImage?.filePath})}
@@ -165,6 +160,7 @@ function AuthorArticles() {
                                 className="rounded-circle  shadow"
                             />
                         </div>
+
 
                     </div>
                     <div className="col-12 col-xl-9">
@@ -202,7 +198,7 @@ function AuthorArticles() {
                                     <div className="card-body-icon">
                                         <i className="fa-solid fa-eye"></i>
                                     </div>
-                                    <div className="mr-5">189 Reader</div>
+                                    <div className="mr-5">{totalViews} Readers</div>
                                 </div>
                             </div>
                         </div>
@@ -224,8 +220,6 @@ function AuthorArticles() {
                 </div>
 
             </div>
-
-
             <div className="w-100 row bg-light mt-3">
                 <div className="col-12">
                     <div className="nav nav-tabs" id="nav-tab" role="tablist">
@@ -252,7 +246,8 @@ function AuthorArticles() {
                                         </div>
                                         <div className="">
                                             {
-                                                author.id == user.id ? <Link className="btn btn-sm btn-outline-success" to={frontendRoute('addArticle')}>Add</Link> : ''
+                                                author.id == user.id ? <Link className="btn btn-sm btn-outline-success"
+                                                                             to={frontendRoute('addArticle')}>Add</Link> : ''
                                             }
 
                                         </div>

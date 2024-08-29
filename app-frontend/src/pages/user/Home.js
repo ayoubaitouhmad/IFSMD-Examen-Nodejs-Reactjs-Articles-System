@@ -23,6 +23,9 @@ function Home() {
                 ]);
                 setLatestArticles(latest);
                 setMostViewedArticles(mostViewed);
+                console.log(
+                    latest
+                )
             } catch (err) {
                 setError("Failed to fetch articles. Please try again later.");
             } finally {
@@ -45,7 +48,7 @@ function Home() {
         <>
 
             <div className="row p-3">
-                <div className="col-10 row">
+                <div className="col-10 ">
                     <CollapsiblePanel title="Latest Articles">
                         {latestArticles.length === 0 ? <NoPostsFound /> : <BlogList posts={latestArticles} />}
                         <Link to="/articles">Show All</Link>

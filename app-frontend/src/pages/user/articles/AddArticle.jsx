@@ -63,7 +63,7 @@ function EditArticle(props) {
                         }
                     });
                     console.log('Article submitted successfully:', response.data);
-                    navigate(frontendRoute('editArticle' , {id:response.data.id}))
+                    // navigate(frontendRoute('editArticle' , {id:response.data.id}))
                 } catch (error) {
                     console.error('Error submitting article:', error);
                     if (error.response && error.response.status === 404) {

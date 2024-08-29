@@ -41,6 +41,8 @@ exports.getUserArticles = async (req, res) => {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
 
+        const totalViews = userArticles.reduce((sum, article) => sum + article.views, 0);
+
         const paginatedArticles = userArticles.slice(startIndex, endIndex);
 
 
@@ -48,6 +50,7 @@ exports.getUserArticles = async (req, res) => {
         return res.json({
             startIndex,
             endIndex,
+            totalViews,
             totalPages: Math.ceil(userArticles.length / limit),
             totalPosts: userArticles.length,
             date: new Date(),

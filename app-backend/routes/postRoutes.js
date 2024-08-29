@@ -7,6 +7,8 @@ router.get('/articles/latest', postController.latestPosts);
 router.get('/articles/most-viewed-articles', postController.mostViewedArticles);
 router.get('/articles/:id', postController.findPost);
 router.post('/articles/:id/update', postController.updateArticle);
+router.post('/articles/:id/delete', postController.deleteArticle);
+router.post('/articles/:id/increment-views', postController.incrementViews );
 router.post('/articles/add', postController.addArticle);
 
 module.exports = router;

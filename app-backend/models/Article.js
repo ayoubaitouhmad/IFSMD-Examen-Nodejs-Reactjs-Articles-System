@@ -19,6 +19,11 @@ class Article {
     #updatedAt;
     #createdAt;
 
+    static get TABLE_NAME() {
+        return "articles";
+    }
+
+
     get id() {
         return this.#id;
     }
@@ -57,11 +62,19 @@ class Article {
     set content(value) {
         this.#content = value;
     }
+    get views() {
+        return this.#views;
+    }
+
+    set views(value) {
+        this.#views = value;
+    }
 
 
     get urlTitle() {
         return this.#title.replaceAll(' ', '-');
     }
+
 
 
     get createdAt() {
@@ -102,14 +115,16 @@ class Article {
 
     // Public getter for article details
     details() {
+
         return {
             id: this.#id,
             title: this.#title,
             urlTitle: this.urlTitle,
             description: this.#description,
-            content: 'this.#content',
+            content: this.#content,
             isFeaturedBlog: this.#isFeaturedBlog,
             authorId: this.#authorId,
+            author: this.author,
             views: this.#views,
             // articleImageId: this.#articleImage,
             articleImage: this.#articleImage ?? {
@@ -131,6 +146,25 @@ class Article {
         }
     }
 
+    async getAuthor() {
+        try {
+            let author = await  User.findById(this.#id);
+            this.author = author ? author.detailsForArticle() : null;
+        }catch (e){
+            this.#articleImage = null;
+        }
+    }
+
+
+    async fetchData(){
+        await Promise.all([this.getImage(), this.getAuthor()]);
+    }
+
+
+
+
+
+
     static async fetchArticles(query, params) {
         try {
             const connection = await getConnection();
@@ -139,11 +173,13 @@ class Article {
 
             return await Promise.all(results.map(async (post) => {
                 let postModel = Article.fromDatabaseRecord(post);
-                await postModel.getImage();
+                await postModel.fetchData();
+
                 post.author_id = {
                     id: post.author_id,
                     username: post.author_username
                 };
+
 
                 return postModel.details();
             }));
@@ -156,27 +192,27 @@ class Article {
     }
 
     static async articles() {
-        return await Article.fetchArticles(`select articles.*, username as 'author_username'
-                                            from articles
-                                                     join users u on u.id = articles.author_id`, []);
+        return await Article.fetchArticles(`select ${Article.TABLE_NAME}.*, username as 'author_username'
+                                            from ${Article.TABLE_NAME}
+                                                     join users u on u.id = ${Article.TABLE_NAME}.author_id`, []);
     }
 
     static async latestPosts() {
-        return await Article.fetchArticles('SELECT * FROM articles ORDER BY created_at DESC LIMIT 5', []);
+        return await Article.fetchArticles(`SELECT * FROM ${Article.TABLE_NAME} ORDER BY created_at DESC LIMIT 5`, []);
     }
 
     static async mostViewedArticles() {
-        return await Article.fetchArticles('SELECT * FROM articles ORDER BY views DESC LIMIT 6', []);
+        return await Article.fetchArticles(`SELECT * FROM ${Article.TABLE_NAME} ORDER BY views DESC LIMIT 6`, []);
     }
 
     static async filterByCreatedDate(date) {
-        return await Article.fetchArticles('SELECT * FROM articles WHERE DATE(created_at) >= DATE(?)', [date]);
+        return await Article.fetchArticles(`SELECT * FROM ${Article.TABLE_NAME} WHERE DATE(created_at) >= DATE(?)`, [date]);
     }
 
     static async findById(id) {
         try {
             const connection = await getConnection();
-            const [results] = await connection.execute('SELECT * FROM articles WHERE id=?', [id]);
+            const [results] = await connection.execute(`SELECT * FROM ${Article.TABLE_NAME} WHERE id=?`, [id]);
             await connection.end();
 
             if (results.length === 0) {
@@ -184,7 +220,7 @@ class Article {
             }
             let article = Article.fromDatabaseRecord(results[0]);
 
-            await article.getImage();
+            await article.fetchData();
 
             return article;
 
@@ -204,7 +240,7 @@ class Article {
             article.is_featured_blog,
             article.author_id,
             article.views,
-            article.article_image,
+            article.article_image_id,
             article.updated_at,
             article.created_at,
         );
@@ -232,11 +268,12 @@ class Article {
 
             if (this.#id) {
                 const query = `
-                UPDATE articles
+                UPDATE ${Article.TABLE_NAME}
                 SET title=?,
                     description=?,
                     content=?,
-                    article_image=?,
+                    article_image_id=?,
+                    views=?,
                     updated_at=NOW()
                 WHERE id = ?
             `;
@@ -245,13 +282,14 @@ class Article {
                     this.#description,
                     this.#content,
                     this.#articleImageId,
+                    this.#views,
                     this.#id
                 ]);
 
             } else {
 
                 const query = `
-                    INSERT INTO articles (title,description,content,article_image,author_id) 
+                    INSERT INTO ${Article.TABLE_NAME} (title,description,content,article_image_id,author_id) 
                     VALUES (?,?,?,?,?)
                 `;
                 const [result] = await connection.execute(query, [
@@ -272,8 +310,16 @@ class Article {
         }
     }
 
-    async checkArticleOwnership(authorId, ArticleId) {
-
+    async delete() {
+        try {
+            const connection = await getConnection();
+            const [results] = await connection.execute(`DELETE  FROM ${Article.TABLE_NAME} WHERE id=?`, [this.#id]);
+            await connection.end();
+            return  true;
+        } catch (error) {
+            logger.error(`Error finding article by ID ${id}: ${error.message}`);
+            return null;
+        }
     }
 
 

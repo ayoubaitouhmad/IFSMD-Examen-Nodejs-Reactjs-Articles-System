@@ -4,8 +4,8 @@ import {AuthContext, useAuth} from "../../../contexts/AuthContext"; // Adjust th
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-    const [email, setEmail] = useState("user1@example.com");  // Changed from username to email
-    const [password, setPassword] = useState("password1");
+    const [email, setEmail] = useState("johndoe@example.com");  // Changed from username to email
+    const [password, setPassword] = useState("hashedpassword1");
     const [errorMessage, setErrorMessage] = useState(null);
     const [loading, setLoading] = useState(false);
     const { setToken , login } = useAuth();
@@ -48,7 +48,7 @@ const Login = () => {
             {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
             <form onSubmit={handleSubmit}>
                 <input
-                    type="email"  // Changed input type to email
+                    type="text"  // Changed input type to email
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"

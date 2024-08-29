@@ -64,20 +64,15 @@ create table comments
 );
 
 
-
-alter table articles
-    modify updated_at datetime(6) null after is_featured_blog;
-
-alter table articles
-    modify created_at datetime(6) null after updated_at;
-
-alter table articles
-    modify author_id bigint null after description;
-
-alter table articles
-    drop column dates_format;
-
-
 alter table articles
     add views int default 0 null after author_id;
+
+alter table articles
+    add article_image_id BIGINT  null after views;
+
+ALTER TABLE articles
+    ADD CONSTRAINT `FK_ARTICLES_FILES`
+        FOREIGN KEY (`article_image_id`) REFERENCES `files`(`id`)
+            ON DELETE SET NULL
+            ON UPDATE CASCADE;
 

@@ -13,6 +13,13 @@ class FileDocument {
     #updatedAt;
 
 
+
+    static get TABLE_NAME() {
+        return "files";
+    }
+
+
+
     get id() {
         return this.#id;
     }
@@ -89,7 +96,7 @@ class FileDocument {
     static async findById(id) {
         try {
             const connection = await getConnection();
-            const [results] = await connection.execute('SELECT * FROM file_document WHERE id=?', [id]);
+            const [results] = await connection.execute(`SELECT * FROM ${FileDocument.TABLE_NAME} WHERE id=?`, [id]);
             await connection.end();
 
 
@@ -122,7 +129,7 @@ class FileDocument {
         try {
             const connection = await getConnection();
             const query = `
-                INSERT INTO file_document (file_name, file_type, file_path, created_at, updated_at)
+                INSERT INTO ${FileDocument.TABLE_NAME} (file_name, file_type, file_path, created_at, updated_at)
                 VALUES (?, ?, ?, NOW(), NOW())
             `;
             const [result] = await connection.execute(query, [
@@ -142,7 +149,7 @@ class FileDocument {
     static async deleteFileDocument(id) {
         try {
             const connection = await getConnection();
-            const query = 'DELETE FROM file_document WHERE id = ?';
+            const query = `DELETE FROM ${FileDocument.TABLE_NAME} WHERE id = ?`;
             await connection.execute(query, [id]);
             await connection.end();
             return true;

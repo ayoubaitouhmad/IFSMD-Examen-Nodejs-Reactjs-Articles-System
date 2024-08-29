@@ -6,9 +6,6 @@ import route from "../../utils/route";
 
 function ProfileDropDown() {
     const { user } = useContext(AuthContext);
-    console.log(
-        user
-    )
     return (
         <ul className="bg-light rounded p-0 mt-2">
             <li className="d-flex dropdown">

@@ -16,6 +16,11 @@ class User {
     #createdAt;
     #updatedAt;
 
+    static get TABLE_NAME() {
+        return "users";
+    }
+
+
     get profileImageId() {
         return this.#profileImageId;
     }
@@ -110,10 +115,19 @@ class User {
         };
     }
 
+    detailsForArticle() {
+
+        return {
+            id: this.#id,
+            username: this.#username,
+        };
+    }
+
+
     static async findById(id) {
         try {
             const connection = await getConnection();
-            const [results] = await connection.execute('SELECT * FROM users WHERE id=?', [id]);
+            const [results] = await connection.execute(`SELECT * FROM ${User.TABLE_NAME} WHERE id=?`, [id]);
             await connection.end();
 
             if (results.length === 0) {
@@ -132,7 +146,7 @@ class User {
         try {
             const connection = await getConnection();
             const [results] = await connection.execute(`SELECT *
-                                                        FROM users
+                                                        FROM ${User.TABLE_NAME}
                                                         WHERE email = ?
                                                           and password = ?`, [email, password]);
             await connection.end();
@@ -146,7 +160,7 @@ class User {
             return user.details();
 
         } catch (error) {
-            logger.error(`findByEmailAndPassword ${id}: ${error.message}`);
+            logger.error(`findByEmailAndPassword ${email}: ${error.message}`);
             return null;
         }
     }
@@ -154,7 +168,7 @@ class User {
     static async findByUsername(username) {
         try {
             const connection = await getConnection();
-            const [results] = await connection.execute('SELECT * FROM users WHERE username=?', [username]);
+            const [results] = await connection.execute(`SELECT * FROM ${User.TABLE_NAME} WHERE username=?`, [username]);
             await connection.end();
 
             if (results.length === 0) {
@@ -173,7 +187,7 @@ class User {
         try {
             const Article = require("./Article");
             const connection = await getConnection();
-            const [results] = await connection.execute('SELECT * FROM articles WHERE author_id=? order by created_at desc', [id]);
+            const [results] = await connection.execute(`SELECT * FROM ${Article.TABLE_NAME} WHERE author_id=? order by created_at desc`, [id]);
             await connection.end();
             return await Promise.all(results.map(async (post) => {
                 let postModel = Article.fromDatabaseRecord(post);
@@ -208,7 +222,7 @@ class User {
         try {
             const connection = await getConnection();
             const query = `
-                UPDATE users
+                UPDATE ${User.TABLE_NAME}
                 SET username=?,
                     name=?,
                     bio=?,

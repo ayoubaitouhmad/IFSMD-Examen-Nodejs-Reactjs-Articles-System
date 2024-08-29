@@ -8,6 +8,7 @@ const getConnection = require("./config/db");
 const {sign} = require("jsonwebtoken");
 const authenticateToken = require("./utils/Securtiy");
 const User = require("./models/userModel");
+const logger = require("./utils/logger");
 
 
 
@@ -15,6 +16,7 @@ const fs= require("fs");
 
 const path = require("path");
 const {IMAGES_UPLOAD_DUR} = require("./config/imageStorage");
+const {loggers} = require("winston");
 
 
 const PORT = process.env.PORT;
@@ -76,6 +78,7 @@ app.post('/api/login', async (req, res) => {
 
     const user = await User.findByEmailAndPassword(email, password);
 
+    logger.info(user.id);
 
     if (user === 0) return res.status(400).send('User not found');
     const token = sign({id: user.id}, process.env.JWT_SECRET, {

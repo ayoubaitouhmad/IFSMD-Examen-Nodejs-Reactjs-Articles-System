@@ -1,6 +1,7 @@
 const routes = {
-    home: '/',
-    userProfile: '/users/:id/profile/:o',
+    home: '/home',
+    userProfile: '/profile',
+    userArticles: '/articles/author/:username',
     postDetails: '/posts/:id',
     editArticle: '/articles/:id/edit',
     addArticle: '/articles/add',
@@ -8,7 +9,7 @@ const routes = {
     register: '/register',
     streamImage: 'http://localhost:1000/api/image/:image',
 
-    // Add more routes as needed
+    'articles' : '/articles'
 };
 
 

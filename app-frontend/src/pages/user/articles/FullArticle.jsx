@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import {getPost} from "../../../services/postService";
+import {getPost, incrementViews} from "../../../services/postService";
 import LoadingOverlay from "../../../components/LoadingOverlay/loadingOverlay";
+import frontendRoute from "../../../utils/frontendRoute";
+import Breadcrumb from "../../../utils/breadcrumb";
 
 function FullArticle() {
     const { id } = useParams();
@@ -13,6 +15,7 @@ function FullArticle() {
         const fetchPost = async () => {
             try {
                 const data = await getPost(id);
+                await incrementViews(id);
 
                 setArticle(data);
             } catch (error) {
@@ -26,22 +29,16 @@ function FullArticle() {
         return <LoadingOverlay/>;
     }
 
+    const breadcrumbItems = [
+        {name: 'Home', href: frontendRoute('home')},
+        {name: 'Articles', href: frontendRoute('articles') },
+        {name: article.title, active: true}
+    ];
+
     return (
 
         <div>
-            <div className="w-100">
-                <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                        <li className="breadcrumb-item">
-                            <a href="#">Home</a>
-                        </li>
-                        <li className="breadcrumb-item">
-                            <a href="#">Library</a>
-                        </li>
-                        <li className="breadcrumb-item active" aria-current="page">Data</li>
-                    </ol>
-                </nav>
-            </div>
+            <Breadcrumb items={breadcrumbItems}/>
             <div className="row">
                 <div className="col-8">
                     <article>

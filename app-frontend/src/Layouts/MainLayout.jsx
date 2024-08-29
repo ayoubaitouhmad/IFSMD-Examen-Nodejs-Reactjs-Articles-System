@@ -19,7 +19,7 @@ function MainLayout() {
     return (
         <div className="container">
             <Header/>
-            <div className="row w-100">
+            <div className=" w-100">
                 <Routes>
                     <Route path="/home" element={<Home/>}/>
 
@@ -35,7 +35,7 @@ function MainLayout() {
                     <Route path="/articles/author/:username" element={<AuthorArticles />} />
 
 
-                    <Route path="/gggggg" element="content" />
+
 
 
 

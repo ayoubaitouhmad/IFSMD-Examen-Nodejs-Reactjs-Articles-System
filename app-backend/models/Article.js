@@ -27,6 +27,7 @@ class Article {
     get id() {
         return this.#id;
     }
+
     get authorId() {
         return this.#authorId;
     }
@@ -62,6 +63,7 @@ class Article {
     set content(value) {
         this.#content = value;
     }
+
     get views() {
         return this.#views;
     }
@@ -76,14 +78,13 @@ class Article {
     }
 
 
-
     get createdAt() {
         let date = new Date(this.#createdAt);
         if (date instanceof Date && !isNaN(date)) {
             const options = {day: 'numeric', month: 'long', year: 'numeric'};
             return date.toLocaleDateString('en-US', options);
         }
-        return  this.createdAt;
+        return this.createdAt;
 
     }
 
@@ -126,6 +127,7 @@ class Article {
             authorId: this.#authorId,
             author: this.author,
             views: this.#views,
+            categories: this.categories,
             // articleImageId: this.#articleImage,
             articleImage: this.#articleImage ?? {
                 filePath: IMAGE_PLACEHOLDER_280x187
@@ -141,28 +143,46 @@ class Article {
 
             let articleImageModel = await FileDocument.findById(this.#articleImageId);
             this.#articleImage = articleImageModel ? articleImageModel.details() : null;
-        }catch (e){
+        } catch (e) {
             this.#articleImage = null;
         }
     }
 
     async getAuthor() {
         try {
-            let author = await  User.findById(this.#id);
+            let author = await User.findById(this.#id);
             this.author = author ? author.detailsForArticle() : null;
-        }catch (e){
+        } catch (e) {
             this.#articleImage = null;
         }
     }
 
+    async getCategories() {
+        try {
+            const connection = await getConnection();
+            const [results] = await connection.execute(`
+                select distinct category.name
+                from articles
+                         join article_category ac on articles.id = ac.article_id
+                         join categories category on ac.category_id = category.id
+                where articles.id = ?
 
-    async fetchData(){
-        await Promise.all([this.getImage(), this.getAuthor()]);
+            `, [this.#id]);
+            await connection.end();
+
+
+            this.categories = results;
+
+
+        } catch (error) {
+            logger.error(`Error finding article by ID ${id}: ${error.message}`);
+            return null;
+        }
     }
 
-
-
-
+    async fetchData() {
+        await Promise.all([this.getImage(), this.getAuthor(), this.getCategories()]);
+    }
 
 
     static async fetchArticles(query, params) {
@@ -198,21 +218,29 @@ class Article {
     }
 
     static async latestPosts() {
-        return await Article.fetchArticles(`SELECT * FROM ${Article.TABLE_NAME} ORDER BY created_at DESC LIMIT 5`, []);
+        return await Article.fetchArticles(`SELECT *
+                                            FROM ${Article.TABLE_NAME}
+                                            ORDER BY created_at DESC LIMIT 5`, []);
     }
 
     static async mostViewedArticles() {
-        return await Article.fetchArticles(`SELECT * FROM ${Article.TABLE_NAME} ORDER BY views DESC LIMIT 6`, []);
+        return await Article.fetchArticles(`SELECT *
+                                            FROM ${Article.TABLE_NAME}
+                                            ORDER BY views DESC LIMIT 6`, []);
     }
 
     static async filterByCreatedDate(date) {
-        return await Article.fetchArticles(`SELECT * FROM ${Article.TABLE_NAME} WHERE DATE(created_at) >= DATE(?)`, [date]);
+        return await Article.fetchArticles(`SELECT *
+                                            FROM ${Article.TABLE_NAME}
+                                            WHERE DATE (created_at) >= DATE (?)`, [date]);
     }
 
     static async findById(id) {
         try {
             const connection = await getConnection();
-            const [results] = await connection.execute(`SELECT * FROM ${Article.TABLE_NAME} WHERE id=?`, [id]);
+            const [results] = await connection.execute(`SELECT *
+                                                        FROM ${Article.TABLE_NAME}
+                                                        WHERE id = ?`, [id]);
             await connection.end();
 
             if (results.length === 0) {
@@ -246,7 +274,7 @@ class Article {
         );
     }
 
-    static fromAddArticle(title, description, content ,author_id) {
+    static fromAddArticle(title, description, content, author_id) {
         return new Article(
             null,
             title,
@@ -268,15 +296,15 @@ class Article {
 
             if (this.#id) {
                 const query = `
-                UPDATE ${Article.TABLE_NAME}
-                SET title=?,
-                    description=?,
-                    content=?,
-                    article_image_id=?,
-                    views=?,
-                    updated_at=NOW()
-                WHERE id = ?
-            `;
+                    UPDATE ${Article.TABLE_NAME}
+                    SET title=?,
+                        description=?,
+                        content=?,
+                        article_image_id=?,
+                        views=?,
+                        updated_at=NOW()
+                    WHERE id = ?
+                `;
                 await connection.execute(query, [
                     this.#title,
                     this.#description,
@@ -289,8 +317,8 @@ class Article {
             } else {
 
                 const query = `
-                    INSERT INTO ${Article.TABLE_NAME} (title,description,content,article_image_id,author_id) 
-                    VALUES (?,?,?,?,?)
+                    INSERT INTO ${Article.TABLE_NAME} (title, description, content, article_image_id, author_id)
+                    VALUES (?, ?, ?, ?, ?)
                 `;
                 const [result] = await connection.execute(query, [
                     this.#title,
@@ -313,9 +341,11 @@ class Article {
     async delete() {
         try {
             const connection = await getConnection();
-            const [results] = await connection.execute(`DELETE  FROM ${Article.TABLE_NAME} WHERE id=?`, [this.#id]);
+            const [results] = await connection.execute(`DELETE
+                                                        FROM ${Article.TABLE_NAME}
+                                                        WHERE id = ?`, [this.#id]);
             await connection.end();
-            return  true;
+            return true;
         } catch (error) {
             logger.error(`Error finding article by ID ${id}: ${error.message}`);
             return null;

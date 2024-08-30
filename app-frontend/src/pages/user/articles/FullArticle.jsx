@@ -4,6 +4,8 @@ import {getPost, incrementViews} from "../../../services/postService";
 import LoadingOverlay from "../../../components/LoadingOverlay/loadingOverlay";
 import frontendRoute from "../../../utils/frontendRoute";
 import Breadcrumb from "../../../utils/breadcrumb";
+import BlogPost from "../../../components/BlogPost/BlogPost";
+import route from "../../../utils/route";
 
 function FullArticle() {
     const { id } = useParams();
@@ -35,6 +37,7 @@ function FullArticle() {
         {name: article.title, active: true}
     ];
 
+    console.log(article)
     return (
 
         <div>
@@ -50,17 +53,18 @@ function FullArticle() {
                                 {article.description ?? "Posted on January 1, 2023 by Start Bootstrap"}
 
                             </div>
-                            <a className="badge badge-info  text-decoration-none mr-1" href="#!">
-                                Web Design
-                            </a>
-                            <a className="badge badge-info  text-decoration-none mr-1" href="#!">
-                                Freebies
-                            </a>
+                            {
+                                article.categories.map((category, index) => (
+                                    <a className="badge badge-info  text-decoration-none mr-1" >
+                                        {category.name}
+                                    </a>
+                                ))
+                            }
                         </header>
                         <figure className="mb-4">
                             <img
                                 className="img-fluid rounded"
-                                src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2023/06/22155410/top-eight-crypto-scams-2023-featured.jpg"
+                                src={route('streamImage', {image: article.articleImage.filePath})}
                                 alt="Post preview"
                             />
                         </figure>

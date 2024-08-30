@@ -88,7 +88,7 @@ exports.deleteArticle = async (req, res) => {
     try {
         const {id} = req.params;
         const articleModel = await findById(id);
-        await  articleModel.delete();
+        await articleModel.delete();
         res.json(articleModel.details());
     } catch (err) {
         console.log(err);
@@ -103,9 +103,8 @@ exports.updateArticle = async (req, res) => {
         const userId = req.user.id;
 
 
-
         let articleModel = await Article.findById(id);
-        logger.info(articleModel.id)
+        logger.info('articleModel.id')
 
         if (articleModel.authorId != userId) {
             res.status(404).json({message: 'Post not found'});
@@ -116,6 +115,22 @@ exports.updateArticle = async (req, res) => {
         articleModel.description = req.body.description || articleModel.description;
         articleModel.content = req.body.content || articleModel.content;
 
+        if (req.file) {
+            if (articleModel.articleImageId) {
+                const avatarFile = await findById(articleModel.articleImageId);
+                if (avatarFile) {
+                    avatarFile.delete();
+                }
+            }
+
+            let file = fromUpload(
+                req.file.filename, req.file.filename, req.file.mimetype
+            );
+
+            await file.save();
+            articleModel.articleImageId = file.id;
+
+        }
 
 
         await articleModel.save();
@@ -161,7 +176,7 @@ exports.incrementViews = async (req, res) => {
         const userId = req.user.id;
         const post = await findById(id);
         post.views++;
-        await  post.save();
+        await post.save();
         res.json(post.details());
 
     } catch (err) {

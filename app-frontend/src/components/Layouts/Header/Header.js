@@ -1,23 +1,37 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import  './header.css';
 
 import ProfileDropDown from "../../ProfileDropDown/ProfileDropDown";
 import Logo from "../../Logo/Logo";
 import {useAuth} from "../../../contexts/AuthContext";
+import {getAll} from "../../../services/categoryService";
+import {Link} from "react-router-dom";
+import frontendRoute from "../../../utils/frontendRoute";
 
 
 function Header() {
-
     const { user, isAuthenticated, logout } = useAuth();
-
-
     const [showSearch, setShowSearch] = useState(false);
+    const [categories, setCategories] = useState([]);
 
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const data = await getAll();
+            const formattedCategories = data.map((item) => ({
+                label: item.name,
+                value: item.id,
+            }));
+            setCategories(formattedCategories);
+        };
+        fetchCategories();
+    }, []);
 
     const toggleSearch = () => {
         setShowSearch(!showSearch);
     };
 
+    console.log(categories)
     return (
         <header className="blog-header ">
             <div className="row flex-nowrap justify-content-between align-items-center ">
@@ -34,24 +48,16 @@ function Header() {
 
             <div className="nav-scroller py-1 mb-2">
                 <nav className="row text-center flex-nowrap overflow-auto">
-                    <a className="p-2 text-muted" href="#">World</a>
-                    <a className="p-2 text-muted" href="#">U.S.</a>
-                    <a className="p-2 text-muted" href="#">Technology</a>
-                    <a className="p-2 text-muted" href="#">Design</a>
-                    <a className="p-2 text-muted" href="#">Culture</a>
-                    <a className="p-2 text-muted" href="#">Business</a>
-                    <a className="p-2 text-muted" href="#">Politics</a>
-                    <a className="p-2 text-muted" href="#">Opinion</a>
-                    <a className="p-2 text-muted" href="#">Science</a>
-                    <a className="p-2 text-muted" href="#">Health</a>
-                    <a className="p-2 text-muted" href="#">Style</a>
-                    <a className="p-2 text-muted" href="#">Travel</a>
-                    <a className="p-2 text-muted" href="#">Travel</a>
-                    <a className="p-2 text-muted" href="#">Travel</a>
-                    <a className="p-2 text-muted" href="#">Travel</a>
-                    <a className="p-2 text-muted" href="#">Travel</a>
-                    <a className="p-2 text-muted" href="#">Travel</a>
-                    <a className="p-2 text-muted" href="#">Travel</a>
+                    {
+                        categories.map(category => (
+                            <Link to={frontendRoute('categoryArticles' , {id:category.value ,name:category.label.toLowerCase().replace(' ','-') })} className="p-2 text-muted text-nowrap">
+                                {category.label}
+                            </Link>
+
+                        ))
+                    }
+
+
                 </nav>
             </div>
 

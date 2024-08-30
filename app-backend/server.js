@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 const postRoutes = require('./routes/postRoutes');
 const userRoutes = require('./routes/userRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 const getConnection = require("./config/db");
 const {sign} = require("jsonwebtoken");
 const authenticateToken = require("./utils/Securtiy");
@@ -82,7 +83,7 @@ app.post('/api/login', async (req, res) => {
 
     if (user === 0) return res.status(400).send('User not found');
     const token = sign({id: user.id}, process.env.JWT_SECRET, {
-        expiresIn: '24h',
+        expiresIn: '100h',
     });
 
 
@@ -96,7 +97,7 @@ app.post('/api/login', async (req, res) => {
 
 app.use('/api', authenticateToken, postRoutes);
 app.use('/api', authenticateToken, userRoutes);
-
+app.use('/api', authenticateToken, categoryRoutes);
 
 
 app.listen(PORT, () => {

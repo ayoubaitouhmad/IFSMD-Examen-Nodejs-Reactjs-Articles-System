@@ -161,11 +161,12 @@ class Article {
         try {
             const connection = await getConnection();
             const [results] = await connection.execute(`
-                select distinct category.name
+                select distinct category.name,category.id
                 from articles
                          join article_category ac on articles.id = ac.article_id
                          join categories category on ac.category_id = category.id
                 where articles.id = ?
+                order by category.name asc
 
             `, [this.#id]);
             await connection.end();

@@ -81,7 +81,7 @@ function AuthorArticles() {
                 <div className="pt-5 no-articles-container text-center">
                     <i className="fas fa-folder-open fa-3x text-muted mb-3"></i>
                     <h4 className="text-muted">No articles found for this author</h4>
-                    <p className="text-muted">It seems like this author hasn't written any articles yet.</p>
+                    {/*<p> className="text-muted">It seems like this author hasn't written any articles yet.</p>*/}
                 </div>
             );
         }
@@ -136,7 +136,7 @@ function AuthorArticles() {
         <div className="card mt-5 ">
             <div className="card-body">
                 <h5 className="card-title">Master the art of making better choices</h5>
-                <p className="card-text">Read this post!</p>
+                {/*<p> className="card-text">Read this post!</p>*/}
             </div>
             <img className="card-img-bottom" src="https://via.placeholder.com/150" alt="Ad"/>
         </div>
@@ -169,7 +169,7 @@ function AuthorArticles() {
                     <div className="col-12 col-xl-9">
                         <h1>{author?.name}</h1>
                         <h4>{author?.email}</h4>
-                        <p>{author?.bio}</p>
+                        <span>{author?.bio}</span>
                         <div>
                             <a href="#" className="btn btn-outline-secondary mr-2">
                                 <i className="fab fa-twitter"></i>
@@ -223,6 +223,7 @@ function AuthorArticles() {
                 </div>
 
             </div>
+
             <div className="w-100 row bg-light mt-3">
                 <div className="col-12">
                     <div className="nav nav-tabs" id="nav-tab" role="tablist">
@@ -273,21 +274,19 @@ function AuthorArticles() {
 
                         </div>
                         <div className="tab-pane fade" id="nav-books" role="tabpanel" aria-labelledby="nav-books-tab">
-                            {/* Books content */}
-                            <p>Content for Books tab goes here.</p>
+                            <span>Content for Books tab goes here.</span>
                         </div>
                         <div className="tab-pane fade" id="nav-lists" role="tabpanel" aria-labelledby="nav-lists-tab">
-                            {/* Lists content */}
                             <p>Content for Lists tab goes here.</p>
                         </div>
                         <div className="tab-pane fade" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
-                            {/* About content */}
                             <p>Content for About tab goes here.</p>
                         </div>
                     </div>
 
                 </div>
             </div>
+
         </>
     );
 }

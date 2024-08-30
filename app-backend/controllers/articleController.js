@@ -5,6 +5,7 @@ const User = require("../models/userModel");
 const Article = require("../models/Article");
 const FileDocument = require("../models/fileDocument");
 const {fromUpload} = require("../models/fileDocument");
+const ArticleCategory = require('../models/articleCategory');
 
 
 exports.getAllPosts = async (req, res) => {
@@ -104,7 +105,7 @@ exports.updateArticle = async (req, res) => {
 
 
         let articleModel = await Article.findById(id);
-        logger.info('articleModel.id')
+
 
         if (articleModel.authorId != userId) {
             res.status(404).json({message: 'Post not found'});
@@ -115,6 +116,7 @@ exports.updateArticle = async (req, res) => {
         articleModel.description = req.body.description || articleModel.description;
         articleModel.content = req.body.content || articleModel.content;
 
+
         if (req.file) {
             if (articleModel.articleImageId) {
                 const avatarFile = await findById(articleModel.articleImageId);
@@ -122,14 +124,21 @@ exports.updateArticle = async (req, res) => {
                     avatarFile.delete();
                 }
             }
-
             let file = fromUpload(
                 req.file.filename, req.file.filename, req.file.mimetype
             );
-
             await file.save();
             articleModel.articleImageId = file.id;
+        }
 
+
+
+        for (const category_id of JSON.parse(req.body.categories)) {
+            // IDEA: instead of running one query plus for each category we can drop all records and them again
+            if (!await ArticleCategory.find(id, category_id)) {
+                const articleCategoryModel = new ArticleCategory(category_id, id);
+                await articleCategoryModel.save();
+            }
         }
 
 
@@ -145,6 +154,7 @@ exports.updateArticle = async (req, res) => {
 };
 exports.addArticle = async (req, res) => {
 
+
     uploadImage(req, res, async (err) => {
         const articleModel = Article.fromAddArticle(
             req.body.title,
@@ -152,6 +162,7 @@ exports.addArticle = async (req, res) => {
             req.body.content,
             req.user.id,
         );
+        logger.info(JSON.stringify(req.body.categories))
         if (req.file) {
             let file = fromUpload(
                 req.file.filename, req.file.filename, req.file.mimetype
@@ -159,7 +170,12 @@ exports.addArticle = async (req, res) => {
             await file.save();
             articleModel.articleImageId = file.id;
         }
+
         await articleModel.save();
+        for (const category_id of JSON.parse(req.body.categories)) {
+            const articleCategoryModel = new ArticleCategory(category_id, articleModel.id);
+            await articleCategoryModel.save();
+        }
         let alert = {
             type: "success",
             title: "Success!",

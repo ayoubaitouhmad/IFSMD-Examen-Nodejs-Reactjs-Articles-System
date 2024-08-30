@@ -27,16 +27,16 @@ function AuthorArticle({id, title, description, createdAt, isLastArticle, urlTit
                 <Link to={`/articles/${id}/${urlTitle}`}> {title} </Link>
 
                 <p>{description}</p>
-                <p className="text-muted">
+                <div className="text-muted">
                     {createdAt}
-                    <p >
+                    <p>
                         <span className="mr-1">
                             {views}
                         </span>
                         <i className="fa-solid fa-eye"></i>
                     </p>
 
-                </p>
+                </div>
 
 
             </div>
@@ -58,6 +58,7 @@ function AuthorArticle({id, title, description, createdAt, isLastArticle, urlTit
             }
 
         </div>
+
     );
 }
 

@@ -12,6 +12,7 @@ import Home from "../pages/user/Home";
 import AuthorArticles from "../pages/user/articles/AuthorArticles";
 import Profile from "../pages/user/profile";
 import EditArticle from "../pages/user/articles/editArticle";
+import CategoryArticles from "../pages/user/CategoryArticles";
 
 
 
@@ -36,7 +37,7 @@ function MainLayout() {
 
 
 
-
+                    <Route path="/category/:id/:name/articles" element={<CategoryArticles/>}/>
 
 
 

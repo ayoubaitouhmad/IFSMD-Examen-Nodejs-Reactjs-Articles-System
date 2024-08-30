@@ -9,6 +9,7 @@ const routes = {
     register: '/register',
     streamImage: 'http://localhost:1000/api/image/:image',
 
+    categoryArticles : '/category/:id/:name/articles',
     'articles' : '/articles'
 };
 

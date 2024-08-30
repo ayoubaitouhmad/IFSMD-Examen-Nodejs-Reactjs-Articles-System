@@ -34,6 +34,7 @@ function BlogPost({id, title, content, createdAt, description, author, articleIm
             <div className="card mb-4">
                 <img
                     className="img card-img-top"
+                    height={260}
                     src={route('streamImage', {image: articleImage.filePath})}
                     alt="Card cap"
                 />

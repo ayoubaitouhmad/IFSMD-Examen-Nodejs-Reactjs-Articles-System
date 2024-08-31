@@ -3,6 +3,7 @@ import {useEffect} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import route from "../../utils/route";
 import frontendRoute from "../../utils/frontendRoute";
+import Skeleton from "react-loading-skeleton";
 
 
 function BlogPost({id, title, content, createdAt, description, author, articleImage, categories}) {
@@ -32,14 +33,15 @@ function BlogPost({id, title, content, createdAt, description, author, articleIm
     return (
 
         <div className="col-12 col-sm-6 col-xl-4" onClick={handleBlogPostClick}>
+
             <div className="card mb-4">
                 <img
                     className="img card-img-top"
 
                     src={route('streamImage', {
                         image: articleImage.filePath,
-                        height:260,
-                        width:400
+                        height: 260,
+                        width: 400
                     })}
                     alt="Card cap"
                 />

@@ -24,22 +24,17 @@ function Home() {
                 ]);
                 setLatestArticles(latest);
                 setMostViewedArticles(mostViewed);
-                console.log(
-                    latest
-                )
+
             } catch (err) {
                 setError("Failed to fetch articles. Please try again later.");
             } finally {
                 setLoading(false);
             }
         };
-
         fetchData();
     }, []);
 
-    if (loading) {
-        return <LoadingOverlay />;
-    }
+
 
     if (error) {
         return <div className="error-message">{error}</div>;
@@ -55,17 +50,17 @@ function Home() {
                     <FeaturedBlog/>
 
                     <CollapsiblePanel title="Latest Articles">
+
                         {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={latestArticles}/>}
-                        <Link to="/articles">Show All</Link>
+
                     </CollapsiblePanel>
 
                     <CollapsiblePanel title="Most Viewed Articles">
                         {mostViewedArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={mostViewedArticles}/>}
-                        <Link to="/articles">Show All</Link>
+
                     </CollapsiblePanel>
 
                 </div>
-
                 <div className="col-2 ">
                     <div className="p-3">
                         <h4 className="font-italic">Archives</h4>

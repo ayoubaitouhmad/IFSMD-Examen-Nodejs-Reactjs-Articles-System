@@ -49,8 +49,9 @@ function Header() {
             <div className="nav-scroller py-1 mb-2">
                 <nav className="row text-center flex-nowrap overflow-auto">
                     {
-                        categories.map(category => (
-                            <Link to={frontendRoute('categoryArticles' , {id:category.value ,name:category.label.toLowerCase().replace(' ','-') })} className="p-2 text-muted text-nowrap">
+                        categories.map((category,index) => (
+                            <Link key={index} to={frontendRoute('categoryArticles' , {id:category.value ,name:category.label.toLowerCase().replace(' ','-') })}
+                                  className="p-2 text-muted text-nowrap">
                                 {category.label}
                             </Link>
 

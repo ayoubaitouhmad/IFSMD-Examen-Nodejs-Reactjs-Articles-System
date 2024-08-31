@@ -1,10 +1,26 @@
 import React, {useEffect, useState} from "react";
 import Breadcrumb from "../../utils/breadcrumb";
 import frontendRoute from "../../utils/frontendRoute";
+import {getCategoryArticles} from "../../services/categoryService";
+import {useParams} from "react-router-dom";
+import NoPostsFound from "../../components/BlogList/NoPostsFound";
+import BlogList from "../../components/BlogList/BlogList";
 
 
 
 function CategoryArticles() {
+
+    const {id} = useParams();
+    const [articles , setArticles] = useState([]);
+
+    useEffect(() => {
+        const fetchArticles = async () =>{
+            const articlesData = await getCategoryArticles(id);
+            setArticles(articlesData.articles);
+        };
+        fetchArticles();
+    }, [id]);
+
 
     const breadcrumbItems = [
         {name: 'Home', href: frontendRoute('home')},
@@ -13,6 +29,7 @@ function CategoryArticles() {
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
+            {articles.length === 0 ? <NoPostsFound /> : <BlogList posts={articles} />}
 
         </>
     );

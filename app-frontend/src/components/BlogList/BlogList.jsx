@@ -9,6 +9,7 @@ function BlogList({posts}) {
     return (
 
         <div className="row">
+
             {
                 posts.map((post, index) => (
                     <BlogPost key={index} {...post} />

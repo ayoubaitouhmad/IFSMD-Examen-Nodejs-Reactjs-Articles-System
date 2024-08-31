@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
-import FeaturedBlog from "../../components/FeaturedBlog/FeaturedBlog";
-import axios from "axios";
-import { getLatestPosts, getMostViewedArticles } from "../../services/postService";
+import React, {useEffect, useState} from "react";
+import {getLatestPosts, getMostViewedArticles} from "../../services/postService";
 import NoPostsFound from "../../components/BlogList/NoPostsFound";
 import BlogList from "../../components/BlogList/BlogList";
 import CollapsiblePanel from "../../components/CollapsiblePanel/collapsiblePanel";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import LoadingOverlay from "../../components/LoadingOverlay/loadingOverlay";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import FeaturedBlog from "../../components/FeaturedBlog/FeaturedBlog";
 
 function Home() {
     const [latestArticles, setLatestArticles] = useState([]);
@@ -47,15 +48,19 @@ function Home() {
     return (
         <>
 
+
             <div className="row p-3">
                 <div className="col-10 ">
+
+                    <FeaturedBlog/>
+
                     <CollapsiblePanel title="Latest Articles">
-                        {latestArticles.length === 0 ? <NoPostsFound /> : <BlogList posts={latestArticles} />}
+                        {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={latestArticles}/>}
                         <Link to="/articles">Show All</Link>
                     </CollapsiblePanel>
 
                     <CollapsiblePanel title="Most Viewed Articles">
-                        {mostViewedArticles.length === 0 ? <NoPostsFound /> : <BlogList posts={mostViewedArticles} />}
+                        {mostViewedArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={mostViewedArticles}/>}
                         <Link to="/articles">Show All</Link>
                     </CollapsiblePanel>
 

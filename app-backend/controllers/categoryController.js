@@ -1,29 +1,29 @@
 const logger = require('../utils/logger');
-const getConnection = require("../config/db");
-const ArticleCategory = require('../models/articleCategory');
+const Category = require('../models/categoryModel');
+const Article = require('../models/Article');
 
 
 exports.getAll = async (req, res) => {
     try {
-        const connection = await getConnection();
-        const [results] = await connection.execute(`SELECT * FROM categories order by name asc `, []);
-        await connection.end();
-        if (results.length === 0) {
-            return null;
-        }
-        res.json(results);
+        res.json(await Category.all());
     } catch (err) {
         logger.error(err.message);
-        return res.status(500).send('Server error'); // Send a 500 status for server errors
+        return res.status(500).send('Server error');
     }
 };
 
-exports.addCategory = async (req,res) => {
+exports.getCategoryArticles = async (req, res) => {
     try {
-
-        res.status(200).json('fdsf');
+        const id = req.params.id;
+        let articles = await Article.findCategoryArticles(id);
+        let category = await Category.findById(id);
+        res.json({
+             ...category.details() ,
+            articles
+        });
     } catch (err) {
         logger.error(err.message);
-        return res.status(500).send('Server error'); // Send a 500 status for server errors
+        return res.status(500).send('Server error');
     }
 };
+

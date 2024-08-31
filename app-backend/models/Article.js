@@ -1,9 +1,11 @@
 const getConnection = require("../config/db");
-const Comment = require("../models/commentModel");
+
 const User = require("./userModel");
 const logger = require("../utils/logger");
 const FileDocument = require("./fileDocument");
-const {IMAGE_PLACEHOLDER, IMAGE_PLACEHOLDER_280x187} = require("../services/imageService");
+const ArticleCategory = require("./articleCategory");
+const {IMAGE_PLACEHOLDER_280x187, IMAGE_PLACEHOLDER_600x340, IMAGE_PLACEHOLDER_300x150, IMAGE_PLACEHOLDER} = require("../services/imageService");
+
 
 class Article {
 
@@ -130,7 +132,7 @@ class Article {
             categories: this.categories,
             // articleImageId: this.#articleImage,
             articleImage: this.#articleImage ?? {
-                filePath: IMAGE_PLACEHOLDER_280x187
+                filePath: IMAGE_PLACEHOLDER
             },
             updatedAt: this.#updatedAt,
             createdAt: this.createdAt,
@@ -159,22 +161,8 @@ class Article {
 
     async getCategories() {
         try {
-            const connection = await getConnection();
-            const [results] = await connection.execute(`
-                select distinct category.name,category.id
-                from articles
-                         join article_category ac on articles.id = ac.article_id
-                         join categories category on ac.category_id = category.id
-                where articles.id = ?
-                order by category.name asc
-
-            `, [this.#id]);
-            await connection.end();
-
-
-            this.categories = results;
-
-
+            this.categories = await ArticleCategory.findCategoriesByArticleId(this.id);
+            logger.info(this.id)
         } catch (error) {
             logger.error(`Error finding article by ID ${id}: ${error.message}`);
             return null;
@@ -257,6 +245,26 @@ class Article {
             logger.error(`Error finding article by ID ${id}: ${error.message}`);
             return null;
         }
+    }
+    static async findCategoryArticles(category_id) {
+        try {
+            const connection = await getConnection();
+            const [results] = await connection.execute(`
+                  select articles.* from articles join article_category ac on articles.id = ac.article_id where ac.category_id=?` ,
+                [category_id]
+            );
+            await connection.end();
+            return await Promise.all(results.map(async (category) => {
+                let postModel = Article.fromDatabaseRecord(category);
+                await postModel.fetchData();
+                return postModel.details();
+            }));
+        } catch (error) {
+            logger.error(`Error finding article by ID ${id}: ${error.message}`);
+            return null;
+        }
+
+
     }
 
 

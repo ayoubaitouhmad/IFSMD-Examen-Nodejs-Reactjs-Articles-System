@@ -6,7 +6,7 @@ const routes = {
     addArticle: 'http://localhost:1000/api/articles/add',
     login: '/login',
     register: '/register',
-    streamImage: 'http://localhost:1000/api/image/:image',
+    streamImage: 'http://localhost:1000/api/image/:image?w=:width&h=:height',
 
     // Add more routes as needed
 };

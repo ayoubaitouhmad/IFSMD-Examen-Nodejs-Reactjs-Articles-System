@@ -18,6 +18,7 @@
     "react-bootstrap-multiselect": "^2.4.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",
+    "react-loading-skeleton": "^3.4.0",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.25.1",
     "react-scripts": "5.0.1",

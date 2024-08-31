@@ -12,16 +12,16 @@ const User = require("./models/userModel");
 const logger = require("./utils/logger");
 
 
-
-const fs= require("fs");
+const fs = require("fs");
 
 const path = require("path");
 const {IMAGES_UPLOAD_DUR} = require("./config/imageStorage");
 const {loggers} = require("winston");
+const sharp = require('sharp');
+const e = require("express");
 
 
 const PORT = process.env.PORT;
-
 
 
 const app = express();
@@ -33,16 +33,30 @@ app.use(cors());
 
 app.get('/api/image/:name', (req, res) => {
     const imageName = req.params.name;
-    const imagePath = path.join(__dirname, IMAGES_UPLOAD_DUR, imageName);
+    const width = req.query.w ? parseInt(req.query.w) : null;
+    const height = req.query.h ? parseInt(req.query.h) : null;
 
-    // Check if the file exists
-    fs.access(imagePath, fs.constants.F_OK, (err) => {
+
+    const directoryPath = path.join(__dirname, IMAGES_UPLOAD_DUR);
+
+
+    // Search for the file in the directory without needing to know the extension
+    fs.readdir(directoryPath, (err, files) => {
         if (err) {
-            return res.status(404).json({ message: 'Image not found' });
+            return res.status(500).json({message: 'Unable to scan directory'});
         }
 
+        // Find a file that starts with the given image name
+        const matchedFile = files.find(file => file.startsWith(imageName));
+
+        if (!matchedFile) {
+            return res.status(404).json({message: 'Image not found'});
+        }
+
+        const imagePath = path.join(directoryPath, matchedFile);
+
         // Set the content type based on the file extension
-        const fileExtension = path.extname(imageName).toLowerCase();
+        const fileExtension = path.extname(matchedFile).toLowerCase();
         let contentType = 'application/octet-stream'; // Default content type
         if (fileExtension === '.jpg' || fileExtension === '.jpeg') {
             contentType = 'image/jpeg';
@@ -52,23 +66,33 @@ app.get('/api/image/:name', (req, res) => {
             contentType = 'image/gif';
         }
 
-        // Stream the file to the client
+
         res.setHeader('Content-Type', contentType);
         const readStream = fs.createReadStream(imagePath);
-        readStream.pipe(res);
 
-        // Handle errors during streaming
+        if (width && height) {
+            const transform = sharp()
+                .resize(width, height, {
+                    fit: sharp.fit.cover, // Ensures the image covers the entire specified area
+                    position: sharp.position.center, // Centers the crop
+                });
+
+            readStream.pipe(transform).pipe(res);
+        } else {
+            readStream.pipe(res);
+        }
+
+
+
         readStream.on('error', (streamErr) => {
             console.error('Error streaming image:', streamErr);
-            res.status(500).json({ message: 'Error streaming image' });
+            res.status(500).json({message: 'Error streaming image'});
         });
     });
 });
 
 
-
 app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
-
 
 
 app.post('/api/login', async (req, res) => {
@@ -78,7 +102,6 @@ app.post('/api/login', async (req, res) => {
     const connection = await getConnection();
 
     const user = await User.findByEmailAndPassword(email, password);
-
 
 
     if (user === 0) return res.status(400).send('User not found');

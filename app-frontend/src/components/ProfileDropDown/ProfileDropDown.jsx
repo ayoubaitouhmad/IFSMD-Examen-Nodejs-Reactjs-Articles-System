@@ -13,7 +13,11 @@ function ProfileDropDown() {
                    aria-expanded="false">
                     <img
                         height={40} width={40}
-                        src={route('streamImage' , {'image' :user.profileImage.filePath})}
+                        src={route('streamImage' , {
+                            'image' :user.profileImage.filePath,
+                            'width' : 40 ,
+                            'height' :40
+                        })}
                         alt="Profile"
                         className="mr-2 rounded-circle border  shadow-sm "
                     />

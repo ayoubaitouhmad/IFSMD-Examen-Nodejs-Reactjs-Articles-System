@@ -142,7 +142,7 @@ function EditArticle() {
                                 onChange={(selectedOptions) => formik.setFieldValue('categories', selectedOptions)}
                             />
                             {formik.errors.categories && formik.touched.categories && (
-                                <div className="text-danger">{formik.errors.categories}</div>
+                                <div  className="text-danger">{formik.errors.categories}</div>
                             )}
                         </div>
 
@@ -152,6 +152,7 @@ function EditArticle() {
                                 value={formik.values.content}
                                 onChange={(value) => formik.setFieldValue('content', value)}
                                 placeholder="Enter post content"
+                                style={{ height:250 }}
                                 modules={{
                                     toolbar: [
                                         [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],

@@ -73,7 +73,11 @@ function EditArticle(props) {
         const fetchArticle = async () => {
             try {
                 const articleData = await getPost(id);
-                setPreview(route('streamImage', { image: articleData.articleImage.filePath }));
+                setPreview(route('streamImage', {
+                    image: articleData.articleImage.filePath,
+                    width:600,
+                    height:600,
+                }));
 
                 console.log(articleData)
                 setInitialValues({
@@ -199,7 +203,7 @@ function EditArticle(props) {
                                     value={formik.values.content}
                                     onChange={(value) => formik.setFieldValue('content', value)}
                                     placeholder="Enter post content"
-                                    style={{ height: '200px' }}
+                                    style={{ height:250 }}
                                     modules={{
                                         toolbar: [
                                             [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],

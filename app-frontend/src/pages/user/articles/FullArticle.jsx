@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {getPost, incrementViews} from "../../../services/postService";
 import LoadingOverlay from "../../../components/LoadingOverlay/loadingOverlay";
 import frontendRoute from "../../../utils/frontendRoute";
@@ -54,9 +54,11 @@ function FullArticle() {
                             </div>
                             {
                                 article.categories.map((category, index) => (
-                                    <a key={index} className="badge badge-info  text-decoration-none mr-1" >
+                                    <Link to={frontendRoute('categoryArticles' , {
+                                        id:category.id,name:category.name
+                                    })} key={index} className="badge badge-info  text-decoration-none mr-1" >
                                         {category.name}
-                                    </a>
+                                    </Link>
                                 ))
                             }
                         </header>

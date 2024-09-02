@@ -53,6 +53,7 @@ class ArticleCategory {
                          join ${ArticleCategory.TABLE_NAME} ac on articles.id = ac.article_id
                          join ${Category.TABLE_NAME} category on ac.category_id = category.id
                 where articles.id = ?
+                group by category.name
                 order by category.name asc
             `, [articleId]);
             await connection.end();

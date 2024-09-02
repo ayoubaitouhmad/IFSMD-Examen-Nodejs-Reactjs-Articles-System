@@ -31,7 +31,7 @@ function Header() {
         setShowSearch(!showSearch);
     };
 
-    console.log(categories)
+
     return (
         <header className="blog-header ">
             <div className="row flex-nowrap justify-content-between align-items-center ">

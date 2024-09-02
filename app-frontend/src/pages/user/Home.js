@@ -51,12 +51,12 @@ function Home() {
 
                     <CollapsiblePanel title="Latest Articles">
 
-                        {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={latestArticles}/>}
+                        {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList showSeeAll={true} posts={latestArticles}/>}
 
                     </CollapsiblePanel>
 
                     <CollapsiblePanel title="Most Viewed Articles">
-                        {mostViewedArticles.length === 0 ? <NoPostsFound/> : <BlogList posts={mostViewedArticles}/>}
+                        {mostViewedArticles.length === 0 ? <NoPostsFound/> : <BlogList showSeeAll={true} posts={mostViewedArticles}/>}
 
                     </CollapsiblePanel>
 

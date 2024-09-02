@@ -4,7 +4,6 @@ import {getPost, incrementViews} from "../../../services/postService";
 import LoadingOverlay from "../../../components/LoadingOverlay/loadingOverlay";
 import frontendRoute from "../../../utils/frontendRoute";
 import Breadcrumb from "../../../utils/breadcrumb";
-import BlogPost from "../../../components/BlogPost/BlogPost";
 import route from "../../../utils/route";
 
 function FullArticle() {
@@ -37,7 +36,7 @@ function FullArticle() {
         {name: article.title, active: true}
     ];
 
-    console.log(article)
+
     return (
 
         <div>
@@ -55,21 +54,25 @@ function FullArticle() {
                             </div>
                             {
                                 article.categories.map((category, index) => (
-                                    <a className="badge badge-info  text-decoration-none mr-1" >
+                                    <a key={index} className="badge badge-info  text-decoration-none mr-1" >
                                         {category.name}
                                     </a>
                                 ))
                             }
                         </header>
                         <figure className="mb-4">
+
+
                             <img
                                 className="img-fluid rounded"
-                                src={route('streamImage', {image: article.articleImage.filePath})}
+                                src={route('streamImage' , {
+                                    'image' :article.articleImage.filePath
+                                })}
+
                                 alt="Post preview"
                             />
                         </figure>
-                        <section dangerouslySetInnerHTML={{ __html: article.content }} className="mb-5">
-
+                        <section dangerouslySetInnerHTML={{__html: article.content}} className="mb-5">
 
 
                         </section>

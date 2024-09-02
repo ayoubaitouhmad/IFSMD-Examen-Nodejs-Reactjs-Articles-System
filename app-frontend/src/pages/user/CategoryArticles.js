@@ -7,14 +7,13 @@ import NoPostsFound from "../../components/BlogList/NoPostsFound";
 import BlogList from "../../components/BlogList/BlogList";
 
 
-
 function CategoryArticles() {
 
     const {id} = useParams();
-    const [articles , setArticles] = useState([]);
+    const [articles, setArticles] = useState([]);
 
     useEffect(() => {
-        const fetchArticles = async () =>{
+        const fetchArticles = async () => {
             const articlesData = await getCategoryArticles(id);
             setArticles(articlesData.articles);
         };
@@ -24,13 +23,12 @@ function CategoryArticles() {
 
     const breadcrumbItems = [
         {name: 'Home', href: frontendRoute('home')},
-        {name: 'All Article',  active: true}
+        {name: 'All Article', active: true}
     ];
     return (
         <>
-            <Breadcrumb items={breadcrumbItems} />
-            {articles.length === 0 ? <NoPostsFound /> : <BlogList posts={articles} />}
-
+            <Breadcrumb items={breadcrumbItems}/>
+            <BlogList posts={articles}/>
         </>
     );
 }

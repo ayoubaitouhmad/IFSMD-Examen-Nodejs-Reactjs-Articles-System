@@ -156,9 +156,10 @@ function AuthorArticles() {
                     <div className="col-12 col-xl-3 text-center">
 
                         <div className="text-center text-md-left">
+
                             <img
                                 height={150} width={150}
-                                src={route('streamImage', {image: author?.profileImage?.filePath})}
+                                src={route('streamImage', {image: author?.profileImage?.filePath , width:600, height:600})}
                                 alt="Profile"
                                 className="rounded-circle  shadow"
                             />

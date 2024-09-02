@@ -19,7 +19,11 @@ function AuthorArticle({id, title, description, createdAt, isLastArticle, urlTit
         <div id={id} className={`media my-4  ${isLastArticle ? '' : 'border-bottom'}`}>
             <img
                 className="mr-3 img-fluid rounded"
-                src={route('streamImage', {image: articleImage.filePath})}
+                src={route('streamImage', {
+                    image: articleImage.filePath,
+                    width: 600,
+                    height: 600
+                })}
                 alt={title}
                 style={{width: '100px', height: '100px'}}
             />

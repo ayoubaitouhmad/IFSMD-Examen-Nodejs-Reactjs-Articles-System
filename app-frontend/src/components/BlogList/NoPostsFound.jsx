@@ -2,45 +2,20 @@ import React from 'react';
 import  "./NoPostsFound.module.css";
 import Skeleton from "react-loading-skeleton";
 
-
 function NoPostsFound() {
     return (
-        <div className="row">
-            <div className="col-12 col-sm-6 col-xl-4" style={{width: '300px'}}>
-                <Skeleton height={200}/>
-                <div style={{marginTop: '16px'}}>
-                    <Skeleton height={24} width={`80%`}/>
-                    <Skeleton height={18} width={`60%`} style={{marginTop: '8px'}}/>
-                </div>
-                <div style={{marginTop: '16px'}}>
-                    <Skeleton height={16} width={`30%`}/>
-                    <Skeleton height={16} width={`50%`} style={{marginTop: '8px'}}/>
-                </div>
-            </div>
-            <div className="col-12 col-sm-6 col-xl-4" style={{width: '300px'}}>
-                <Skeleton height={200}/>
-                <div style={{marginTop: '16px'}}>
-                    <Skeleton height={24} width={`80%`}/>
-                    <Skeleton height={18} width={`60%`} style={{marginTop: '8px'}}/>
-                </div>
-                <div style={{marginTop: '16px'}}>
-                    <Skeleton height={16} width={`30%`}/>
-                    <Skeleton height={16} width={`50%`} style={{marginTop: '8px'}}/>
-                </div>
-            </div>
-            <div className="col-12 col-sm-6 col-xl-4" style={{width: '300px'}}>
-                <Skeleton height={200}/>
-                <div style={{marginTop: '16px'}}>
-                    <Skeleton height={24} width={`80%`}/>
-                    <Skeleton height={18} width={`60%`} style={{marginTop: '8px'}}/>
-                </div>
-                <div style={{marginTop: '16px'}}>
-                    <Skeleton height={16} width={`30%`}/>
-                    <Skeleton height={16} width={`50%`} style={{marginTop: '8px'}}/>
+        <div className="col-12">
+            <div className="d-flex justify-content-center align-items-center mt-5">
+                <div className="text-center">
+                    <i className="fas fa-search-minus fa-3x text-muted mb-3"></i> {/* Font Awesome Icon */}
+                    <h3 className="text-muted">No Posts Found</h3>
+                    <p className="text-muted">We couldn't find any posts matching your search.</p>
+
                 </div>
             </div>
         </div>
     );
 }
+
 
 export default NoPostsFound;

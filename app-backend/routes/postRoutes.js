@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/articleController');
+const path = require("path");
+const {IMAGES_UPLOAD_DUR} = require("../config/imageStorage");
+const fs = require("fs");
+const sharp = require("sharp");
 
 router.get('/articles', postController.getAllPosts);
 router.get('/articles/latest', postController.latestPosts);

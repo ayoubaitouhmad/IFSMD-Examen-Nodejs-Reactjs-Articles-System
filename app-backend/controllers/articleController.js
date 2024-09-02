@@ -52,7 +52,7 @@ exports.findPost = async (req, res) => {
         const post = await findById(id);
         res.json(post.details());
     } catch (err) {
-        console.log(err);
+
         res.status(500).send(err);
     }
 };
@@ -62,7 +62,7 @@ exports.latestPosts = async (req, res) => {
 
         res.json(posts);
     } catch (err) {
-        console.log(err);
+
         res.status(500).send(err);
     }
 };
@@ -72,7 +72,7 @@ exports.latestPosts = async (req, res) => {
 
         res.json(posts);
     } catch (err) {
-        console.log(err);
+
         res.status(500).send(err);
     }
 };
@@ -81,7 +81,7 @@ exports.mostViewedArticles = async (req, res) => {
         const posts = await mostViewedArticles();
         res.json(posts);
     } catch (err) {
-        console.log(err);
+
         res.status(500).send(err);
     }
 };
@@ -92,7 +92,7 @@ exports.deleteArticle = async (req, res) => {
         await articleModel.delete();
         res.json(articleModel.details());
     } catch (err) {
-        console.log(err);
+
         res.status(500).send(err);
     }
 };
@@ -196,7 +196,7 @@ exports.incrementViews = async (req, res) => {
         res.json(post.details());
 
     } catch (err) {
-        console.log(err);
+
         res.status(500).send(err);
     }
 

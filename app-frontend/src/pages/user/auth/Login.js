@@ -35,11 +35,14 @@ const Login = () => {
             console.error("Authentication failed:", error);
             setToken(null);
             localStorage.removeItem("token");
-            if (error.response && error.response.data) {
-                setErrorMessage(error.response.data.message || "Authentication failed.");
-            } else {
-                setErrorMessage("An unexpected error occurred. Please try again.");
-            }
+            console.log(
+                error.response.data
+            )
+            // if (error.response && error.response.data) {
+            //     setErrorMessage(error.response.data.message || "Authentication failed.");
+            // } else {
+            //     setErrorMessage("An unexpected error occurred. Please try again.");
+            // }
         } finally {
             setLoading(false);
         }

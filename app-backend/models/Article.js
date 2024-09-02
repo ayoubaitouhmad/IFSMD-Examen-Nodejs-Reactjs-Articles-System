@@ -22,7 +22,7 @@ class Article {
     #createdAt;
 
     static get TABLE_NAME() {
-        return "articles";
+        return process.env.DB_ARTICLES_TABLE_NAME;
     }
 
 

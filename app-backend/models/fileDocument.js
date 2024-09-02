@@ -15,7 +15,7 @@ class FileDocument {
 
 
     static get TABLE_NAME() {
-        return "files";
+        return process.env.DB_FILES_TABLE_NAME;
     }
 
 

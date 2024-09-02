@@ -1,11 +1,11 @@
 const getConnection = require("../config/db");
 const User = require("../models/userModel");
 const {sign} = require("jsonwebtoken");
-const {info} = require("../utils/logger");
+
 
 
 exports.login = async (req, res) => {
-    info('fd');
+
     const {email, password} = req.body;
 
 

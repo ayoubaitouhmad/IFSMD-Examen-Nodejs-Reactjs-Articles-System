@@ -17,7 +17,7 @@ class User {
     #updatedAt;
 
     static get TABLE_NAME() {
-        return "users";
+        return process.env.DB_USERS_TABLE_NAME;
     }
 
 

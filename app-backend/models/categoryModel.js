@@ -4,7 +4,7 @@ const logger = require("../utils/logger");
 class Category {
 
     static get TABLE_NAME() {
-        return "categories";
+        return process.env.DB_CATEGORIES_TABLE_NAME;
     }
 
     #id;

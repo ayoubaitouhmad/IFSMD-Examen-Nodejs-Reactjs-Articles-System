@@ -7,6 +7,10 @@ class ArticleCategory {
     articleId;
 
 
+    static get TABLE_NAME() {
+        return process.env.DB_ARTICLE_CATEGORY_TABLE_NAME;
+    }
+
     constructor(categoryId, articleId) {
         this.categoryId = categoryId;
         this.articleId = articleId;
@@ -24,7 +28,7 @@ class ArticleCategory {
             const connection = await getConnection();
             const [results] = await connection.execute(
                 `SELECT *
-                 FROM article_category
+                 FROM ${ArticleCategory.TABLE_NAME}
                  WHERE article_id = ?
                    and category_id = ?`,
                 [articleId, categoryId]
@@ -46,8 +50,8 @@ class ArticleCategory {
             const [results] = await connection.execute(`
                 select distinct category.*
                 from articles
-                         join article_category ac on articles.id = ac.article_id
-                         join categories category on ac.category_id = category.id
+                         join ${ArticleCategory.TABLE_NAME} ac on articles.id = ac.article_id
+                         join ${Category.TABLE_NAME} category on ac.category_id = category.id
                 where articles.id = ?
                 order by category.name asc
             `, [articleId]);
@@ -65,7 +69,7 @@ class ArticleCategory {
         try {
             const connection = await getConnection();
             const query = `
-                INSERT INTO article_category (article_id, category_id)
+                INSERT INTO ${ArticleCategory.TABLE_NAME} (article_id, category_id)
                 VALUES (?, ?)
             `;
             const [result] = await connection.execute(query, [

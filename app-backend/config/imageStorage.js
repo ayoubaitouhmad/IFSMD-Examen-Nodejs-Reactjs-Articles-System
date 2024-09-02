@@ -1,6 +1,6 @@
 // imageStorage.js
 const multer = require('multer');
-const IMAGES_UPLOAD_DUR= "./uploads/images/";
+const IMAGES_UPLOAD_DUR= process.env.IMAGES_UPLOAD_DUR;
 
 const imageStorage = multer.diskStorage({
     destination: IMAGES_UPLOAD_DUR,

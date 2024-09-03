@@ -6,9 +6,7 @@ const API_GET_CATEGORY_ARTICLES = '/categories/:id/articles';
 
 
 export const getAll = async (params) => {
-    console.log(
-        params
-    )
+
     try {
         const response = await axiosInstance.get(API_GET_ALL,{
             params:params

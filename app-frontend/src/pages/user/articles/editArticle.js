@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPost } from '../../../services/postService';
+import {editPost, getPost} from '../../../services/postService';
 import route from '../../../utils/route';
 import axiosInstance from "../../../utils/axios";
 import Select from 'react-select';
@@ -54,7 +54,7 @@ function EditArticle(props) {
             formData.append('categories', JSON.stringify(values.categories.map(cat => cat.value)));
 
             try {
-                const response = await axiosInstance.post(route('editArticle', { id: id }), formData, {
+                const response = await axiosInstance.post(route('updateArticle', { id: id }), formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -72,7 +72,7 @@ function EditArticle(props) {
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                const articleData = await getPost(id);
+                const articleData = await editPost(id);
                 setPreview(route('streamImage', {
                     image: articleData.articleImage.filePath,
                     width:600,
@@ -80,6 +80,7 @@ function EditArticle(props) {
                 }));
 
                 console.log(articleData)
+
                 setInitialValues({
                     title: articleData.title,
                     image: articleData.image,
@@ -88,6 +89,7 @@ function EditArticle(props) {
                     categories: articleData.categories.map(cat => ({ label: cat.name, value: cat.id })),
                 });
             } catch (error) {
+
                 if (error.response && error.response.status === 404) {
                     navigate('/404');
                 }

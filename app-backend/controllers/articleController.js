@@ -56,6 +56,26 @@ exports.findPost = async (req, res) => {
         res.status(500).send(err);
     }
 };
+exports.editPost = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const userId = req.user.id;
+        const post = await findById(id);
+
+
+        if (post.authorId != userId) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+
+
+        res.json(post.details());
+    } catch (err) {
+
+        res.status(500).send(err);
+    }
+};
+
 exports.latestPosts = async (req, res) => {
     try {
         const posts = await Article.latestPosts();

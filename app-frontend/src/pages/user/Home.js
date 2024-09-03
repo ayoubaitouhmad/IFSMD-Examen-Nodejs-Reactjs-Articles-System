@@ -8,6 +8,7 @@ import LoadingOverlay from "../../components/LoadingOverlay/loadingOverlay";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import FeaturedBlog from "../../components/FeaturedBlog/FeaturedBlog";
+import frontendRoute from "../../utils/frontendRoute";
 
 function Home() {
     const [latestArticles, setLatestArticles] = useState([]);
@@ -45,7 +46,7 @@ function Home() {
 
 
             <div className="row p-3">
-                <div className="col-10 ">
+                <div className="col-12 ">
 
                     <FeaturedBlog/>
 
@@ -61,25 +62,7 @@ function Home() {
                     </CollapsiblePanel>
 
                 </div>
-                <div className="col-2 ">
-                    <div className="p-3">
-                        <h4 className="font-italic">Archives</h4>
-                        <ol className="list-unstyled mb-0">
-                            <li><a href="#">March 2014</a></li>
-                            <li><a href="#">February 2014</a></li>
-                            <li><a href="#">January 2014</a></li>
-                            {/* Add more links as needed */}
-                        </ol>
-                    </div>
-                    <div className="p-3">
-                        <h4 className="font-italic">Elsewhere</h4>
-                        <ol className="list-unstyled">
-                            <li><a href="#">GitHub</a></li>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">Facebook</a></li>
-                        </ol>
-                    </div>
-                </div>
+
             </div>
         </>
     );

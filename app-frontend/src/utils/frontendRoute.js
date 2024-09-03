@@ -1,6 +1,8 @@
 const routes = {
     home: '/home',
     userProfile: '/profile',
+    articles : '/articles',
+    articlesSearch : '/articles/?search=:search',
     userArticles: '/articles/author/:username',
     editArticle: '/articles/:id/edit',
     showArticle: '/articles/:id/:name',
@@ -10,7 +12,6 @@ const routes = {
     streamImage: 'http://localhost:1000/api/image/:image',
 
     categoryArticles : '/category/:id/:name/articles',
-    'articles' : '/articles'
 };
 
 

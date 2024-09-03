@@ -18,9 +18,9 @@ import CategoryArticles from "../pages/user/CategoryArticles";
 
 function MainLayout() {
     return (
-        <div className="container">
+        <div className="container-fluid container-lg">
             <Header/>
-            <div className=" w-100">
+            <div className="w-100">
                 <Routes>
                     <Route path="/home" element={<Home/>}/>
 
@@ -31,20 +31,14 @@ function MainLayout() {
                     <Route path="/articles/add" element={<AddArticle/>}/>
 
                     <Route path="/articles/:id/:name" element={<FullArticle/>}/>
+
                     <Route path="/articles/:id/edit" element={<EditArticle/>}/>
 
                     <Route path="/articles/author/:username" element={<AuthorArticles />} />
 
-
-
                     <Route path="/category/:id/:name/articles" element={<CategoryArticles/>}/>
 
-
-
-
                     <Route path="/logout" element={<Logout/>}/>
-
-
                 </Routes>
             </div>
             <Footer/>

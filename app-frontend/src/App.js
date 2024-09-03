@@ -25,41 +25,36 @@ const App = () => {
 
 
 const Sad = ()  => (
-    <div className="">
-        <div className="container  ">
-            <div className="row justify-content-center align-items-center vh-100 ">
-                <div className="col-10 col-sm-9 col-md-5 ">
-                    <form className="  ">
-                        <div className="text-center mb-4">
-                            <Logo  width={300} height={80} />
+    <div className="container ">
+        <div className="row justify-content-center align-items-center vh-100 ">
+            <div className="col-10 col-sm-9 col-md-5 ">
+                <form className="  ">
+                    <div className="text-center mb-4">
+                        <Logo width={300} height={80}/>
+                    </div>
 
+                    <div className="form-label-group mb-3">
+                        <label htmlFor="inputEmail">Email address</label>
+                        <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required="" autoFocus=""/>
+                    </div>
 
-                        </div>
+                    <div className="form-label-group mb-3">
+                        <label htmlFor="inputPassword">Password</label>
+                        <input type="password" id="inputPassword" className="form-control" placeholder="Password" required=""/>
+                    </div>
 
-                        <div className="form-label-group mb-3">
-                            <label htmlFor="inputEmail">Email address</label>
-                            <input type="email" id="inputEmail" className="form-control" placeholder="Email address"
-                                   required=""
-                                   autoFocus=""/>
-                        </div>
+                    <div className="checkbox mb-3">
+                        <label>
+                            <input type="checkbox" value="remember-me"/> Remember me
+                        </label>
+                    </div>
 
-                        <div className="form-label-group mb-3">
-                            <label htmlFor="inputPassword">Password</label>
-                            <input type="password" id="inputPassword" className="form-control" placeholder="Password"
-                                   required=""/>
-                        </div>
+                    <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 
-                        <div className="checkbox mb-3">
-                            <label>
-                                <input type="checkbox" value="remember-me"/> Remember me
-                            </label>
-                        </div>
-                        <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-                        <p className="mt-5 mb-3 text-muted text-center">
-                            ©2017-2018
-                        </p>
-                    </form>
-                </div>
+                    <p className="mt-5 mb-3 text-muted text-center">
+                        ©2017-2018
+                    </p>
+                </form>
             </div>
         </div>
     </div>

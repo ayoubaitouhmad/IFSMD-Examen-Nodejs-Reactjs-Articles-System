@@ -1,30 +1,36 @@
 import React, {useEffect, useState} from "react";
 import {getPosts} from "../../../services/postService";
 
-
-import NoPostsFound from "../../../components/BlogList/NoPostsFound";
-
 import BlogList from "../../../components/BlogList/BlogList";
 import Breadcrumb from "../../../utils/breadcrumb";
 import frontendRoute from "../../../utils/frontendRoute";
 
+import {getQueryString, updateQueryParam, usePageTitle, useQuery} from "../../../utils/page";
+import { useNavigate, useLocation } from 'react-router-dom';
+
 
 function App() {
-    const [search, setSearch] = useState("");
-    const [show, setShow] = useState(5);
 
+
+
+    const [search, setSearch] = useState(getQueryString('search' , useLocation().search));
+    const [show, setShow] = useState(5);
     const [posts, setPosts] = useState([]);
     const [date, setDate] = useState("");
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalPost, setTotalPost] = useState(1);
+    const navigate = useNavigate();
+    const location = useLocation();
     const handleDateChange = (e) => {
         setDate(e.target.value)
         setPage(1)
     };
+    // usePageTitle("dfgfd")
     const handleSearchChange = (e) => {
         setSearch(e.target.value)
-        setPage(1)
+        updateQueryParam('search' , e.target.value,navigate);
+        setPage(1);
     };
     const handleshowChange = (e) => setShow(e.target.value);
 
@@ -58,7 +64,7 @@ function App() {
 
     const breadcrumbItems = [
         {name: 'Home', href: frontendRoute('home')},
-        {name: 'All Article',  active: true}
+        {name: 'All Article', active: true}
     ];
 
 

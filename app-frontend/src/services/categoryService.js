@@ -5,9 +5,14 @@ const API_GET_ALL = '/categories';
 const API_GET_CATEGORY_ARTICLES = '/categories/:id/articles';
 
 
-export const getAll = async (id , page) => {
+export const getAll = async (params) => {
+    console.log(
+        params
+    )
     try {
-        const response = await axiosInstance.get(API_GET_ALL);
+        const response = await axiosInstance.get(API_GET_ALL,{
+            params:params
+        });
         return response.data;
     } catch (error) {
         console.error('Error adding post:', error);

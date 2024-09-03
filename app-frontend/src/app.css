@@ -2,7 +2,7 @@
 body{
 
     font-family: "Poppins", sans-serif;
-    user-select: none !important;
+    /*user-select: none !important;*/
 }
 .required-field:after {
     content: '*';

@@ -1,5 +1,6 @@
-import React, {useContext, useEffect, useState} from 'react';
-import  './header.css';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import './header.css';
+
 
 import ProfileDropDown from "../../ProfileDropDown/ProfileDropDown";
 import Logo from "../../Logo/Logo";
@@ -10,7 +11,7 @@ import frontendRoute from "../../../utils/frontendRoute";
 
 
 function Header() {
-    const { user, isAuthenticated, logout } = useAuth();
+    const {user, isAuthenticated, logout} = useAuth();
     const [showSearch, setShowSearch] = useState(false);
     const [categories, setCategories] = useState([]);
 
@@ -40,7 +41,8 @@ function Header() {
                 </div>
                 <div className="col-8 d-flex justify-content-end align-items-center">
 
-                    <ProfileDropDown    />
+                    <ProfileDropDown/>
+
 
                 </div>
             </div>
@@ -49,8 +51,11 @@ function Header() {
             <div className="nav-scroller py-1 mb-2">
                 <nav className="row text-center flex-nowrap overflow-auto">
                     {
-                        categories.map((category,index) => (
-                            <Link key={index} to={frontendRoute('categoryArticles' , {id:category.value ,name:category.label.toLowerCase().replace(' ','-') })}
+                        categories.map((category, index) => (
+                            <Link key={index} to={frontendRoute('categoryArticles', {
+                                id: category.value,
+                                name: category.label.toLowerCase().replace(' ', '-')
+                            })}
                                   className="p-2 text-muted text-nowrap">
                                 {category.label}
                             </Link>
@@ -66,5 +71,8 @@ function Header() {
         </header>
     );
 }
+
+
+
 
 export default Header;

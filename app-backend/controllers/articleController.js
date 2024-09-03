@@ -108,7 +108,7 @@ exports.updateArticle = async (req, res) => {
 
 
         if (articleModel.authorId != userId) {
-            res.status(404).json({message: 'Post not found'});
+            return res.status(404).json({message: 'Post not found'});
         }
 
 
@@ -148,7 +148,7 @@ exports.updateArticle = async (req, res) => {
             title: "Success!",
             body: "Profile updated successfully."
         }
-        res.status(200).json({alert, articleModel});
+        return  res.status(200).json({alert, articleModel});
 
     });
 };
@@ -162,7 +162,7 @@ exports.addArticle = async (req, res) => {
             req.body.content,
             req.user.id,
         );
-        logger.info(JSON.stringify(req.body.categories))
+
         if (req.file) {
             let file = fromUpload(
                 req.file.filename, req.file.filename, req.file.mimetype

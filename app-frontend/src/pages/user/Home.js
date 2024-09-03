@@ -9,6 +9,9 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import FeaturedBlog from "../../components/FeaturedBlog/FeaturedBlog";
 import frontendRoute from "../../utils/frontendRoute";
+import CategoryArticles from "./CategoryArticles";
+import CategoriesList from "../../components/categoriesList/categoriesList";
+import SearchCard from "../../components/Articles/searchCard/SearchCard";
 
 function Home() {
     const [latestArticles, setLatestArticles] = useState([]);
@@ -36,35 +39,36 @@ function Home() {
     }, []);
 
 
-
     if (error) {
         return <div className="error-message">{error}</div>;
     }
 
     return (
-        <>
 
-
-            <div className="row p-3">
-                <div className="col-12 ">
-
-                    <FeaturedBlog/>
-
+        <div className=" p-3">
+            <FeaturedBlog/>
+            <div className="row">
+                <div className="col-12 col-md-9" >
                     <CollapsiblePanel title="Latest Articles">
-
-                        {latestArticles.length === 0 ? <NoPostsFound/> : <BlogList showSeeAll={true} posts={latestArticles}/>}
+                        {latestArticles.length === 0 ? <NoPostsFound/> :
+                            <BlogList showSeeAll={true} posts={latestArticles}/>}
 
                     </CollapsiblePanel>
 
                     <CollapsiblePanel title="Most Viewed Articles">
-                        {mostViewedArticles.length === 0 ? <NoPostsFound/> : <BlogList showSeeAll={true} posts={mostViewedArticles}/>}
+                        {mostViewedArticles.length === 0 ? <NoPostsFound/> :
+                            <BlogList showSeeAll={true} posts={mostViewedArticles}/>}
 
                     </CollapsiblePanel>
 
                 </div>
-
+                <div className="col-12 col-md-3">
+                    <SearchCard/>
+                    <CategoriesList/>
+                </div>
             </div>
-        </>
+        </div>
+
     );
 }
 

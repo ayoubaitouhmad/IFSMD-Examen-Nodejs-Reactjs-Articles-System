@@ -33,7 +33,7 @@
     overflow-x: hidden;
     overflow-y: scroll;
     max-height: 500px;
-    transition: max-height 2s ease-out;
+    transition: max-height .5s ease-out;
 }
 .collapsed {
     max-height: 500px;

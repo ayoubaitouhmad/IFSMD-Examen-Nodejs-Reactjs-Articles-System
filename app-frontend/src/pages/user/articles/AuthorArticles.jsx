@@ -132,15 +132,7 @@ function AuthorArticles() {
 
 
 
-    const AdCard = () => (
-        <div className="card mt-5 ">
-            <div className="card-body">
-                <h5 className="card-title">Master the art of making better choices</h5>
-                {/*<p> className="card-text">Read this post!</p>*/}
-            </div>
-            <img className="card-img-bottom" src="https://via.placeholder.com/150" alt="Ad"/>
-        </div>
-    );
+
 
     const breadcrumbItems = [
         {name: 'Home', href: frontendRoute('home')},
@@ -244,7 +236,7 @@ function AuthorArticles() {
                              aria-labelledby="nav-home-tab">
 
                             <div className="row ">
-                                <div className="col-9">
+                                <div className="col-12">
                                     <div className="mt-3  d-flex justify-content-between align-items-center">
                                         <div className="">
                                             Posts by {author?.name}
@@ -267,9 +259,7 @@ function AuthorArticles() {
                                         handlePageClick={handlePageClick}
                                     />
                                 </div>
-                                <div className="col-3">
-                                    <AdCard/>
-                                </div>
+
                             </div>
 
 

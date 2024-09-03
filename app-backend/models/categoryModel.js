@@ -27,7 +27,7 @@ class Category {
     }
 
     get nameForUrl() {
-        return this.name.toLowerCase().replace(' ' ,'-');
+        return this.name.toLowerCase().replace(' ', '-');
     }
 
     set name(value) {
@@ -90,14 +90,34 @@ class Category {
     }
 
 
-
     static async all() {
         const connection = await getConnection();
-        const [results] = await connection.execute(`select * from ${Category.TABLE_NAME}`);
+        const [results] = await connection.execute(`select *
+                                                    from ${Category.TABLE_NAME}`);
         await connection.end();
-        return await Promise.all(results.map(async (category) =>  Category.fromDatabaseRecord(category).details()));
+        return await Promise.all(results.map(async (category) => Category.fromDatabaseRecord(category).details()));
     }
 
+    static async allWithArticlesCount() {
+        const connection = await getConnection();
+        const [results] = await connection.execute(`
+            select categories.*,
+                   (select count(article_category.category_id)
+                    from article_category
+                    where article_category.category_id = ac.category_id) as articles_count
+            from categories
+                     left join article_category ac on categories.id = ac.category_id
+            group by name
+
+        `);
+        await connection.end();
+        return await Promise.all(results.map(async (category) => {
+            const categoryModel = Category.fromDatabaseRecord(category);
+            let categoryModelDetails = categoryModel.details();
+            categoryModelDetails.ArticlesCount = category.articles_count
+            return categoryModelDetails;
+        }));
+    }
 
     static async findById(id) {
         try {
@@ -110,7 +130,7 @@ class Category {
             if (results.length === 0) {
                 return null;
             }
-            return  Category.fromDatabaseRecord(results[0]);
+            return Category.fromDatabaseRecord(results[0]);
         } catch (error) {
             logger.error(`Error finding article by ID ${id}: ${error.message}`);
             return null;

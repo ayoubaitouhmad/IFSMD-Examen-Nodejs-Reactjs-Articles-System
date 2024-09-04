@@ -3,22 +3,17 @@ const User = require("../models/userModel");
 const {sign} = require("jsonwebtoken");
 
 
-
+/**
+ * Handle login functionality
+ */
 exports.login = async (req, res) => {
-
     const {email, password} = req.body;
-
-
     const connection = await getConnection();
-
     const user = await User.findByEmailAndPassword(email, password);
-
-
     if (user === 0) return res.status(400).send('User not found');
     const token = sign({id: user.id}, process.env.JWT_SECRET, {
         expiresIn: '100h',
     });
-
 
     res.json({
         token,

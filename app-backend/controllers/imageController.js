@@ -8,13 +8,16 @@ const {createReadStream, readdir} = require("node:fs");
 const sharp = require("sharp");
 const { dirname } = require('path');
 
-
+/**
+ * Handle image streaming from IMAGES_UPLOAD_DUR with option of resizing image for any case
+ */
 exports.streamImage = async (req, res) => {
     const imageName = req.params.name;
     const width = req.query.w ? parseInt(req.query.w) : null;
     const height = req.query.h ? parseInt(req.query.h) : null;
     const directoryPath = join(dirname(require.main.filename), IMAGES_UPLOAD_DUR);
 
+    // check if image exists
     readdir(directoryPath, (err, files) => {
         if (err) {
 
@@ -30,6 +33,7 @@ exports.streamImage = async (req, res) => {
             return res.status(404).json({message: 'Image not found'});
         }
 
+        // check if image extension supported
         const imagePath = join(directoryPath, matchedFile);
         const fileExtension = extname(matchedFile).toLowerCase();
         let contentType = 'application/octet-stream'; // Default content type
@@ -43,6 +47,7 @@ exports.streamImage = async (req, res) => {
 
 
         res.setHeader('Content-Type', contentType);
+        // start transforming image
         const readStream = createReadStream(imagePath);
 
         if (width && height) {

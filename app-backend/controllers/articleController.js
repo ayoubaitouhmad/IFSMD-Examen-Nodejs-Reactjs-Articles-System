@@ -8,6 +8,9 @@ const {fromUpload} = require("../models/fileDocument");
 const ArticleCategory = require('../models/articleCategory');
 
 
+/**
+ * Get all articles with pagination, filtering by date and search term.
+ */
 exports.getAllPosts = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -18,8 +21,7 @@ exports.getAllPosts = async (req, res) => {
         const endIndex = page * limit;
         const author = req.query.author || null;
         let posts = await articles();
-
-
+        // Filter posts by date and search term
         posts = posts.filter(post =>
             (date != null ? new Date(post.createdAt) >= new Date(date) : true) &&
             (
@@ -27,11 +29,7 @@ exports.getAllPosts = async (req, res) => {
                 (search != null ? post.content.toLowerCase().includes(search.toLowerCase()) : true)
             )
         );
-
-
         const paginatedPosts = posts.slice(startIndex, endIndex);
-
-
         res.json({
             page,
             startIndex,
@@ -45,6 +43,9 @@ exports.getAllPosts = async (req, res) => {
         res.status(500).send(err);
     }
 };
+/**
+ * Find a post by its ID and return its details.
+ */
 exports.findPost = async (req, res) => {
     try {
         const {id} = req.params;
@@ -52,30 +53,29 @@ exports.findPost = async (req, res) => {
         const post = await findById(id);
         res.json(post.details());
     } catch (err) {
-
         res.status(500).send(err);
     }
 };
+/**
+ * Find a post by its ID and return its details if connected author own article.
+ */
 exports.editPost = async (req, res) => {
     try {
         const {id} = req.params;
         const userId = req.user.id;
         const post = await findById(id);
-
-
         if (post.authorId != userId) {
             return res.status(404).json({message: 'Post not found'});
         }
-
-
-
         res.json(post.details());
     } catch (err) {
 
         res.status(500).send(err);
     }
 };
-
+/**
+ * Get latest articles
+ */
 exports.latestPosts = async (req, res) => {
     try {
         const posts = await Article.latestPosts();
@@ -86,16 +86,9 @@ exports.latestPosts = async (req, res) => {
         res.status(500).send(err);
     }
 };
-exports.latestPosts = async (req, res) => {
-    try {
-        const posts = await latestPosts();
-
-        res.json(posts);
-    } catch (err) {
-
-        res.status(500).send(err);
-    }
-};
+/**
+ * Get the most viewed articles.
+ */
 exports.mostViewedArticles = async (req, res) => {
     try {
         const posts = await mostViewedArticles();
@@ -105,10 +98,17 @@ exports.mostViewedArticles = async (req, res) => {
         res.status(500).send(err);
     }
 };
+/**
+ * Delete Article if author own article
+ */
 exports.deleteArticle = async (req, res) => {
     try {
         const {id} = req.params;
         const articleModel = await findById(id);
+        const userId = req.user.id;
+        if (articleModel.authorId !== userId) {
+            return res.status(404).json({message: 'Post not found'});
+        }
         await articleModel.delete();
         res.json(articleModel.details());
     } catch (err) {
@@ -116,7 +116,9 @@ exports.deleteArticle = async (req, res) => {
         res.status(500).send(err);
     }
 };
-
+/**
+ * Update Article  if author own article
+ */
 exports.updateArticle = async (req, res) => {
     uploadImage(req, res, async (err) => {
 
@@ -126,24 +128,27 @@ exports.updateArticle = async (req, res) => {
 
         let articleModel = await Article.findById(id);
 
-
+        // Ensure the user is the author of the article
         if (articleModel.authorId != userId) {
             return res.status(404).json({message: 'Post not found'});
         }
 
-
+        // update the updatable columns if exists
         articleModel.title = req.body.title || articleModel.title;
         articleModel.description = req.body.description || articleModel.description;
         articleModel.content = req.body.content || articleModel.content;
 
-
+        // Handle image upload and replacement
         if (req.file) {
+            // if article already has image
             if (articleModel.articleImageId) {
                 const avatarFile = await findById(articleModel.articleImageId);
+                // delete the old image
                 if (avatarFile) {
                     avatarFile.delete();
                 }
             }
+            // Handle the creating of new image.file represent image cause image a file
             let file = fromUpload(
                 req.file.filename, req.file.filename, req.file.mimetype
             );
@@ -152,7 +157,7 @@ exports.updateArticle = async (req, res) => {
         }
 
 
-
+        // Update article categories
         for (const category_id of JSON.parse(req.body.categories)) {
             // IDEA: instead of running one query plus for each category we can drop all records and them again
             if (!await ArticleCategory.find(id, category_id)) {
@@ -172,9 +177,11 @@ exports.updateArticle = async (req, res) => {
 
     });
 };
+
+/**
+ * Add a new article
+ */
 exports.addArticle = async (req, res) => {
-
-
     uploadImage(req, res, async (err) => {
         const articleModel = Article.fromAddArticle(
             req.body.title,
@@ -205,7 +212,9 @@ exports.addArticle = async (req, res) => {
 
     });
 };
-
+/**
+ * Increment the view count
+ */
 exports.incrementViews = async (req, res) => {
     try {
         const {id} = req.params;

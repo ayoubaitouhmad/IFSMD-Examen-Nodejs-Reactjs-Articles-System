@@ -5,7 +5,7 @@ const cors = require('cors');
 const helmet = require("helmet"); // Import the Winston logger
 
 const imageRoutes = require('./routes/imageRoutes');
-const loginRoute = require('./routes/loginRoute');
+const authRoute = require('./routes/authRoute');
 const postRoutes = require('./routes/postRoutes');
 const userRoutes = require('./routes/userRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
@@ -21,7 +21,7 @@ app.use(cors());
 
 
 app.use('/api', imageRoutes);
-app.use('/api', loginRoute);
+app.use('/api', authRoute);
 
 app.use('/api', authenticateToken, postRoutes);
 app.use('/api', authenticateToken, userRoutes);

@@ -60,7 +60,7 @@ class User {
             const options = {day: 'numeric', month: 'long', year: 'numeric'};
             return date.toLocaleDateString('en-US', options);
         }
-        return  this.createdAt;
+        return this.createdAt;
 
     }
 
@@ -127,7 +127,9 @@ class User {
     static async findById(id) {
         try {
             const connection = await getConnection();
-            const [results] = await connection.execute(`SELECT * FROM ${User.TABLE_NAME} WHERE id=?`, [id]);
+            const [results] = await connection.execute(`SELECT *
+                                                        FROM ${User.TABLE_NAME}
+                                                        WHERE id = ?`, [id]);
             await connection.end();
 
             if (results.length === 0) {
@@ -168,7 +170,9 @@ class User {
     static async findByUsername(username) {
         try {
             const connection = await getConnection();
-            const [results] = await connection.execute(`SELECT * FROM ${User.TABLE_NAME} WHERE username=?`, [username]);
+            const [results] = await connection.execute(`SELECT *
+                                                        FROM ${User.TABLE_NAME}
+                                                        WHERE username = ?`, [username]);
             await connection.end();
 
             if (results.length === 0) {
@@ -187,7 +191,10 @@ class User {
         try {
             const Article = require("./Article");
             const connection = await getConnection();
-            const [results] = await connection.execute(`SELECT * FROM ${Article.TABLE_NAME} WHERE author_id=? order by created_at desc`, [id]);
+            const [results] = await connection.execute(`SELECT *
+                                                        FROM ${Article.TABLE_NAME}
+                                                        WHERE author_id = ?
+                                                        order by created_at desc`, [id]);
             await connection.end();
             return await Promise.all(results.map(async (post) => {
                 let postModel = Article.fromDatabaseRecord(post);
@@ -217,30 +224,58 @@ class User {
         );
     }
 
+    static fromRegister(name, username, email, password) {
+
+        return new User(
+            null,
+            username,
+            name,
+            null,
+            null,
+            email,
+            password,
+            null,
+            null,
+            null,
+        );
+    }
 
     async save() {
         try {
             const connection = await getConnection();
-            const query = `
-                UPDATE ${User.TABLE_NAME}
-                SET username=?,
-                    name=?,
-                    bio=?,
-                    role=?,
-                    email=?,
-                    profile_image_id=?,
-                    updated_at=NOW()
-                WHERE id = ?
-            `;
-            await connection.execute(query, [
-                this.#username,
-                this.#name,
-                this.#bio,
-                this.#role,
-                this.#email,
-                this.#profileImageId,
-                this.#id
-            ]);
+            if (this.#id) {
+                const query = `
+                    UPDATE ${User.TABLE_NAME}
+                    SET username=?,
+                        name=?,
+                        bio=?,
+                        role=?,
+                        email=?,
+                        profile_image_id=?,
+                        updated_at=NOW()
+                    WHERE id = ?`;
+                await connection.execute(query, [
+                    this.#username,
+                    this.#name,
+                    this.#bio,
+                    this.#role,
+                    this.#email,
+                    this.#profileImageId,
+                    this.#id
+                ]);
+            } else {
+                const query = `
+                    INSERT INTO ${User.TABLE_NAME} (name, username, email, password)
+                    VALUES (?, ?, ?, ?)
+                `;
+                const [result] = await connection.execute(query, [
+                    this.name,
+                    this.#username,
+                    this.#email,
+                    this.#password,
+                ]);
+                this.#id = result.insertId;
+            }
             await connection.end();
             return true;
         } catch (error) {

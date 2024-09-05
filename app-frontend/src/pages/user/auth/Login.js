@@ -1,36 +1,38 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import axios from "axios";
-import { useAuth } from "../../../contexts/AuthContext"; // Adjust the import path as necessary
-import { useNavigate } from "react-router-dom";
+import {useAuth} from "../../../contexts/AuthContext"; // Adjust the import path as necessary
+import {useNavigate} from "react-router-dom";
 import Logo from "../../../components/Logo/Logo";
+import route from "../../../utils/route";
 
 
 const Login = () => {
-    const [email, setEmail] = useState("johndoe@example.com");
+    const [email, setEmail] = useState("1johndoe@example.com");
     const [password, setPassword] = useState("hashedpassword1");
     const [errorMessage, setErrorMessage] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { setToken, login } = useAuth();
+    const [rememberMe, setRememberMe] = useState(true);
+    const {setToken, login} = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!email || !password) {
             setErrorMessage("Please enter both email and password.");
             return;
         }
-
         setLoading(true);
-
         try {
-            const response = await axios.post("http://localhost:1000/api/login", {
+            const response = await axios.post(route('login'), {
                 email,
                 password,
+                rememberMe
             });
-            login(response.data.token, response.data.user);
-            localStorage.setItem("token", response.data.token);
-            navigate("/home");
+            if (response.data.token && response.data.user) {
+                login(response.data.token, response.data.user);
+                localStorage.setItem("token", response.data.token);
+                navigate("/home");
+            }
         } catch (error) {
             console.error("Authentication failed:", error);
             setToken(null);
@@ -38,16 +40,15 @@ const Login = () => {
             console.log(
                 error.response.data
             )
-            // if (error.response && error.response.data) {
-            //     setErrorMessage(error.response.data.message || "Authentication failed.");
-            // } else {
-            //     setErrorMessage("An unexpected error occurred. Please try again.");
-            // }
+
         } finally {
             setLoading(false);
         }
     };
 
+    const handleRememberMeChange = (e) => {
+        setRememberMe(!rememberMe);
+    };
     return (
         <div className="">
             <div className="container">
@@ -55,10 +56,10 @@ const Login = () => {
                     <div className="col-10 col-sm-9 col-md-5">
                         <form onSubmit={handleSubmit} className="">
                             <div className="text-center mb-4">
-                                <Logo width={300} height={80} />
+                                <Logo width={300} height={80}/>
                             </div>
 
-                            {errorMessage && <div style={{ color: "red" }} className="mb-3">{errorMessage}</div>}
+                            {errorMessage && <div style={{color: "red"}} className="mb-3">{errorMessage}</div>}
 
                             <div className="form-label-group mb-3">
                                 <label htmlFor="inputEmail">Email address</label>
@@ -91,7 +92,9 @@ const Login = () => {
 
                             <div className="checkbox mb-3">
                                 <label>
-                                    <input type="checkbox" value="remember-me" disabled={loading}/> Remember me
+                                    <input onChange={handleRememberMeChange} checked={rememberMe} type="checkbox"
+                                           value="remember-me"
+                                           disabled={loading}/> Remember me
                                 </label>
                             </div>
 

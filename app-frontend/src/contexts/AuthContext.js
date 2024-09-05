@@ -9,11 +9,6 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-
-
-
-
-
         const storedToken = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
         if (storedToken && storedUser) {
@@ -21,24 +16,13 @@ export const AuthProvider = ({ children }) => {
             setUser(JSON.parse(storedUser));
             setIsAuthenticated(true);
         }
-
-
-
-
     }, []);
 
     const updateUser = async () => {
         const authorData = await getUserById(user.id);
         setUser(authorData);
-
         localStorage.setItem('user', JSON.stringify(authorData));
-
     }
-
-
-
-
-
     const login = (userToken, userData) => {
         setToken(userToken);
         setUser(userData);
@@ -46,7 +30,6 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('user', JSON.stringify(userData));
         setIsAuthenticated(true);
     };
-
     const logout = () => {
         setToken(null);
         setUser(null);

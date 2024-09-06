@@ -13,6 +13,7 @@ import {usePageTitle} from "../../utils/page";
 
 const ProfilePage = () => {
     const {user, setUser, updateUser} = useAuth();
+
     const breadcrumbItems = [
         {name: 'Home', href: frontendRoute('home')},
         {name: 'Profile', href: frontendRoute('userProfile'), active: true}
@@ -40,9 +41,7 @@ const ProfilePage = () => {
             email: Yup.string()
                 .email("Invalid email address")
                 .required("Required"),
-            bio: Yup.string(),
-            file: Yup.mixed()
-                .optional("Avatar is required")
+            bio: Yup.string()
             // .test(
             //     "fileFormat",
             //     "Unsupported Format",
@@ -106,114 +105,152 @@ const ProfilePage = () => {
 
 
     return (
-
         <>
-
             <Breadcrumb items={breadcrumbItems}/>
-
-            <div className="container mt-5">
-
-
-                {alert && (
-                    <div className={`alert alert-${alert.type}`} role="alert">
-                        <strong>{alert.title}</strong> {alert.body}
-                    </div>
-                )}
-                <div className="row">
-                    <div className="col-md-4">
-                        {formik.errors.file && formik.touched.file && (
-                            <span className="text-danger">{formik.errors.file}</span>
-                        )}
-                        <div className="text-center">
-                            <div className="position-relative">
-                                <img
-                                    src={preview}
-                                    alt="Profile"
-                                    className="img-fluid shadow rounded-circle mb-3"
-                                    style={{width: '150px', height: '150px', objectFit: 'cover'}}
-                                />
-                                <label
-                                    htmlFor="profilePicture"
-                                    className="position-absolute "
-                                    style={{
-                                        top: '65%',
-                                        left: '65%',
-                                        transform: 'translateX(-50%)',
-                                        background: 'rgba(0,0,0)',
-                                        color: 'white',
-                                        padding: '5px 10px',
-                                        borderRadius: '5px',
-                                        cursor: 'pointer'
-                                    }}>
-                                    Edit
-                                </label>
-                                <input
-                                    type="file"
-                                    id="profilePicture"
-                                    name="file"
-                                    onChange={handleFileChange}
-                                    className="d-none "
-                                    accept="image/*"
-                                />
-                            </div>
+            <div className="card mb-3">
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-4">
+                            <h4>Edit Profile</h4>
                         </div>
-                        <p className="text-left bg-light">
-                            {formik.values.bio}
-                        </p>
-                    </div>
-                    <div className="col-md-8">
+                        <div className="col-8">
+                            <form onSubmit={formik.handleSubmit}>
+                                <div className="">
+                                    {alert && (
+                                        <div className={`alert alert-${alert.type}`} role="alert">
+                                            <strong>{alert.title}</strong> {alert.body}
+                                        </div>
+                                    )}
+                                    {formik.errors.file && formik.touched.file && (
+                                        <span className="text-danger">{formik.errors.file}</span>
+                                    )}
+                                    <div className="form-group">
+                                        <label
+                                            htmlFor="profilePicture"
+                                            className=" "
+                                        >
+                                            Avatar
+                                        </label>
 
-                        <h4>Edit Profile</h4>
-                        <form onSubmit={formik.handleSubmit}>
-                            <div className="form-group">
-                                <label className="required-field" htmlFor="name">Name</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    className="form-control"
-                                    value={formik.values.name}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
-                                {formik.errors.name && formik.touched.name && (
-                                    <span className="text-danger">{formik.errors.name}</span>
-                                )}
-                            </div>
-                            <div className="form-group">
-                                <label className="required-field" htmlFor="email">Email</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    className="form-control"
-                                    value={formik.values.email}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
-                                {formik.errors.email && formik.touched.email && (
-                                    <span className="text-danger">{formik.errors.email}</span>
-                                )}
-                            </div>
-                            <div className="form-group">
-                                <label className="required-field" htmlFor="bio">Bio</label>
-                                <textarea
-                                    style={{height: '250px'}}
-                                    id="bio"
-                                    name="bio"
-                                    className="form-control"
-                                    rows="4"
-                                    value={formik.values.bio}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                ></textarea>
-                            </div>
-                            <button type="submit" className="btn btn-primary">Save Changes</button>
-                            <button type="button" className="btn btn-secondary ml-2">Cancel</button>
-                        </form>
+                                        <div className="position-relative">
+
+
+                                            <img
+                                                src={preview}
+                                                alt="Profile"
+                                                className="img-fluid shadow rounded-circle mb-3"
+                                                style={{width: '150px', height: '150px', objectFit: 'cover'}}
+                                            />
+                                            <label
+                                                htmlFor="profilePicture"
+                                                className="position-absolute "
+                                                style={{
+                                                    transform: 'translateX(-50%)',
+                                                    background: 'rgba(0,0,0)',
+                                                    color: 'white',
+                                                    padding: '5px 10px',
+                                                    borderRadius: '5px',
+                                                    cursor: 'pointer'
+                                                }}>
+                                                Edit
+                                            </label>
+                                            <input
+                                                type="file"
+                                                id="profilePicture"
+                                                name="file"
+                                                onChange={handleFileChange}
+                                                className="d-none "
+                                                accept="image/*"
+                                            />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div className="form-group">
+                                    <label className="required-field" htmlFor="username">Username</label>
+                                    <input
+                                        type="text"
+                                        id="username"
+                                        className="form-control "
+                                        readOnly={true}
+                                        disabled
+                                        value={user.username}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="required-field" htmlFor="name">Name</label>
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        className="form-control"
+                                        value={formik.values.name}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.errors.name && formik.touched.name && (
+                                        <span className="text-danger">{formik.errors.name}</span>
+                                    )}
+                                </div>
+                                <div className="form-group">
+                                    <label className="required-field" htmlFor="email">Email</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        className="form-control"
+                                        value={formik.values.email}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.errors.email && formik.touched.email && (
+                                        <span className="text-danger">{formik.errors.email}</span>
+                                    )}
+                                </div>
+                                <div className="form-group">
+                                    <label className="" htmlFor="bio">Bio</label>
+                                    <textarea
+                                        style={{height: '250px'}}
+                                        id="bio"
+                                        className="form-control"
+                                        defaultValue={formik.values.bio}
+                                        rows="4"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    ></textarea>
+                                </div>
+                                <button type="submit" className="btn btn-primary">Save Changes</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div className="card mb-3">
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-4">
+                            <h4>Security</h4>
+                        </div>
+                        <div className="col-8">
+                            <form onSubmit={formik.handleSubmit}>
+
+                                <div className="form-group">
+                                    <label className="" htmlFor="username">Account Date</label>
+                                    <input
+                                        type="text"
+                                        id="username"
+                                        className="form-control "
+                                        disabled={true}
+                                        value={user.createdAt}
+                                    />
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </>
     );
 };

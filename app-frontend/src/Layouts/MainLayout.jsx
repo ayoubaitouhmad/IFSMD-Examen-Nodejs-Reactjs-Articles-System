@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Header from "../components/Layouts/Header/Header";
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 
 import Logout from "../pages/user/auth/Logout";
 import AllPosts from "../pages/user/articles/AllArticles";
@@ -13,15 +13,18 @@ import AuthorArticles from "../pages/user/articles/AuthorArticles";
 import Profile from "../pages/user/profile";
 import EditArticle from "../pages/user/articles/editArticle";
 import CategoryArticles from "../pages/user/CategoryArticles";
-
+import frontendRoute from "../utils/frontendRoute";
 
 
 function MainLayout() {
+
     return (
         <div className="container-fluid container-lg">
             <Header/>
             <div className="w-100">
                 <Routes>
+                    <Route path="/" element={<Kopa/>}/>
+
                     <Route path="/home" element={<Home/>}/>
 
                     <Route path="/articles" element={<AllPosts/>}/>
@@ -34,7 +37,7 @@ function MainLayout() {
 
                     <Route path="/articles/:id/edit" element={<EditArticle/>}/>
 
-                    <Route path="/articles/author/:username" element={<AuthorArticles />} />
+                    <Route path="/articles/author/:username" element={<AuthorArticles/>}/>
 
                     <Route path="/category/:id/:name/articles" element={<CategoryArticles/>}/>
 
@@ -46,6 +49,15 @@ function MainLayout() {
     );
 }
 
+const Kopa = () => {
+    const navigate = useNavigate();
 
+    useEffect(() => {
+        navigate(frontendRoute('home'));
+    }, [navigate]);
+
+    return null; // Kopa doesn't need to render anything
+
+};
 
 export default MainLayout;

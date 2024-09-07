@@ -11,7 +11,7 @@ import frontendRoute from "../../../utils/frontendRoute";
 
 
 function Header() {
-    const {user, isAuthenticated, logout} = useAuth();
+
     const [showSearch, setShowSearch] = useState(false);
     const [categories, setCategories] = useState([]);
 
@@ -37,7 +37,9 @@ function Header() {
         <header className="blog-header ">
             <div className="row flex-nowrap justify-content-between align-items-center ">
                 <div className="col-4 ">
-                    <Logo/>
+                    <Link to={'/home'}>
+                        <Logo/>
+                    </Link>
                 </div>
                 <div className="col-8 d-flex justify-content-end align-items-center">
 
@@ -71,8 +73,6 @@ function Header() {
         </header>
     );
 }
-
-
 
 
 export default Header;

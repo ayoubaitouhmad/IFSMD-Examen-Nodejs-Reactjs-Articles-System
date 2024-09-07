@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import axios from "axios";
 import {useAuth} from "../../../contexts/AuthContext"; // Adjust the import path as necessary
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Logo from "../../../components/Logo/Logo";
 import route from "../../../utils/route";
 
@@ -28,15 +28,18 @@ const Login = () => {
                 password,
                 rememberMe
             });
+            console.log(
+                response
+            )
             if (response.data.token && response.data.user) {
                 login(response.data.token, response.data.user);
-                localStorage.setItem("token", response.data.token);
                 navigate("/home");
             }
         } catch (error) {
             console.error("Authentication failed:", error);
             setToken(null);
             localStorage.removeItem("token");
+            localStorage.removeItem("user");
             console.log(
                 error.response.data
             )
@@ -102,8 +105,9 @@ const Login = () => {
                                 {loading ? "Logging in..." : "Sign in"}
                             </button>
 
-                            <p className="mt-5 mb-3 text-muted text-center">
-                                ©2017-2018
+                            <p className="mt-3 mb-3  ">
+                                Don't have an account?
+                                <Link to={'/register'}> Sign Up </Link>
                             </p>
                         </form>
                     </div>

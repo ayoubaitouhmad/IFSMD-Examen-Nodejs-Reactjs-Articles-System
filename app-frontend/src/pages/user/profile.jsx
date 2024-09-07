@@ -20,14 +20,19 @@ const ProfilePage = () => {
         {name: 'Home', href: frontendRoute('home')},
         {name: 'Profile', href: frontendRoute('userProfile'), active: true}
     ];
+    let userAvatar = route('streamImage', {'image': user.profileImage.filePath});
+    const [preview, setPreview] = useState(userAvatar);
+
+    const [profileAlert, setProfileAlert] = useState(null);
+    const [resetPasswordAlert, setResetPasswordAlert] = useState(null);
+    const [changePasswordAlert, setChangePasswordAlert] = useState(null);
+
+    const [alert, setAlert] = useState(null);
 
     usePageTitle("Profile");
 
-    let userAvatar = route('streamImage', {'image': user.profileImage.filePath});
 
 
-    const [preview, setPreview] = useState(userAvatar);
-    const [alert, setAlert] = useState(null);
 
     const formik = useFormik({
         initialValues: {
@@ -72,12 +77,12 @@ const ProfilePage = () => {
                 formik.setFieldValue('profilePicture', res.data.imageUrl);
 
 
-                setAlert(res.data.alert);
+                setProfileAlert(res.data.alert);
                 await updateUser();
 
 
                 setTimeout(() => {
-                    setAlert(null);
+                    setProfileAlert(null);
                 }, 5000);
 
                 console.log(res.data);
@@ -102,9 +107,9 @@ const ProfilePage = () => {
             try {
                 const response = await changePassword(values.oldPassword, values.newPassword);
                 if(response.alert){
-                    setAlert(response.alert);
+                    setChangePasswordAlert(response.alert);
                     setTimeout(() => {
-                        setAlert(null);
+                        setChangePasswordAlert(null);
                     }, 9000);
                 }
             } catch (err) {
@@ -135,9 +140,9 @@ const ProfilePage = () => {
         if (userChoice) {
             const response = await sendResetPasswordEmail();
             if(response.alert){
-                setAlert(response.alert);
+                setResetPasswordAlert(response.alert);
                 setTimeout(() => {
-                    setAlert(null);
+                    setResetPasswordAlert(null);
                 }, 9000);
             }
         }
@@ -159,9 +164,9 @@ const ProfilePage = () => {
                         <div className="col-8">
                             <form onSubmit={formik.handleSubmit}>
                                 <div className="">
-                                    {alert && (
-                                        <div className={`alert alert-${alert.type}`} role="alert">
-                                            <strong>{alert.title}</strong> {alert.body}
+                                    {profileAlert && (
+                                        <div className={`alert alert-${profileAlert.type}`} role="alert">
+                                            <strong>{profileAlert.title}</strong> {profileAlert.body}
                                         </div>
                                     )}
                                     {formik.errors.file && formik.touched.file && (
@@ -271,9 +276,15 @@ const ProfilePage = () => {
                         </div>
                         <div className="col-8">
 
-                            {alert && (
-                                <div className={`alert alert-${alert.type}`} role="alert">
-                                    <strong>{alert.title}</strong> {alert.body}
+                            {resetPasswordAlert && (
+                                <div className={`alert alert-${resetPasswordAlert.type}`} role="alert">
+                                    <strong>{resetPasswordAlert.title}</strong> {resetPasswordAlert.body}
+                                </div>
+                            )}
+
+                            {changePasswordAlert && (
+                                <div className={`alert alert-${changePasswordAlert.type}`} role="alert">
+                                    <strong>{changePasswordAlert.title}</strong> {changePasswordAlert.body}
                                 </div>
                             )}
 

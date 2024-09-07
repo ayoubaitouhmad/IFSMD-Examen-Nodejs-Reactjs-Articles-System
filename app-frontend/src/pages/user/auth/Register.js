@@ -1,9 +1,9 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import {useAuth} from "../../../contexts/AuthContext"; // Adjust the import path as necessary
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Logo from "../../../components/Logo/Logo";
 import route from "../../../utils/route";
 
@@ -27,6 +27,7 @@ const validationSchema = Yup.object({
 const Register = () => {
     const {setToken, login} = useAuth();
     const navigate = useNavigate();
+    const [alert, setAlert] = useState(null);
 
     const formik = useFormik({
         initialValues: {
@@ -37,7 +38,7 @@ const Register = () => {
             confirmPassword: "",
         },
         validationSchema,
-        onSubmit: async (values, {setSubmitting, setErrors}) => {
+        onSubmit: async (values, {setSubmitting, setErrors, resetForm}) => {
             try {
                 const response = await axios.post(route('register'), {
                     name: values.name,
@@ -46,19 +47,24 @@ const Register = () => {
                     password: values.password,
                     confirmPassword: values.confirmPassword,
                 });
-                console.log(response)
 
-                // if (response.data.token && response.data.user) {
-                //     login(response.data.token, response.data.user);
-                //     localStorage.setItem("token", response.data.token);
-                //     navigate("/home");
-                // }
+
+                const alert = response.data.alert;
+                if (alert) {
+                    setAlert(alert);
+                    resetForm();
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 9000);
+                }
+
+
             } catch (error) {
 
-                // console.error("Registration failed:", error);
-                // setErrors({ email: "Registration failed. Please try again." });
-                // setToken(null);
-                // localStorage.removeItem("token");
+                console.error("Registration failed:", error);
+                setErrors({email: "Registration failed. Please try again."});
+                setToken(null);
+                localStorage.removeItem("token");
             } finally {
                 setSubmitting(false);
             }
@@ -69,11 +75,21 @@ const Register = () => {
         <div className="">
             <div className="container">
                 <div className="row justify-content-center align-items-center vh-100">
+
                     <div className="col-10 col-sm-9 col-md-5">
+
+
                         <form onSubmit={formik.handleSubmit} className="">
                             <div className="text-center mb-4">
                                 <Logo width={300} height={80}/>
                             </div>
+
+                            {alert && (
+                                <div className={`alert alert-${alert.type}`} role="alert">
+                                    <strong>{alert.title}</strong> {alert.body}
+                                </div>
+                            )}
+
 
                             <div className="form-label-group mb-3">
                                 <label className="required-field" htmlFor="inputName">Name</label>
@@ -157,8 +173,11 @@ const Register = () => {
                                 {formik.isSubmitting ? "Registering..." : "Register"}
                             </button>
 
-                            <p className="mt-5 mb-3 text-muted text-center">
-                                ©2017-2018
+                            <p className="mt-3 mb-3 text-muted text-center">
+                                <p className="mt-3 mb-3  ">
+                                    Already have an account?
+                                    <Link to={'/login'}> Sign in </Link>
+                                </p>
                             </p>
                         </form>
                     </div>

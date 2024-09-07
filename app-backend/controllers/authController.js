@@ -2,7 +2,6 @@ const User = require("../models/userModel");
 const {sign} = require("jsonwebtoken");
 
 
-
 /**
  * Handle login functionality
  */
@@ -29,9 +28,13 @@ exports.register = async (req, res) => {
     const user = await User.fromRegister(
         name, username, email, password
     );
-    await  user.save();
+    await user.save();
+    let alert = {
+        type: "success",
+        title: "Success!",
+        body: "Congratulations, your account has been successfully created."
+    };
     res.json({
-        email,
-        password
+        alert
     });
 };

@@ -8,25 +8,36 @@ import {useAuth} from "../../../contexts/AuthContext";
 import {getAll} from "../../../services/categoryService";
 import {Link} from "react-router-dom";
 import frontendRoute from "../../../utils/frontendRoute";
+import {getCacheData, hasCacheData, setCacheData} from "../../../utils/storage";
 
 
 function Header() {
 
     const [showSearch, setShowSearch] = useState(false);
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState(null);
 
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            const data = await getAll();
-            const formattedCategories = data.map((item) => ({
-                label: item.name,
-                value: item.id,
-            }));
-            setCategories(formattedCategories);
-        };
-        fetchCategories();
+        if (hasCacheData('categories')) {
+            setCategories(getCacheData('categories'))
+        }else {
+            const fetchCategories = async ()=>{
+                const data = await getAll(
+                    {
+                        withArticlesCount: true
+                    }
+                );
+                console.log(
+                    data
+                )
+                setCategories(data);
+                setCacheData('categories', data);
+            }
+        }
     }, []);
+
+
+
 
     const toggleSearch = () => {
         setShowSearch(!showSearch);
@@ -53,19 +64,16 @@ function Header() {
             <div className="nav-scroller py-1 mb-2">
                 <nav className="row text-center flex-nowrap overflow-auto">
                     {
-                        categories.map((category, index) => (
+                        categories && categories.map((category, index) => (
                             <Link key={index} to={frontendRoute('categoryArticles', {
-                                id: category.value,
-                                name: category.label.toLowerCase().replace(' ', '-')
+                                id: category.id,
+                                name: category.name
                             })}
-                                  className="p-2 text-muted text-nowrap">
-                                {category.label}
+                                  className="p-2 text-muted text-nowrap" >
+                                {category.name}
                             </Link>
-
                         ))
                     }
-
-
                 </nav>
             </div>
 

@@ -4,7 +4,7 @@ import route from "../utils/route";
 
 const API_URL = '/articles';
 const API_GET_POST_URL = '/articles/';
-const API_DELETE_ARTICLE_URL = '/articles/:id/delete';
+const API_DELETE_ARTICLE_URL = '/articles/:id';
 const API_EDIT_ARTICLE_URL = '/articles/:id/edit';
 const API_INCREMENT_VIEWS_ARTICLE_URL = '/articles/:id/increment-views';
 const API_GET_LATEST_ARTICLES = '/articles/latest';
@@ -76,7 +76,7 @@ export const addPost = async (post) => {
 };
 export const deleteArticle = async (id) => {
     try {
-        const response = await axiosInstance.post(API_DELETE_ARTICLE_URL.replace(':id' , id));
+        const response = await axiosInstance.delete(API_DELETE_ARTICLE_URL.replace(':id' , id));
         return response.data;
     } catch (error) {
         console.error('Error adding post:', error);

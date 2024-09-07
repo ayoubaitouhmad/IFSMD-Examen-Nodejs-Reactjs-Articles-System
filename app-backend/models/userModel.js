@@ -1,7 +1,6 @@
 const getConnection = require("../config/db");
 const logger = require("../utils/logger");
 const FileDocument = require("./fileDocument");
-const Article = require("./Article");
 const {sendEmail} = require("../services/emailService");
 const ResetPasswordEmail = require("../emails/resetPasswordEmail");
 

@@ -1,9 +1,6 @@
-const {latestPosts, mostViewedArticles, articles, findById} = require("../models/Article");
+
 const {uploadImage} = require("../services/imageService");
-const logger = require("../utils/logger");
-const User = require("../models/userModel");
 const Article = require("../models/Article");
-const FileDocument = require("../models/fileDocument");
 const {fromUpload} = require("../models/fileDocument");
 const ArticleCategory = require('../models/articleCategory');
 
@@ -20,7 +17,7 @@ exports.getAllPosts = async (req, res) => {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
         const author = req.query.author || null;
-        let posts = await articles();
+        let posts = await Article.articles();
         // Filter posts by date and search term
         posts = posts.filter(post =>
             (date != null ? new Date(post.createdAt) >= new Date(date) : true) &&
@@ -49,8 +46,7 @@ exports.getAllPosts = async (req, res) => {
 exports.findPost = async (req, res) => {
     try {
         const {id} = req.params;
-        const userId = req.user.id;
-        const post = await findById(id);
+        const post = await Article.findById(id);
         res.json(post.details());
     } catch (err) {
         res.status(500).send(err);
@@ -63,7 +59,7 @@ exports.editPost = async (req, res) => {
     try {
         const {id} = req.params;
         const userId = req.user.id;
-        const post = await findById(id);
+        const post = await Article.findById(id);
         if (post.authorId != userId) {
             return res.status(404).json({message: 'Post not found'});
         }
@@ -79,10 +75,8 @@ exports.editPost = async (req, res) => {
 exports.latestPosts = async (req, res) => {
     try {
         const posts = await Article.latestPosts();
-
         res.json(posts);
     } catch (err) {
-
         res.status(500).send(err);
     }
 };
@@ -91,7 +85,7 @@ exports.latestPosts = async (req, res) => {
  */
 exports.mostViewedArticles = async (req, res) => {
     try {
-        const posts = await mostViewedArticles();
+        const posts = await Article.mostViewedArticles();
         res.json(posts);
     } catch (err) {
 
@@ -104,7 +98,7 @@ exports.mostViewedArticles = async (req, res) => {
 exports.deleteArticle = async (req, res) => {
     try {
         const {id} = req.params;
-        const articleModel = await findById(id);
+        const articleModel = await Article.findById(id);
         const userId = req.user.id;
         if (articleModel.authorId !== userId) {
             return res.status(404).json({message: 'Post not found'});
@@ -219,7 +213,7 @@ exports.incrementViews = async (req, res) => {
     try {
         const {id} = req.params;
         const userId = req.user.id;
-        const post = await findById(id);
+        const post = await Article.findById(id);
         post.views++;
         await post.save();
         res.json(post.details());

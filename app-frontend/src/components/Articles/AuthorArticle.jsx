@@ -3,17 +3,19 @@ import {Link, useNavigate} from "react-router-dom";
 import route from "../../utils/route";
 import frontendRoute from "../../utils/frontendRoute";
 import {deleteArticle} from "../../services/postService";
+import {useAuth} from "../../contexts/AuthContext";
 
 function AuthorArticle({id, title, description, createdAt, isLastArticle, urlTitle, canEdit, articleImage, views}) {
+    const {user} = useAuth();
     const navigate = useNavigate();
     const handleDeleteArticleClick = async () => {
-
         if (window.confirm("Are you sure you want to delete this item?")) {
             let response = await deleteArticle(id);
             navigate(0);
         }
-
     }
+
+
 
     return (
         <div id={id} className={`media my-4  ${isLastArticle ? '' : 'border-bottom'}`}>
@@ -47,6 +49,7 @@ function AuthorArticle({id, title, description, createdAt, isLastArticle, urlTit
             {
                 canEdit ? <div className="mx-1 d-flex justify-content-between align-items-center">
                     <div className="btn-group">
+
                         <Link className="btn btn-sm btn-outline-secondary" to={frontendRoute('editArticle', {id: id})}>
                             Edit
                         </Link>

@@ -9,12 +9,57 @@ import route from '../../../utils/route';
 import axiosInstance from "../../../utils/axios";
 import Select from 'react-select';
 import { getAll } from '../../../services/categoryService';
+import {useAuth} from "../../../contexts/AuthContext";
 
-function EditArticle(props) {
+function EditArticle() {
     const { id } = useParams();
     const [preview, setPreview] = useState(null);
     const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
+
+    const { user} = useAuth();
+
+    useEffect(() => {
+        const fetchArticle = async () => {
+            try {
+                const articleData = await editPost(id);
+
+
+                setPreview(route('streamImage', {
+                    image: articleData.articleImage.filePath,
+                    width:600,
+                    height:600,
+                }));
+
+                console.log(articleData)
+
+                setInitialValues({
+                    title: articleData.title,
+                    image: articleData.image,
+                    description: articleData.description,
+                    content: articleData.content,
+                    categories: articleData.categories.map(cat => ({ label: cat.name, value: cat.id })),
+                });
+            } catch (error) {
+
+                if (error.response && error.response.status === 404) {
+                    navigate('/404');
+                }
+            }
+        };
+
+        const fetchCategories = async () => {
+            const data = await getAll();
+            const formattedCategories = data.map((item) => ({
+                label: item.name,
+                value: item.id,
+            }));
+            setCategories(formattedCategories);
+        };
+
+        fetchArticle();
+        fetchCategories();
+    }, [id]);
 
     const [initialValues, setInitialValues] = useState({
         title: '',
@@ -54,7 +99,7 @@ function EditArticle(props) {
             formData.append('categories', JSON.stringify(values.categories.map(cat => cat.value)));
 
             try {
-                const response = await axiosInstance.post(route('updateArticle', { id: id }), formData, {
+                const response = await axiosInstance.put(route('updateArticle', { id: id }), formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -69,45 +114,7 @@ function EditArticle(props) {
         },
     });
 
-    useEffect(() => {
-        const fetchArticle = async () => {
-            try {
-                const articleData = await editPost(id);
-                setPreview(route('streamImage', {
-                    image: articleData.articleImage.filePath,
-                    width:600,
-                    height:600,
-                }));
 
-                console.log(articleData)
-
-                setInitialValues({
-                    title: articleData.title,
-                    image: articleData.image,
-                    description: articleData.description,
-                    content: articleData.content,
-                    categories: articleData.categories.map(cat => ({ label: cat.name, value: cat.id })),
-                });
-            } catch (error) {
-
-                if (error.response && error.response.status === 404) {
-                    navigate('/404');
-                }
-            }
-        };
-
-        const fetchCategories = async () => {
-            const data = await getAll();
-            const formattedCategories = data.map((item) => ({
-                label: item.name,
-                value: item.id,
-            }));
-            setCategories(formattedCategories);
-        };
-
-        fetchArticle();
-        fetchCategories();
-    }, [id]);
 
     const handleImageChange = (event) => {
         const file = event.currentTarget.files[0];

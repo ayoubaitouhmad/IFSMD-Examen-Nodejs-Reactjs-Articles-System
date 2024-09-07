@@ -1,10 +1,9 @@
 const getConnection = require("../config/db");
 
-const User = require("./userModel");
 const logger = require("../utils/logger");
 const FileDocument = require("./fileDocument");
 const ArticleCategory = require("./articleCategory");
-const {IMAGE_PLACEHOLDER_280x187, IMAGE_PLACEHOLDER_600x340, IMAGE_PLACEHOLDER_300x150, IMAGE_PLACEHOLDER} = require("../services/imageService");
+const { IMAGE_PLACEHOLDER} = require("../services/imageService");
 
 
 class Article {
@@ -152,6 +151,7 @@ class Article {
 
     async getAuthor() {
         try {
+            const User = require("./userModel");
             let author = await User.findById(this.#id);
             this.author = author ? author.detailsForArticle() : null;
         } catch (e) {

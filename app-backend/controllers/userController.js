@@ -1,16 +1,16 @@
 const User = require("../models/userModel");
 const logger = require('../utils/logger');
-const { uploadImage } = require("../services/imageService");
-const { fromUpload, findById } = require("../models/fileDocument");
+const {uploadImage} = require("../services/imageService");
+const {fromUpload, findById} = require("../models/fileDocument");
 
 /**
  * Get user details by ID.
  */
 exports.getById = async (req, res) => {
     try {
-        let { id } = req.params;
+        let {id} = req.params;
         let user = await User.findById(id);
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        if (!user) return res.status(404).json({message: 'User not found'});
         return res.json(user.details());
     } catch (err) {
         logger.error(err.message);
@@ -23,9 +23,9 @@ exports.getById = async (req, res) => {
  */
 exports.getByUsername = async (req, res) => {
     try {
-        let { username } = req.params;
+        let {username} = req.params;
         let user = await User.findByUsername(username);
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        if (!user) return res.status(404).json({message: 'User not found'});
         return res.json(user);
     } catch (err) {
         logger.error(err.message);
@@ -38,7 +38,7 @@ exports.getByUsername = async (req, res) => {
  */
 exports.getUserArticles = async (req, res) => {
     try {
-        let { id } = req.params;
+        let {id} = req.params;
         let userArticles = await User.findUserArticles(id);
 
         const page = parseInt(req.query.page) || 1;
@@ -78,7 +78,7 @@ exports.updateProfile = async (req, res) => {
 
             if (err) {
                 logger.error('Multer error:', err);
-                return res.status(400).json({ message: err.message });
+                return res.status(400).json({message: err.message});
             }
 
             let user = await User.findById(id);
@@ -110,10 +110,61 @@ exports.updateProfile = async (req, res) => {
                 title: "Success!",
                 body: "Profile updated successfully."
             };
-            return res.status(200).json({ alert, 'user': user.details() });
+            return res.status(200).json({alert, 'user': user.details()});
         } catch (err) {
             logger.error(err.message);
             return res.status(500).send('Server error');
         }
     });
+};
+
+/**
+ * Get user details by username.
+ */
+exports.forgotPassword = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        let user = await User.findById(userId);
+        if (!user) return res.status(404).json({message: 'User not found'});
+        await user.sendResetPasswordEmail();
+        let alert = {
+            type: "success",
+            title: "Success!",
+            body: "Password Reset Email Has Been Sent"
+        };
+        return res.status(200).json({alert});
+    } catch (err) {
+        logger.error(err.message);
+        return res.status(500).send('Server error');
+    }
+};
+
+/**
+ * Get user details by username.
+ */
+exports.changePassword = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        let user = await User.findById(userId);
+        const {newPassword, oldPassword} = req.body;
+
+        if (user == null) {
+            return res.status(404).json({message: 'User not found'})
+        }
+        if (user.password != oldPassword) {
+            return res.status(404).json({message: 'wrong password'})
+        }
+        user.password = newPassword;
+        await user.save();
+
+        let alert = {
+            type: "success",
+            title: "Success!",
+            body: "Password Changed Successfully"
+        };
+        res.status(200).json({alert});
+    } catch (err) {
+        logger.error(err.message);
+        return res.status(500).send('Server error');
+    }
 };

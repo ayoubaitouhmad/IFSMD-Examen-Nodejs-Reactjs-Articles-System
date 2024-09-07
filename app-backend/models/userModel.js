@@ -1,6 +1,11 @@
 const getConnection = require("../config/db");
 const logger = require("../utils/logger");
 const FileDocument = require("./fileDocument");
+const Article = require("./Article");
+const {sendEmail} = require("../services/emailService");
+const ResetPasswordEmail = require("../emails/resetPasswordEmail");
+
+const crypto = require('crypto');
 
 
 class User {
@@ -52,7 +57,13 @@ class User {
     set name(name) {
         this.#name = name;
     }
+    get password() {
+        return this.#password;
+    }
 
+    set password(password) {
+        this.#password = password;
+    }
 
     get createdAt() {
         let date = new Date(this.#createdAt);
@@ -251,6 +262,7 @@ class User {
                         bio=?,
                         role=?,
                         email=?,
+                        password=?,
                         profile_image_id=?,
                         updated_at=NOW()
                     WHERE id = ?`;
@@ -260,6 +272,7 @@ class User {
                     this.#bio,
                     this.#role,
                     this.#email,
+                    this.#password,
                     this.#profileImageId,
                     this.#id
                 ]);
@@ -285,6 +298,30 @@ class User {
     }
 
 
+    generatePassword(length) {
+        return crypto.randomBytes(length).toString('base64').slice(0, length);
+    }
+
+
+    async sendResetPasswordEmail() {
+        try {
+            const newPassword = this.generatePassword(12)
+            await sendEmail(
+                this.#email,
+                'Get a new password',
+                ResetPasswordEmail(newPassword)
+            );
+            this.#password = newPassword;
+            await this.save();
+            return true;
+        } catch (error) {
+            logger.error(`Error sending email: ${error.message}`);
+            return null;
+        }
+    }
+
+
 }
+
 
 module.exports = User;

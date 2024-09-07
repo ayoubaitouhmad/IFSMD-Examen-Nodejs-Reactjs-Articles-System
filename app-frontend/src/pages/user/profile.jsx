@@ -9,11 +9,13 @@ import LoadingOverlay from "../../components/LoadingOverlay/loadingOverlay";
 import frontendRoute from "../../utils/frontendRoute";
 import Breadcrumb from "../../utils/breadcrumb";
 import {usePageTitle} from "../../utils/page";
+import Modal from "../../components/Modal/Modal";
+import {changePassword, sendResetPasswordEmail} from "../../services/userService";
 
 
 const ProfilePage = () => {
     const {user, setUser, updateUser} = useAuth();
-
+    const [visible, setVisible] = useState(false);
     const breadcrumbItems = [
         {name: 'Home', href: frontendRoute('home')},
         {name: 'Profile', href: frontendRoute('userProfile'), active: true}
@@ -85,6 +87,33 @@ const ProfilePage = () => {
         },
     });
 
+    const securityFormik = useFormik({
+        initialValues: {
+            oldPassword: null,
+            newPassword: null,
+        },
+        validationSchema: Yup.object({
+            oldPassword: Yup.string()
+                .required("Old password is required"),
+            newPassword: Yup.string()
+                .required("New password is required"),
+        }),
+        onSubmit: async (values) => {
+            try {
+                const response = await changePassword(values.oldPassword, values.newPassword);
+                if(response.alert){
+                    setAlert(response.alert);
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 9000);
+                }
+            } catch (err) {
+                console.error(err.response.data);
+            }
+        },
+    });
+
+
     const handleFileChange = (event) => {
         const file = event.currentTarget.files[0];
         if (file && file.type.startsWith('image/')) {
@@ -97,16 +126,30 @@ const ProfilePage = () => {
         }
     };
 
-
     if (!user) {
         return <LoadingOverlay/>;
     }
 
+    const handleModalResult = async (userChoice) => {
+        setVisible(false);
+        if (userChoice) {
+            const response = await sendResetPasswordEmail();
+            if(response.alert){
+                setAlert(response.alert);
+                setTimeout(() => {
+                    setAlert(null);
+                }, 9000);
+            }
+        }
 
+    };
 
     return (
         <>
             <Breadcrumb items={breadcrumbItems}/>
+            {
+                visible ? <Modal title="Are you sure you want to proceed?" setResult={handleModalResult}/> : ''
+            }
             <div className="card mb-3">
                 <div className="card-body">
                     <div className="row">
@@ -131,10 +174,7 @@ const ProfilePage = () => {
                                         >
                                             Avatar
                                         </label>
-
                                         <div className="position-relative">
-
-
                                             <img
                                                 src={preview}
                                                 alt="Profile"
@@ -223,7 +263,6 @@ const ProfilePage = () => {
                     </div>
                 </div>
             </div>
-
             <div className="card mb-3">
                 <div className="card-body">
                     <div className="row">
@@ -231,28 +270,100 @@ const ProfilePage = () => {
                             <h4>Security</h4>
                         </div>
                         <div className="col-8">
-                            <form onSubmit={formik.handleSubmit}>
 
-                                <div className="form-group">
-                                    <label className="" htmlFor="username">Account Date</label>
-                                    <input
-                                        type="text"
-                                        id="username"
-                                        className="form-control "
-                                        disabled={true}
-                                        value={user.createdAt}
+                            {alert && (
+                                <div className={`alert alert-${alert.type}`} role="alert">
+                                    <strong>{alert.title}</strong> {alert.body}
+                                </div>
+                            )}
+
+
+                            <div className="form-group">
+                                <label className="" htmlFor="username">Account Date</label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    className="form-control "
+                                    disabled={true}
+                                    value={user.createdAt}
+                                />
+                            </div>
+                            <form onSubmit={securityFormik.handleSubmit}>
+
+
+                                <div className="">
+                                    <PasswordInput
+                                        label={'Enter old password'}
+                                        formik={securityFormik}
+                                        name={"oldPassword"}
                                     />
+                                    <PasswordInput
+                                        label={'Enter New password'}
+                                        formik={securityFormik}
+                                        name={"newPassword"}
+                                    />
+                                    <div className="form-group">
+                                        <button type="submit" className="btn btn-primary">
+                                            change password
+                                        </button>
+
+                                    </div>
                                 </div>
 
+
                             </form>
+
+                            <div className="form-group mt-5">
+                                <p>
+                                    If you cant remember your old password , we will send you new one in your email
+                                    <i className="mx-2 fa-solid fa-down-long text-muted"></i>
+                                </p>
+                                <button onClick={() => setVisible(prevState => !prevState)} type="button"
+                                        className="btn btn-outline-danger">
+                                    reset password
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
         </>
     );
 };
 
+
+const PasswordInput = ({label, formik, name}) => {
+    const [showPassword, setShowPassword] = useState(false);
+    return (
+        <div className="form-group">
+            <label className="" htmlFor="username">{label}</label>
+            <div className="input-group mb-3">
+                <input
+                    id={name}
+                    type={showPassword ? 'text' : "password"}
+                    className="form-control"
+                    placeholder="password"
+                    aria-label="password"
+                    aria-describedby="password"
+
+                    value={formik.values[name] ?? undefined}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+
+                />
+                <div className="input-group-prepend ">
+                    <span className="input-group-text btn-outline-secondary"
+                          onClick={() => setShowPassword(prevState => !prevState)}>
+                        <i className={"fa-solid fa-eye" + (showPassword ? '' : '-slash')}></i>
+                    </span>
+                </div>
+            </div>
+            {formik.errors[name] && formik.touched[name] && (
+                <span className="text-danger">{formik.errors[name]}</span>
+            )}
+
+        </div>
+    );
+
+};
 export default ProfilePage;

@@ -47,7 +47,7 @@ const CollapsiblePanel = ({ title, children }) => {
                         <div className="border-top my-2"></div>
 
                         <Link onClick={toggleExpand}>
-                            {isExpanded ? 'See Less' : 'See All'}
+                            {isExpanded ? 'See Less' : 'Expand'}
                         </Link>
                     </div>
                 </div>

@@ -15,9 +15,6 @@ function CategoryArticles() {
     useEffect(() => {
         const fetchArticles = async () => {
             const articlesData = await getCategoryArticles(id);
-            console.log(
-                articlesData
-            )
             setArticles(articlesData.articles);
         };
         fetchArticles();

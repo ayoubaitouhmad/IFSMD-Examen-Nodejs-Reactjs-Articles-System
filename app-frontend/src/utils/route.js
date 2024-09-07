@@ -16,7 +16,7 @@ const routes = {
     // articles
     articles: '/articles',
     getPostById: '/articles/:id',
-    latestArticles: '/latest',
+    latestArticles: '/articles/latest',
     mostViewedArticles: '/articles/most-viewed-articles',
     postDetails: '/posts/:id',
     editArticle: '/articles/:id/edit',

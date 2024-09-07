@@ -3,13 +3,8 @@ import {getLatestPosts, getMostViewedArticles} from "../../services/postService"
 import NoPostsFound from "../../components/BlogList/NoPostsFound";
 import BlogList from "../../components/BlogList/BlogList";
 import CollapsiblePanel from "../../components/CollapsiblePanel/collapsiblePanel";
-import {Link} from "react-router-dom";
-import LoadingOverlay from "../../components/LoadingOverlay/loadingOverlay";
-import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import FeaturedBlog from "../../components/FeaturedBlog/FeaturedBlog";
-import frontendRoute from "../../utils/frontendRoute";
-import CategoryArticles from "./CategoryArticles";
 import CategoriesList from "../../components/categoriesList/categoriesList";
 import SearchCard from "../../components/Articles/searchCard/SearchCard";
 

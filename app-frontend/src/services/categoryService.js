@@ -1,14 +1,12 @@
 import axiosInstance from "../utils/axios";
+import route from "../utils/route";
 
-
-const API_GET_ALL = '/categories';
-const API_GET_CATEGORY_ARTICLES = '/categories/:id/articles';
 
 
 export const getAll = async (params) => {
 
     try {
-        const response = await axiosInstance.get(API_GET_ALL,{
+        const response = await axiosInstance.get(route('getCategories'),{
             params:params
         });
         return response.data;
@@ -19,7 +17,9 @@ export const getAll = async (params) => {
 };
 export const getCategoryArticles = async (id ) => {
     try {
-        const response = await axiosInstance.get(API_GET_CATEGORY_ARTICLES.replace(':id' ,id ));
+        const response = await axiosInstance.get(
+            route('getCategoryArticles' , {id})
+        );
         return response.data;
     } catch (error) {
         console.error('Error adding post:', error);

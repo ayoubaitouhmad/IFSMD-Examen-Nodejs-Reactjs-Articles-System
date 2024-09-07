@@ -1,10 +1,10 @@
 const routes = {
     // auth
-    login: '/api/login',
-    register: '/api/register',
+    login: process.env.REACT_APP_BACK_END_URL+'/login',
+    register: process.env.REACT_APP_BACK_END_URL+'/register',
 
     // user
-    getUserById:'/user/:id',
+    getUserById:'/users/:id',
     getUserByUsername:'/user/username/:username',
     getUserArticles:'/user/:id/articles',
     updateUseProfile:'/user/:id/profile/update',

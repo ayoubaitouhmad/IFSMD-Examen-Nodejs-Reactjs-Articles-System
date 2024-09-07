@@ -68,7 +68,7 @@ const ProfilePage = () => {
             uploadFormData.append('bio', values.bio);
 
             try {
-                const res = await axiosInstance.put(route('updateUserProfile', {id:user.id}), uploadFormData, {
+                const res = await axiosInstance.post(`http://localhost:1000/api/users/id/${user.id}/profile/update`, uploadFormData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

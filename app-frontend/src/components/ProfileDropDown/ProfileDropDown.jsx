@@ -13,7 +13,7 @@ function ProfileDropDown() {
                    aria-expanded="false">
                     <img
                         height={40} width={40}
-                        src={ route('streamImage' , {
+                        src={route('streamImage' , {
                             'image' :user.profileImage.filePath,
                             'width' : 40 ,
                             'height' :40

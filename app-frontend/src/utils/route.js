@@ -1,19 +1,13 @@
 const routes = {
-
-    //auth
-    login:  '/login',
-    register:  '/register',
-    userProfile:  '/users/:id/profile/:o',
-    updateUserProfile:  '/users/id/:id/profile/update',
-    // Articles
-    postDetails:  '/posts/:id',
-    editArticle:  '/articles/:id/edit',
-    updateArticle:  '/articles/:id',
-    addArticle:  '/articles',
-    //categories
-    getCategories:  '/categories',
-    getCategoryArticles:  '/category/:id/articles',
-    streamImage:  '/image/:image?w=:width&h=:height',
+    home: '/',
+    userProfile: '/users/:id/profile/:o',
+    postDetails: '/posts/:id',
+    editArticle: 'http://localhost:1000/api/articles/:id/edit',
+    updateArticle: 'http://localhost:1000/api/articles/:id',
+    addArticle: 'http://localhost:1000/api/articles',
+    login: "http://localhost:1000/api/login",
+    register: 'http://localhost:1000/api/register',
+    streamImage: 'http://localhost:1000/api/image/:image?w=:width&h=:height',
 };
 
 
@@ -29,7 +23,7 @@ const route = (name, params = {}) => {
         path = path.replace(`:${key}`, params[key]);
     });
 
-    return  path;
+    return path;
 };
 
 export default route;

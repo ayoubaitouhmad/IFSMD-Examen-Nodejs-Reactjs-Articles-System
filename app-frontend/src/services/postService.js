@@ -2,16 +2,10 @@ import axiosInstance from "../utils/axios";
 import Route from "../utils/route";
 import route from "../utils/route";
 
-const API_URL = '/articles';
-const API_GET_POST_URL = '/articles/';
-const API_DELETE_ARTICLE_URL = '/articles/:id';
-const API_EDIT_ARTICLE_URL = '/articles/:id/edit';
-const API_INCREMENT_VIEWS_ARTICLE_URL = '/articles/:id/increment-views';
-const API_GET_LATEST_ARTICLES = '/articles/latest';
-const API_GET_MOST_VIEWED_ARTICLES = '/articles/most-viewed-articles';
+
 export const getPosts = async (page = 1, limit = 5, date, search) => {
     try {
-        const response = await axiosInstance.get(API_URL, {
+        const response = await axiosInstance.get(route('articles'), {
             params: {page, limit, date, search}
         });
         return response.data;
@@ -22,7 +16,9 @@ export const getPosts = async (page = 1, limit = 5, date, search) => {
 };
 export const getLatestPosts = async () => {
     try {
-        const response = await axiosInstance.get(API_GET_LATEST_ARTICLES);
+        const response = await axiosInstance.get(
+            route('latestArticles')
+        );
         return response.data;
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -31,7 +27,9 @@ export const getLatestPosts = async () => {
 };
 export const getMostViewedArticles = async () => {
     try {
-        const response = await axiosInstance.get(API_GET_MOST_VIEWED_ARTICLES);
+        const response = await axiosInstance.get(
+            route('mostViewedArticles')
+        );
         return response.data;
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -40,7 +38,9 @@ export const getMostViewedArticles = async () => {
 };
 export const getPost = async (id) => {
     try {
-        const response = await axiosInstance.get(API_GET_POST_URL + id);
+        const response = await axiosInstance.get(
+            route('getPostById' , {id})
+        );
         return response.data;
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -65,18 +65,11 @@ export const editPost = async (id) => {
 
 
 
-export const addPost = async (post) => {
-    try {
-        const response = await axiosInstance.post(API_URL, post);
-        return response.data;
-    } catch (error) {
-        console.error('Error adding post:', error);
-        throw error;
-    }
-};
 export const deleteArticle = async (id) => {
     try {
-        const response = await axiosInstance.delete(API_DELETE_ARTICLE_URL.replace(':id' , id));
+        const response = await axiosInstance.delete(
+            route('deleteArticle' , {id})
+        );
         return response.data;
     } catch (error) {
         console.error('Error adding post:', error);
@@ -85,7 +78,9 @@ export const deleteArticle = async (id) => {
 };
 export const incrementViews = async (id) => {
     try {
-        const response = await axiosInstance.post(API_INCREMENT_VIEWS_ARTICLE_URL.replace(':id' , id));
+        const response = await axiosInstance.post(
+            route('incrementArticleViews' , {id})
+        );
         return response.data;
     } catch (error) {
         console.error('Error adding post:', error);

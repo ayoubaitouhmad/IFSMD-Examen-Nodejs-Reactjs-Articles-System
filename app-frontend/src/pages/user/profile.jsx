@@ -68,7 +68,7 @@ const ProfilePage = () => {
             uploadFormData.append('bio', values.bio);
 
             try {
-                const res = await axiosInstance.post(`http://localhost:1000/api/users/id/${user.id}/profile/update`, uploadFormData, {
+                const res = await axiosInstance.post(route('updateUseProfile' , {id:user.id}), uploadFormData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -127,7 +127,9 @@ const ProfilePage = () => {
         } else {
 
             formik.setFieldError("file", "The selected file is not an image");
-            setPreview(`http://localhost:1000/api/uploads/${user.profileImage.filePath}`);
+            setPreview(route('streamImage' , {
+                image:user.profileImage.filePath
+            }));
         }
     };
 

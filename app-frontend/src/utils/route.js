@@ -1,13 +1,26 @@
 const routes = {
-    home: '/',
+    // auth
+    login: '/api/login',
+    register: '/api/register',
+
+    // user
+    getUserById:'/user/:id',
+    getUserByUsername:'/user/username/:username',
+    getUserArticles:'/user/:id/articles',
+    updateUseProfile:'/user/:id/profile/update',
+    changePassword:'/change-password',
+    forgotPassword:'/forgot-password',
+
     userProfile: '/users/:id/profile/:o',
+
+    // articles
     postDetails: '/posts/:id',
-    editArticle: 'http://localhost:1000/api/articles/:id/edit',
-    updateArticle: 'http://localhost:1000/api/articles/:id',
-    addArticle: 'http://localhost:1000/api/articles',
-    login: "http://localhost:1000/api/login",
-    register: 'http://localhost:1000/api/register',
-    streamImage: 'http://localhost:1000/api/image/:image?w=:width&h=:height',
+    editArticle: '/api/articles/:id/edit',
+    updateArticle: '/api/articles/:id',
+    addArticle: '/api/articles',
+
+    // utils
+    streamImage: process.env.REACT_APP_BACK_END_URL+'/image/:image?w=:width&h=:height',
 };
 
 

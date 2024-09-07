@@ -1,15 +1,17 @@
 const routes = {
+    login: '/login',
+    register: '/register',
+
     home: '/home',
+
     userProfile: '/profile',
+    userArticles: '/articles/author/:username',
+
     articles : '/articles',
     articlesSearch : '/articles/?search=:search',
-    userArticles: '/articles/author/:username',
     editArticle: '/articles/:id/edit',
     showArticle: '/articles/:id/:name',
     addArticle: '/articles/add',
-    login: '/login',
-    register: '/register',
-    streamImage: 'http://localhost:1000/api/image/:image',
 
     categoryArticles : '/category/:id/:name/articles',
 };

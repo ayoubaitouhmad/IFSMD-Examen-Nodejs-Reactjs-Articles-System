@@ -1,49 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { useFormik } from 'formik';
+import React, {useEffect, useState} from 'react';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { useNavigate, useParams } from 'react-router-dom';
-import {editPost, getPost} from '../../../services/postService';
+import {useNavigate, useParams} from 'react-router-dom';
+import {editPost} from '../../../services/postService';
 import route from '../../../utils/route';
 import axiosInstance from "../../../utils/axios";
 import Select from 'react-select';
-import { getAll } from '../../../services/categoryService';
+import {getAll} from '../../../services/categoryService';
 import {useAuth} from "../../../contexts/AuthContext";
+import LoadingOverlay from "../../../components/LoadingOverlay/loadingOverlay";
 
 function EditArticle() {
-    const { id } = useParams();
+    const {id} = useParams();
     const [preview, setPreview] = useState(null);
+    const [alert, setAlert] = useState(null);
     const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
+    const [initialValues, setInitialValues] = useState({
+        title: '',
+        image: '',
+        description: '',
+        content: '',
+        categories: [], // Initialize categories as an empty array
+    });
+    const [loading, setLoading] = useState(false);
 
-    const { user} = useAuth();
+
+    const {user} = useAuth();
 
     useEffect(() => {
         const fetchArticle = async () => {
             try {
                 const articleData = await editPost(id);
-
-
+                if (articleData) {
+                    setLoading(true);
+                }
                 setPreview(route('streamImage', {
                     image: articleData.articleImage.filePath,
-                    width:600,
-                    height:600,
+                    width: 600,
+                    height: 600,
                 }));
-
-                console.log(articleData)
-
                 setInitialValues({
                     title: articleData.title,
                     image: articleData.image,
                     description: articleData.description,
                     content: articleData.content,
-                    categories: articleData.categories.map(cat => ({ label: cat.name, value: cat.id })),
+                    categories: articleData.categories.map(cat => ({label: cat.name, value: cat.id})),
                 });
-            } catch (error) {
 
-                if (error.response && error.response.status === 404) {
-                    navigate('/404');
+
+            } catch (error) {
+                if (error.response && error.response.status) {
+                    navigate('/' + error.response.status);
                 }
             }
         };
@@ -61,13 +71,6 @@ function EditArticle() {
         fetchCategories();
     }, [id]);
 
-    const [initialValues, setInitialValues] = useState({
-        title: '',
-        image: '',
-        description: '',
-        content: '',
-        categories: [], // Initialize categories as an empty array
-    });
 
     const formik = useFormik({
         initialValues,
@@ -99,22 +102,31 @@ function EditArticle() {
             formData.append('categories', JSON.stringify(values.categories.map(cat => cat.value)));
 
             try {
-                const response = await axiosInstance.put(route('updateArticle', { id: id }), formData, {
+                const response = await axiosInstance.put(route('updateArticle', {id: id}), formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-                console.log('Article submitted successfully:', response.data);
+                const alertData = response.data.alert;
+                if (response.data.alert) {
+                    setAlert(alertData);
+                    setTimeout(() => {
+                        setAlert(null);
+                    },8000)
+                }
             } catch (error) {
                 console.error('Error submitting article:', error);
-                if (error.response && error.response.status === 404) {
-                    navigate('/404');
+                if (error.response && error.response.status) {
+                    navigate('/' + error.response.status);
                 }
             }
         },
     });
 
 
+    if (!loading) {
+        return <LoadingOverlay/>
+    }
 
     const handleImageChange = (event) => {
         const file = event.currentTarget.files[0];
@@ -124,6 +136,8 @@ function EditArticle() {
 
     return (
         <>
+
+
             <div className="pb-1 w-100">
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
@@ -138,14 +152,25 @@ function EditArticle() {
                 </nav>
             </div>
             <div className="card">
+
+
                 <div className="card-body">
+                    {alert && (
+                        <div className={` alert alert-${alert.type}`} role="alert">
+                            <strong>{alert.title}</strong> {alert.body}
+                        </div>
+                    )}
+
                     <h2>Edit article</h2>
+
+
                     <form onSubmit={formik.handleSubmit}>
                         <div className="row">
                             <div className="col-12 form-group">
                                 <label className="required-field" htmlFor="image">Image</label>
                                 <div className="image-container d-block">
-                                    {preview && <img src={preview} alt="Preview" className="dsfdsfdsfdsf rounded-circle mb-3" />}
+                                    {preview &&
+                                        <img src={preview} alt="Preview" className="dsfdsfdsfdsf rounded-circle mb-3"/>}
                                 </div>
                                 <input
                                     type="file"
@@ -209,16 +234,17 @@ function EditArticle() {
                             <div className="col-12 form-group">
                                 <label className="required-field" htmlFor="content">Content</label>
                                 <ReactQuill
+                                    theme="snow"
                                     value={formik.values.content}
                                     onChange={(value) => formik.setFieldValue('content', value)}
                                     placeholder="Enter post content"
-                                    style={{ height:250 }}
+                                    style={{height: 250}}
                                     modules={{
                                         toolbar: [
-                                            [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-                                            [{ size: [] }],
+                                            [{'header': '1'}, {'header': '2'}, {'font': []}],
+                                            [{size: []}],
                                             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                            [{'list': 'ordered'}, {'list': 'bullet'}],
                                             ['link', 'image', 'video'],
                                             ['clean'],
                                         ],

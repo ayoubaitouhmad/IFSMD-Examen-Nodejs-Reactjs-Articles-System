@@ -5,38 +5,29 @@ import LoadingOverlay from "../../../components/LoadingOverlay/loadingOverlay";
 import frontendRoute from "../../../utils/frontendRoute";
 import Breadcrumb from "../../../utils/breadcrumb";
 import route from "../../../utils/route";
-import {destroyCacheData, getCacheData, hasCacheData, setCacheData} from "../../../utils/storage";
-import {getAll} from "../../../services/categoryService";
-import CollapsiblePanel from "../../../components/CollapsiblePanel/collapsiblePanel";
 import CategoriesList from "../../../components/categoriesList/categoriesList";
 import SearchCard from "../../../components/Articles/searchCard/SearchCard";
 
 function FullArticle() {
+    const navigate = useNavigate();
     const {id} = useParams();
     const [article, setArticle] = useState(null);
-
-
-
-
-
-
-
-
-
 
     useEffect(() => {
         const fetchPost = async () => {
             try {
                 const data = await getPost(id);
+                if(data.alert){
+                    return navigate('/404')
+                }
                 await incrementViews(id);
-
                 setArticle(data);
             } catch (error) {
                 console.error('Failed to fetch post:', error);
             }
         };
         fetchPost();
-    }, []);
+    }, [id]);
 
     if (!article) {
         return <LoadingOverlay/>;

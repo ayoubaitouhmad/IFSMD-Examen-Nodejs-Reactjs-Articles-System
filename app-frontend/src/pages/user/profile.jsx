@@ -49,16 +49,6 @@ const ProfilePage = () => {
                 .email("Invalid email address")
                 .required("Required"),
             bio: Yup.string()
-            // .test(
-            //     "fileFormat",
-            //     "Unsupported Format",
-            //     value => value && ["image/jpeg", "image/png"].includes(value.type)
-            // )
-            // .test(
-            //     "fileSize",
-            //     "File is too large",
-            //     value => value && value.size <= 1048576 // 1MB
-            // ),
         }),
         onSubmit: async (values) => {
             const uploadFormData = new FormData();

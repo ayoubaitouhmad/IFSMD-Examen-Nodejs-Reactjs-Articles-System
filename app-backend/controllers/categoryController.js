@@ -27,8 +27,17 @@ exports.getCategoryArticles = async (req, res) => {
         let articles = await Article.findCategoryArticles(id);
         let category = await Category.findById(id);
 
+        if (category == null) {
+            let alert = {
+                type: "error",
+                title: "category not found!",
+                body: "category not found!"
+            }
+            return res.status(404).json({alert});
+        }
+
         res.json({
-            ...category.details(),
+            ... category.details(),
             articles
         });
     } catch (err) {

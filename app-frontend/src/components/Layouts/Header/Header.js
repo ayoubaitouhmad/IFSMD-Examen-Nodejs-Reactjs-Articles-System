@@ -19,6 +19,7 @@ function Header() {
 
     useEffect(() => {
         if (hasCacheData('categories')) {
+
             setCategories(getCacheData('categories'))
         }else {
             const fetchCategories = async ()=>{

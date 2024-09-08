@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getPost, getPosts} from "../../services/postService";
+import {getLatestPosts} from "../../services/postService";
 import route from "../../utils/route";
 import {Link, useNavigate} from "react-router-dom";
 import frontendRoute from "../../utils/frontendRoute";
@@ -11,14 +11,21 @@ function FeaturedBlog() {
 
     useEffect(() => {
         const fetchPost = async () => {
-            const data = await getPost(2);
-            setArticle(data);
+            try {
+                const data = await getLatestPosts();
+                if(data.length){
+                    setArticle(data[0]);
+                }
 
+            } catch (error) {
+                console.error('Error fetching category:', error);
+                // if (error.response && error.response.status) {
+                //     navigate('/' + error.response.status);
+                // }
+            }
         };
         fetchPost();
-    }, []); // Runs once when the component mounts
-
-
+    }, []);
 
     return (
         <>

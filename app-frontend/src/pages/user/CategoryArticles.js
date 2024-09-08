@@ -2,8 +2,7 @@ import React, {useEffect, useState} from "react";
 import Breadcrumb from "../../utils/breadcrumb";
 import frontendRoute from "../../utils/frontendRoute";
 import {getCategoryArticles} from "../../services/categoryService";
-import {useParams} from "react-router-dom";
-import NoPostsFound from "../../components/BlogList/NoPostsFound";
+import {useNavigate, useParams} from "react-router-dom";
 import BlogList from "../../components/BlogList/BlogList";
 
 
@@ -11,11 +10,22 @@ function CategoryArticles() {
 
     const {id} = useParams();
     const [articles, setArticles] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchArticles = async () => {
-            const articlesData = await getCategoryArticles(id);
-            setArticles(articlesData.articles);
+            try {
+                const articlesData = await getCategoryArticles(id);
+                console.log(
+                    articlesData
+                )
+                setArticles(articlesData.articles);
+            } catch (error) {
+                console.error('Error fetching category:', error);
+                if (error.response && error.response.status) {
+                    navigate('/' + error.response.status);
+                }
+            }
         };
         fetchArticles();
     }, [id]);

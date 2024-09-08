@@ -76,18 +76,41 @@ CREATE TABLE article_category
 );
 
 
+INSERT INTO categories (name, description) VALUES ('Technology', 'This category is focused on technology related topics.');
+INSERT INTO categories (name, description) VALUES ('Health', 'This category is focused on health related topics.');
+INSERT INTO categories (name, description) VALUES ('Travel', 'This category is focused on travel related topics.');
+INSERT INTO categories (name, description) VALUES ('Food', 'This category is focused on food related topics.');
+INSERT INTO categories (name, description) VALUES ('Lifestyle', 'This category is focused on lifestyle related topics.');
+INSERT INTO categories (name, description) VALUES ('Education', 'This category is focused on education related topics.');
+INSERT INTO categories (name, description) VALUES ('Finance', 'This category is focused on finance related topics.');
+INSERT INTO categories (name, description) VALUES ('Fitness', 'This category is focused on fitness related topics.');
+INSERT INTO categories (name, description) VALUES ('Entertainment', 'This category is focused on entertainment related topics.');
+INSERT INTO categories (name, description) VALUES ('Politics', 'This category is focused on politics related topics.');
+INSERT INTO categories (name, description) VALUES ('Science', 'This category is focused on science related topics.');
+INSERT INTO categories (name, description) VALUES ('Music', 'This category is focused on music related topics.');
+INSERT INTO categories (name, description) VALUES ('Fashion', 'This category is focused on fashion related topics.');
+INSERT INTO categories (name, description) VALUES ('Business', 'This category is focused on business related topics.');
+INSERT INTO categories (name, description) VALUES ('Sports', 'This category is focused on sports related topics.');
+INSERT INTO categories (name, description) VALUES ('Parenting', 'This category is focused on parenting related topics.');
+INSERT INTO categories (name, description) VALUES ('DIY', 'This category is focused on diy related topics.');
+INSERT INTO categories (name, description) VALUES ('Photography', 'This category is focused on photography related topics.');
+INSERT INTO categories (name, description) VALUES ('Gaming', 'This category is focused on gaming related topics.');
+INSERT INTO categories (name, description) VALUES ('Marketing', 'This category is focused on marketing related topics.');
+INSERT INTO categories (name, description) VALUES ('Environment', 'This category is focused on environment related topics.');
+INSERT INTO categories (name, description) VALUES ('Real Estate', 'This category is focused on real estate related topics.');
+INSERT INTO categories (name, description) VALUES ('Automotive', 'This category is focused on automotive related topics.');
+INSERT INTO categories (name, description) VALUES ('Beauty', 'This category is focused on beauty related topics.');
+INSERT INTO categories (name, description) VALUES ('Career', 'This category is focused on career related topics.');
+INSERT INTO categories (name, description) VALUES ('Books', 'This category is focused on books related topics.');
+INSERT INTO categories (name, description) VALUES ('Art', 'This category is focused on art related topics.');
+INSERT INTO categories (name, description) VALUES ('History', 'This category is focused on history related topics.');
+INSERT INTO categories (name, description) VALUES ('Personal Growth', 'This category is focused on personal growth related topics.');
+INSERT INTO categories (name, description) VALUES ('Relationships', 'This category is focused on relationships related topics.');
+INSERT INTO categories (name, description) VALUES ('Movies', 'This category is focused on movies related topics.');
+INSERT INTO categories (name, description) VALUES ('Pets', 'This category is focused on pets related topics.');
+INSERT INTO categories (name, description) VALUES ('Cooking', 'This category is focused on cooking related topics.');
+INSERT INTO categories (name, description) VALUES ('Productivity', 'This category is focused on productivity related topics.');
+INSERT INTO categories (name, description) VALUES ('Spirituality', 'This category is focused on spirituality related topics.');
+INSERT INTO categories (name, description) VALUES ('Social Media', 'This category is focused on social media related topics.');
 
-
-INSERT INTO categories (name, description) VALUES
-                                               ('Technology', 'Articles related to the latest technology trends and innovations.'),
-                                               ('Science', 'Exploring discoveries and advancements in various fields of science.');
-
-
-
-
-
-
-INSERT INTO article_category (article_id, category_id) VALUES
-                                                           (1, 1),
-                                                           (1, 2);
 

@@ -1,4 +1,3 @@
-
 const {uploadImage} = require("../services/imageService");
 const Article = require("../models/Article");
 const {fromUpload} = require("../models/fileDocument");
@@ -47,6 +46,16 @@ exports.findPost = async (req, res) => {
     try {
         const {id} = req.params;
         const post = await Article.findById(id);
+        // const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        // await sleep(3000);
+        if (post == null) {
+            let alert = {
+                type: "error",
+                title: "Post not found!",
+                body: "Post not found!"
+            }
+            return res.status(404).json({alert});
+        }
         res.json(post.details());
     } catch (err) {
         res.status(500).send(err);
@@ -57,11 +66,21 @@ exports.findPost = async (req, res) => {
  */
 exports.editPost = async (req, res) => {
     try {
+
         const {id} = req.params;
         const userId = req.user.id;
         const post = await Article.findById(id);
+        if (post == null) {
+            let alert = {
+                type: "error",
+                title: "Post not found!",
+                body: "Post not found!"
+            }
+            return res.status(404).json({alert});
+        }
+
         if (post.authorId != userId) {
-            return res.status(404).json({message: 'Post not found'});
+            return res.status(401).json({message: 'Post not found'});
         }
         res.json(post.details());
     } catch (err) {
@@ -99,9 +118,19 @@ exports.deleteArticle = async (req, res) => {
     try {
         const {id} = req.params;
         const articleModel = await Article.findById(id);
+        if (articleModel == null) {
+            let alert = {
+                type: "error",
+                title: "Post not found!",
+                body: "Post not found!"
+            }
+            return res.status(404).json({alert});
+        }
+
+
         const userId = req.user.id;
         if (articleModel.authorId !== userId) {
-            return res.status(404).json({message: 'Post not found'});
+            return res.status(401).json({message: 'Post not found'});
         }
         await articleModel.delete();
         res.json(articleModel.details());
@@ -122,9 +151,18 @@ exports.updateArticle = async (req, res) => {
 
         let articleModel = await Article.findById(id);
 
+        if (articleModel == null) {
+            let alert = {
+                type: "error",
+                title: "Post not found!",
+                body: "Post not found!"
+            }
+            return res.status(404).json({alert});
+        }
+
         // Ensure the user is the author of the article
         if (articleModel.authorId != userId) {
-            return res.status(404).json({message: 'Post not found'});
+            return res.status(401).json({message: 'Post not found'});
         }
 
         // update the updatable columns if exists
@@ -167,7 +205,7 @@ exports.updateArticle = async (req, res) => {
             title: "Success!",
             body: "Profile updated successfully."
         }
-        return  res.status(200).json({alert, articleModel});
+        return res.status(200).json({alert, articleModel});
 
     });
 };
@@ -214,6 +252,14 @@ exports.incrementViews = async (req, res) => {
         const {id} = req.params;
         const userId = req.user.id;
         const post = await Article.findById(id);
+        if (post == null) {
+            let alert = {
+                type: "error",
+                title: "Post not found!",
+                body: "Post not found!"
+            }
+            return res.status(404).json({alert});
+        }
         post.views++;
         await post.save();
         res.json(post.details());

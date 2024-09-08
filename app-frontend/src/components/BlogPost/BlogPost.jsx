@@ -1,9 +1,6 @@
-import React, {useState} from 'react';
-import {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import route from "../../utils/route";
-import frontendRoute from "../../utils/frontendRoute";
-import Skeleton from "react-loading-skeleton";
 
 
 function BlogPost({id, title, content, createdAt, description, author, articleImage, categories}) {
@@ -23,11 +20,6 @@ function BlogPost({id, title, content, createdAt, description, author, articleIm
 
     function handleBlogPostClick() {
         setShow(true);
-    }
-
-
-    function contentAsHtml() {
-
     }
 
     return (

@@ -8,7 +8,11 @@ let dbConfig = {
 };
 
 const connection = async () => {
-    return mysql.createConnection(dbConfig);
+    try {
+        return await mysql.createConnection(dbConfig)
+    }catch (err){
+        console.log(err);
+    }
 };
 
 module.exports = connection;

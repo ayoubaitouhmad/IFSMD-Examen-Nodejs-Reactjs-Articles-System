@@ -1,7 +1,3 @@
-const getConnection = require("../config/db");
-const User = require("../models/userModel");
-const {sign} = require("jsonwebtoken");
-const {info} = require("../utils/logger");
 const {join, extname} = require("node:path");
 const {IMAGES_UPLOAD_DUR} = require("../config/imageStorage");
 const {createReadStream, readdir} = require("node:fs");

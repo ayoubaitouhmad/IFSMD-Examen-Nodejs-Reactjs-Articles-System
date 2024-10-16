@@ -12,10 +12,9 @@ const categoryRoutes = require('./routes/categoryRoutes');
 
 const authenticateToken = require("./utils/Securtiy");
 const mongoDbConnection = require("./db/mongoDbConnection");
+const {error} = require("./utils/logger");
 
-const User = require("./models/user");
-const Article = require("./models/_Article");
-const Articlex = require("./models/Article");
+
 
 const PORT = process.env.PORT;
 const app = express();
@@ -27,6 +26,7 @@ app.use('/api', imageRoutes);
 app.use('/api', authRoute);
 app.use('/api', emailRoutes);
 
+
 app.use('/api', authenticateToken, postRoutes);
 app.use('/api', authenticateToken, userRoutes);
 app.use('/api', authenticateToken, categoryRoutes);
@@ -36,24 +36,12 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/mongo', async (req, res) => {
-    const posts = await Article.latestPosts();
-    res.status(200).json(
-        posts
-    );
-});
-
-app.get('/articles', async (req, res) => {
-    let cc = await Articlex.latestPosts()
-    res.status(200).json(cc);
-});
-
 mongoDbConnection().then(() => {
     console.log("MongoDB is connected!");
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
 }).catch((err) => {
-    logger.error("Failed to connect to MongoDB", err);
+    error("Failed to connect to MongoDB", err);
     process.exit(1);
 });

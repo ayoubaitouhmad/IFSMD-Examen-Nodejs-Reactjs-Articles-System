@@ -35,6 +35,8 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        // TODO / i will use redis and get rid of localstorage
+        localStorage.removeItem('categories');
         setIsAuthenticated(false);
     };
     return (

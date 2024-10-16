@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Article = require("../models/Article");
 const logger = require('../utils/logger');
 const {uploadImage} = require("../services/imageService");
 const {fromUpload, findById} = require("../models/fileDocument");
@@ -11,6 +12,7 @@ exports.getById = async (req, res) => {
         let {id} = req.params;
         let user = await User.findById(id);
         if (!user) return res.status(404).json({message: 'User not found'});
+        console.log(user)
         return res.json(user.details());
     } catch (err) {
         logger.error(err.message);
@@ -26,7 +28,7 @@ exports.getByUsername = async (req, res) => {
         let {username} = req.params;
         let user = await User.findByUsername(username);
         if (!user) return res.status(404).json({message: 'User not found'});
-        return res.json(user);
+        return res.json(user.details());
     } catch (err) {
         logger.error(err.message);
         return res.status(500).send('Server error');
@@ -39,7 +41,8 @@ exports.getByUsername = async (req, res) => {
 exports.getUserArticles = async (req, res) => {
     try {
         let {id} = req.params;
-        let userArticles = await User.findUserArticles(id);
+
+        let userArticles = await Article.findUserArticles(id);
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 5;

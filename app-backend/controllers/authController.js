@@ -16,7 +16,7 @@ exports.login = async (req, res) => {
 
     res.json({
         token,
-        user
+        user:user.details()
     });
 };
 

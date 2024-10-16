@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "db:migrate": "node db/migrations/run.js"
+    "db:migrate": "node db/migrations/run.js",
+    "db:seed": "node db/seeders/run.js"
   },
   "type": "commonjs",
   "keywords": [],

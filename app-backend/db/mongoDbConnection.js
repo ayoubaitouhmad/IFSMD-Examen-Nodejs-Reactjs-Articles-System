@@ -14,6 +14,8 @@ const mongoDbConnection = async () => {
     try {
         const client = new MongoClient(connectionString);
         await client.connect();
+         dbInstance = client.db(mongoDbDatabaseName);
+         // await dbInstance.dropDatabase();
         return  dbInstance = client.db(mongoDbDatabaseName);
     } catch (e) {
         console.error("Error connecting to MongoDB:", e);

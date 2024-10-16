@@ -7,10 +7,12 @@ class UserCollection {
     static migrateCollection = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();
         if (!await checkIfCollectionExists(mongoDatabaseConnection, UserCollection.collectionName)) {
-          await mongoDatabaseConnection.createCollection(UserCollection.collectionName, {
+            mongoDatabaseConnection.createCollection(UserCollection.collectionName);
+            const validationSchema = {
                 validator: {
                     $jsonSchema: {
                         bsonType: "object",
+                        title: "Users Object Validation",
                         required: ["username", "name", "email", "created_at"],
                         properties: {
                             username: {
@@ -26,7 +28,7 @@ class UserCollection {
                                 description: "must be a string"
                             },
                             role: {
-                                bsonType: "string",
+                                bsonType: ["string" , "null"],
                                 description: "must be a string"
                             },
                             email: {
@@ -39,8 +41,7 @@ class UserCollection {
                                 description: "must be a string"
                             },
                             profile_image_id: {
-                                bsonType: "objectId",
-                                description: "must be a valid ObjectId"
+                                bsonType: ["objectId" , "null"],
                             },
                             created_at: {
                                 bsonType: "date",
@@ -55,14 +56,18 @@ class UserCollection {
                 },
                 validationLevel: "strict",
                 validationAction: "error"
+            }
+            await mongoDatabaseConnection.command({
+                collMod: UserCollection.collectionName,
+                validator: validationSchema.validator,
+                validationLevel: validationSchema.validationLevel,
+                validationAction: validationSchema.validationAction
             });
-            return true;
         }
-        return false;
     };
     static  collection = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();
-        return mongoDatabaseConnection.connect(UserCollection.collectionName);
+        return mongoDatabaseConnection.collection(UserCollection.collectionName);
     }
     static isExists = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();

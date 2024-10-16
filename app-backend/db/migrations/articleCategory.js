@@ -33,7 +33,7 @@ class ArticleCategoryCollection {
     };
     static  collection = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();
-        return mongoDatabaseConnection.connect(ArticleCategoryCollection.collectionName);
+        return mongoDatabaseConnection.collection(ArticleCategoryCollection.collectionName);
     }
     static isExists = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();

@@ -19,7 +19,7 @@ class ArticleCollection {
                             },
                             description: {
                                 bsonType: "string",
-                                description: "must be a string"
+                                description: "must be a string",
                             },
                             content: {
                                 bsonType: "string",
@@ -27,7 +27,7 @@ class ArticleCollection {
                             },
                             is_featured_blog: {
                                 bsonType: "bool",
-                                description: "must be a boolean"
+                                description: "must be a boolean",
                             },
                             author_id: {
                                 bsonType: "objectId",
@@ -35,19 +35,18 @@ class ArticleCollection {
                             },
                             views: {
                                 bsonType: "int",
-                                description: "must be an integer"
+                                description: "must be an integer",
                             },
                             article_image_id: {
-                                bsonType: "objectId",
-                                description: "must be a valid ObjectId"
+                                bsonType: ["objectId", "null"],
                             },
                             created_at: {
                                 bsonType: "date",
-                                description: "must be a date and is required"
+                                description: "must be a date and is required",
                             },
                             updated_at: {
                                 bsonType: "date",
-                                description: "must be a date"
+                                description: "must be a date",
                             }
                         }
                     }
@@ -61,7 +60,7 @@ class ArticleCollection {
     };
     static  collection = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();
-        return mongoDatabaseConnection.connect(ArticleCollection.collectionName);
+        return mongoDatabaseConnection.collection(ArticleCollection.collectionName);
     }
     static isExists = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();

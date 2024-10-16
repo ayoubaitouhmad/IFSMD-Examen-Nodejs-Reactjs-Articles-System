@@ -53,7 +53,7 @@ class FileCollection {
     };
     static  collection = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();
-        return mongoDatabaseConnection.connect(FileCollection.collectionName);
+        return mongoDatabaseConnection.collection(FileCollection.collectionName);
     }
     static isExists = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();

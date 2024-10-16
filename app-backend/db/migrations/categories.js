@@ -41,7 +41,7 @@ class CategoryCollection {
     };
     static  collection = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();
-        return mongoDatabaseConnection.connect(CategoryCollection.collectionName);
+        return mongoDatabaseConnection.collection(CategoryCollection.collectionName);
     }
     static isExists = async () => {
         const mongoDatabaseConnection = await mongoDbConnection();

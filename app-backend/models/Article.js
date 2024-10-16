@@ -1,13 +1,17 @@
+const {ObjectId} = require("mongodb");
 const getConnection = require("../config/db");
-
 const logger = require("../utils/logger");
-const FileDocument = require("./fileDocument");
-const ArticleCategory = require("./articleCategory");
-const { IMAGE_PLACEHOLDER} = require("../services/imageService");
+const MoFileModel = require("./MoFileModel");
+const ArticleCategoryCollection = require("../db/migrations/articleCategory");
+const MoArticleCategory = require("./MoArticleCategory");
+const ArticleCollection = require("../db/migrations/articles");
+const {IMAGE_PLACEHOLDER} = require("../services/imageService");
+const {th} = require("@faker-js/faker");
+const MoUser = require("./MoUserModel");
+const UsersCollection = require("../db/migrations/users");
 
 
-class Article {
-
+class MoArticle {
     #id;
     #title;
     #description;
@@ -23,7 +27,6 @@ class Article {
     static get TABLE_NAME() {
         return process.env.DB_ARTICLES_TABLE_NAME;
     }
-
 
     get id() {
         return this.#id;
@@ -86,7 +89,6 @@ class Article {
             return date.toLocaleDateString('en-US', options);
         }
         return this.createdAt;
-
     }
 
 
@@ -99,9 +101,9 @@ class Article {
         authorId,
         views,
         articleImageId,
-        updatedAt,
-        createdAt
-    ) {
+        updatedAt = new Date(),
+        createdAt)
+    {
         this.#id = id;
         this.#title = title;
         this.#description = description;
@@ -112,12 +114,41 @@ class Article {
         this.#articleImageId = articleImageId;
         this.#updatedAt = updatedAt;
         this.#createdAt = createdAt;
+    }
 
+
+    static fromDatabaseRecord(article) {
+        return new MoArticle(
+            article._id,
+            article.title,
+            article.description,
+            article.content,
+            article.is_featured_blog,
+            article.author_id,
+            article.views,
+            article.article_image_id,
+            article.updated_at,
+            article.created_at,
+        );
+    }
+
+    static fromAddArticle(title, description, content, author_id) {
+        return new MoArticle(
+            null,
+            title,
+            description,
+            content,
+            null,
+            author_id,
+            null,
+            null,
+            null,
+            null,
+        );
     }
 
     // Public getter for article details
     details() {
-
         return {
             id: this.#id,
             title: this.#title,
@@ -141,28 +172,44 @@ class Article {
 
     async getImage() {
         try {
-
-            let articleImageModel = await FileDocument.findById(this.#articleImageId);
+            let articleImageModel = await MoFileModel.findById(this.#articleImageId);
             this.#articleImage = articleImageModel ? articleImageModel.details() : null;
         } catch (e) {
+            console.log(e)
             this.#articleImage = null;
         }
     }
 
+    /**
+     * Retrieves the author of this article from the database and stores it in this object as a property named `author`.
+     * The `author` property is an object with two properties: `id` and `username`.
+     * @returns {Promise<void>}
+     */
     async getAuthor() {
         try {
-            const User = require("./userModel");
-            let author = await User.findById(this.#id);
-            this.author = author ? author.detailsForArticle() : null;
+            const MoUser = require("./MoUserModel");
+            const author = await MoUser.findById(this.#authorId);
+            if (author) {
+                this.author = author.detailsForArticle();
+            }
         } catch (e) {
-            this.#articleImage = null;
+            console.log(e)
         }
     }
 
     async getCategories() {
         try {
-            this.categories = await ArticleCategory.findCategoriesByArticleId(this.id);
-            logger.info(this.id)
+
+            // const moCategory = await MoCategoryModel.all();
+            // for (const moCategoryElement of moCategory) {
+            //     const moArticleCategory = new MoArticleCategory(
+            //         moCategoryElement.id,
+            //         this.#id,
+            //     );
+            //     await moArticleCategory.save();
+            // }
+
+            this.categories = await MoArticleCategory.findCategoriesByArticleId(this.id);
         } catch (error) {
             logger.error(`Error finding article by ID ${id}: ${error.message}`);
             return null;
@@ -174,194 +221,194 @@ class Article {
     }
 
 
-    static async fetchArticles(query, params) {
+    static async fetchArticles(query, options) {
         try {
-            const connection = await getConnection();
-            const [results] = await connection.execute(query, params);
-            await connection.end();
+            const collection = await ArticleCollection.collection();
+            const results = await collection.find(query, options).toArray();
 
-            return await Promise.all(results.map(async (post) => {
-                let postModel = Article.fromDatabaseRecord(post);
+            return Promise.all(results.map(async (post) => {
+                let postModel = MoArticle.fromDatabaseRecord(post);
                 await postModel.fetchData();
-
-                post.author_id = {
-                    id: post.author_id,
-                    username: post.author_username
-                };
-
-
                 return postModel.details();
             }));
-
-
         } catch (error) {
+
             logger.error(`Error fetching articles: ${error.message}`);
             return [];
         }
     }
 
     static async articles() {
-        return await Article.fetchArticles(`select ${Article.TABLE_NAME}.*, username as 'author_username'
-                                            from ${Article.TABLE_NAME}
-                                                     join users u on u.id = ${Article.TABLE_NAME}.author_id`, []);
+        return await MoArticle.fetchArticles({}, {});
     }
 
     static async latestPosts() {
-        return await Article.fetchArticles(`SELECT *
-                                            FROM ${Article.TABLE_NAME}
-                                            ORDER BY created_at DESC LIMIT 5`, []);
+        return await MoArticle.fetchArticles({}, {
+            limit: 5,
+            sort: {
+                created_at: -1
+            }
+        });
     }
 
     static async mostViewedArticles() {
-        return await Article.fetchArticles(`SELECT *
-                                            FROM ${Article.TABLE_NAME}
-                                            ORDER BY views DESC LIMIT 6`, []);
+        return await MoArticle.fetchArticles({}, {
+            limit: 6,
+            sort: {
+                views: -1
+            }
+        });
     }
 
     static async filterByCreatedDate(date) {
-        return await Article.fetchArticles(`SELECT *
-                                            FROM ${Article.TABLE_NAME}
-                                            WHERE DATE (created_at) >= DATE (?)`, [date]);
+        return await MoArticle.fetchArticles({
+            created_at: {$gte: new Date(date)}
+        }, {
+            sort: {
+                created_at: -1
+            }
+        });
     }
 
     static async findById(id) {
         try {
-            const connection = await getConnection();
-            const [results] = await connection.execute(`SELECT *
-                                                        FROM ${Article.TABLE_NAME}
-                                                        WHERE id = ?`, [id]);
-            await connection.end();
-
-            if (results.length === 0) {
-                return null; // Handle not found
+            const collection = await ArticleCollection.collection();
+            const result = await collection.findOne({_id: new ObjectId(id)});
+            if(result=== null){
+                return null;
             }
-            let article = Article.fromDatabaseRecord(results[0]);
-
-            await article.fetchData();
-
-            return article;
-
+            const postModel = MoArticle.fromDatabaseRecord(result);
+            await postModel.fetchData();
+            return postModel;
         } catch (error) {
             logger.error(`Error finding article by ID ${id}: ${error.message}`);
             return null;
         }
     }
+
     static async findCategoryArticles(category_id) {
         try {
-            const connection = await getConnection();
-            const [results] = await connection.execute(`
-                  select articles.* from articles join article_category ac on articles.id = ac.article_id where ac.category_id=?` ,
-                [category_id]
-            );
-            await connection.end();
-            return await Promise.all(results.map(async (category) => {
-                let postModel = Article.fromDatabaseRecord(category);
+            const collection = await ArticleCollection.collection();
+            const results = await collection.aggregate([
+                {
+                    $lookup: {
+                        from: ArticleCategoryCollection.collectionName,
+                        localField: "_id",
+                        foreignField: "article_id",
+                        as: "categories"
+                    }
+                },
+                {
+                    $match: {
+                        "categories.category_id": new ObjectId(category_id)
+                    }
+                }
+            ]).toArray();
+
+            return Promise.all(results.map(async (article) => {
+                let postModel = MoArticle.fromDatabaseRecord(article);
                 await postModel.fetchData();
                 return postModel.details();
             }));
         } catch (error) {
-            logger.error(`Error finding article by ID ${id}: ${error.message}`);
-            return null;
+            logger.error(`Error finding articles for category ID ${category_id}: ${error.message}`);
+            return [];
         }
 
-
     }
 
+    static async findUserArticles(id) {
+        try {
+            const collection = await ArticleCollection.collection();
 
-    static fromDatabaseRecord(article) {
-        return new Article(
-            article.id,
-            article.title,
-            article.description,
-            article.content,
-            article.is_featured_blog,
-            article.author_id,
-            article.views,
-            article.article_image_id,
-            article.updated_at,
-            article.created_at,
-        );
+            const results = await collection.find(
+                { author_id: new ObjectId(id) }
+            ).sort({ created_at: -1 }).toArray();
+
+            return await Promise.all(results.map(async (post) => {
+                let postModel = MoArticle.fromDatabaseRecord(post);
+                await postModel.getImage();
+                return postModel.details();
+            }));
+
+        } catch (error) {
+            console.log(error)
+            // logger.error(`Error finding articles for user ${id}: ${error.message}`);
+            return null;
+        }
     }
-
-    static fromAddArticle(title, description, content, author_id) {
-        return new Article(
-            null,
-            title,
-            description,
-            content,
-            null,
-            author_id,
-            null,
-            null,
-            null,
-            null,
-        );
-    }
-
 
     async save() {
         try {
-            const connection = await getConnection();
+            const collection = await ArticleCollection.collection();
+
+
+            const articleData = {
+                title: this.#title,
+                description: this.#description,
+                content: this.#content,
+                article_image_id: this.#articleImageId,
+                author_id: this.#authorId,
+                views: this.#views,
+                updated_at: new Date()
+            };
 
             if (this.#id) {
-                const query = `
-                    UPDATE ${Article.TABLE_NAME}
-                    SET title=?,
-                        description=?,
-                        content=?,
-                        article_image_id=?,
-                        views=?,
-                        updated_at=NOW()
-                    WHERE id = ?
-                `;
-                await connection.execute(query, [
-                    this.#title,
-                    this.#description,
-                    this.#content,
-                    this.#articleImageId,
-                    this.#views,
-                    this.#id
-                ]);
+                // Update existing document
+                const result = await collection.updateOne(
+                    { _id: new ObjectId(this.#id) },
+                    { $set: articleData }
+                );
 
+                if (result.matchedCount === 0) {
+                    throw new Error('No document found with the given ID');
+                }
             } else {
-
-                const query = `
-                    INSERT INTO ${Article.TABLE_NAME} (title, description, content, article_image_id, author_id)
-                    VALUES (?, ?, ?, ?, ?)
-                `;
-                const [result] = await connection.execute(query, [
-                    this.#title,
-                    this.#description,
-                    this.#content,
-                    this.#articleImageId,
-                    this.#authorId
-                ]);
-                this.#id = result.insertId;
+                // Insert new document
+                articleData.created_at = new Date();
+                const result = await collection.insertOne(articleData);
+                this.#id = result.insertedId;
             }
-            await connection.end();
-            return true;
 
+            return true;
         } catch (error) {
-            logger.error(`Error saving user: ${error.message}`);
+
+            console.clear();
+            // console.log(JSON.stringify(error))
+            console.log(error.errInfo.details.schemaRulesNotSatisfied[0].propertiesNotSatisfied)
+            console.log(error.errInfo.details.schemaRulesNotSatisfied[0].propertiesNotSatisfied[0])
+            logger.error(`Error saving article: ${error.message}`);
+            return false;
+        }
+    }
+    async delete() {
+        try {
+            await MoArticle.delete(this.#id);
+        } catch (error) {
+            logger.error(`Error deleting article with ID ${this.#id}: ${error.message}`);
             return false;
         }
     }
 
-    async delete() {
+    static async delete(_id) {
         try {
-            const connection = await getConnection();
-            const [results] = await connection.execute(`DELETE
-                                                        FROM ${Article.TABLE_NAME}
-                                                        WHERE id = ?`, [this.#id]);
-            await connection.end();
-            return true;
+            const collection = await ArticleCollection.collection();
+
+            const result = await collection.deleteOne({ _id });
+
+            if (result.deletedCount === 1) {
+
+                return true;
+            } else {
+
+                return false;
+            }
         } catch (error) {
-            logger.error(`Error finding article by ID ${id}: ${error.message}`);
-            return null;
+
+            console.log(error)
+            return false;
         }
     }
-
-
 }
 
-module.exports = Article;
+module.exports = MoArticle;

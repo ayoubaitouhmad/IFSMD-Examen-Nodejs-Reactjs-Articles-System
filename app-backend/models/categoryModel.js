@@ -1,59 +1,47 @@
 const getConnection = require("../config/db");
 const logger = require("../utils/logger");
+const CategoryCollection = require("../db/migrations/categories");
+const {ObjectId} = require("mongodb");
 
 class Category {
-
-    static get TABLE_NAME() {
-        return process.env.DB_CATEGORIES_TABLE_NAME;
-    }
-
     #id;
     #name;
     #description;
     #createdAt;
     #updatedAt;
-
-
+    static get TABLE_NAME() {
+        return process.env.DB_CATEGORIES_TABLE_NAME;
+    }
     get id() {
         return this.#id;
     }
-
     set id(value) {
         this.#id = value;
     }
-
     get name() {
         return this.#name;
     }
-
     get nameForUrl() {
         return this.name.toLowerCase().replace(' ', '-');
     }
-
     set name(value) {
         this.#name = value;
     }
-
     get description() {
         return this.#description;
     }
-
     set description(value) {
         this.#description = value;
     }
-
     get createdAt() {
         return this.#createdAt;
     }
-
     set createdAt(value) {
         this.#createdAt = value;
     }
-
     get updatedAt() {
         return this.#updatedAt;
     }
-
     set updatedAt(value) {
         this.#updatedAt = value;
     }
@@ -81,61 +69,92 @@ class Category {
 
     static fromDatabaseRecord(category) {
         return new Category(
-            category.id,
+            category._id,
             category.name,
             category.description,
             category.created_at,
             category.updated_at,
         );
     }
-
-
-    static async all() {
-        const connection = await getConnection();
-        const [results] = await connection.execute(`select *
-                                                    from ${Category.TABLE_NAME}`);
-        await connection.end();
-        return await Promise.all(results.map(async (category) => Category.fromDatabaseRecord(category).details()));
-    }
-
-    static async allWithArticlesCount() {
-        const connection = await getConnection();
-        const [results] = await connection.execute(`
-            select categories.*,
-                   (select count(article_category.category_id)
-                    from article_category
-                    where article_category.category_id = ac.category_id) as articles_count
-            from categories
-                     left join article_category ac on categories.id = ac.category_id
-            group by name
-
-        `);
-        await connection.end();
-        return await Promise.all(results.map(async (category) => {
-            const categoryModel = Category.fromDatabaseRecord(category);
-            let categoryModelDetails = categoryModel.details();
-            categoryModelDetails.ArticlesCount = category.articles_count
-            return categoryModelDetails;
-        }));
+    static async fromDatabaseRecords(documents , attrs = []){
+        return  documents.map(document => {
+            const CategoryModel = Category.fromDatabaseRecord(document).details();
+            if(attrs.length){
+                for (const attr of attrs) {
+                    CategoryModel[attr.attrName] = document[attr.source]
+                }
+            }
+            return CategoryModel;
+        });
     }
 
     static async findById(id) {
         try {
-            const connection = await getConnection();
-            const [results] = await connection.execute(`SELECT *
-                                                        FROM ${Category.TABLE_NAME}
-                                                        WHERE id = ?`, [id]);
-            await connection.end();
-
-            if (results.length === 0) {
-                return null;
+            const collection = await  CategoryCollection.collection();
+            const result = await collection.findOne({ _id: new ObjectId(id) });
+            if(result == null){
+                return  null;
             }
-            return Category.fromDatabaseRecord(results[0]);
+            return Category.fromDatabaseRecord(result) ;
         } catch (error) {
             logger.error(`Error finding article by ID ${id}: ${error.message}`);
             return null;
         }
     }
+
+    static async all() {
+        const collection = await  CategoryCollection.collection();
+        const results = await collection.find({}).toArray();
+        return Category.fromDatabaseRecords(results, [
+            {
+                attrName : "ArticlesCount",
+                source : "articles_count",
+            }
+        ]);
+    }
+
+
+    static async allWithArticlesCount() {
+        const collection = await CategoryCollection.collection();
+        const results = await collection.aggregate([
+            {
+                $lookup: {
+                    from: "article_category",
+                    localField: "_id",
+                    foreignField: "category_id",
+                    as: "article_categories"
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    articles_count: { $size: "$article_categories" }
+                }
+            },
+            {
+                $group: {
+                    _id: "$name",
+                    categories: { $push: "$$ROOT" }
+                }
+            },
+            {
+                $unwind: "$categories"
+            },
+            {
+                $replaceRoot: {
+                    newRoot: "$categories"
+                }
+            }
+        ]).toArray();
+
+        return Category.fromDatabaseRecords(results, [
+            {
+                attrName : "ArticlesCount",
+                source : "articles_count",
+            }
+        ]);
+    };
 }
 
 module.exports = Category;

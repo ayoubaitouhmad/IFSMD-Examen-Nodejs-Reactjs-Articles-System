@@ -1,14 +1,15 @@
-const getConnection = require("../config/db");
 const logger = require("../utils/logger");
-const Category = require("./categoryModel"); // error
-class ArticleCategory {
+const ArticleCategoryCollection = require("../db/migrations/articleCategory");
+const CategoryCollection = require("../db/migrations/categories");
+const { ObjectId } = require("mongodb");
+const MoCategoryModel = require("./MoCategoryModel");
 
+class ArticleCategory {
     categoryId;
     articleId;
 
-
-    static get TABLE_NAME() {
-        return process.env.DB_ARTICLE_CATEGORY_TABLE_NAME;
+    static get COLLECTION_NAME() {
+        return process.env.DB_ARTICLE_CATEGORY_COLLECTION_NAME;
     }
 
     constructor(categoryId, articleId) {
@@ -25,62 +26,69 @@ class ArticleCategory {
 
     static async find(articleId, categoryId) {
         try {
-            const connection = await getConnection();
-            const [results] = await connection.execute(
-                `SELECT *
-                 FROM ${ArticleCategory.TABLE_NAME}
-                 WHERE article_id = ?
-                   and category_id = ?`,
-                [articleId, categoryId]
-            );
-            await connection.end();
-            if (results.length === 0) {
-                return null;
-            }
-            return new ArticleCategory(results[0].category_id, results[0].article_id);
+            const collection = await ArticleCategoryCollection.collection();
+            const result = await collection.findOne({
+                article_id: new ObjectId(articleId),
+                category_id: new ObjectId(categoryId)
+            });
+            return result ? new ArticleCategory(result.category_id, result.article_id) : null;
         } catch (error) {
-            logger.error(`Error saving user: ${error.message}`);
-            return false;
+            logger.error(`Error finding article category: ${error.message}`);
+            return null;
         }
     }
 
     static async findCategoriesByArticleId(articleId) {
         try {
-            const connection = await getConnection();
-            const [results] = await connection.execute(`
-                select distinct category.*
-                from articles
-                         join ${ArticleCategory.TABLE_NAME} ac on articles.id = ac.article_id
-                         join ${Category.TABLE_NAME} category on ac.category_id = category.id
-                where articles.id = ?
-                group by category.name
-                order by category.name asc
-            `, [articleId]);
-            await connection.end();
-
-            return results.map(category => Category.fromDatabaseRecord(category).details());
-
+            const articleCategoryCollection = await ArticleCategoryCollection.collection();
+            const categoryCollection = await CategoryCollection.collection();
+            const pipeline = [
+                {
+                    $match: { article_id: new ObjectId(articleId) }
+                },
+                {
+                    $lookup: {
+                        from: CategoryCollection.collectionName,
+                        localField: "category_id",
+                        foreignField: "_id",
+                        as: "category"
+                    }
+                },
+                {
+                    $unwind: "$category"
+                },
+                {
+                    $group: {
+                        _id: "$category._id",
+                        name: { $first: "$category.name" },
+                        description: { $first: "$category.description" },
+                        created_at: { $first: "$category.created_at" },
+                        updated_at: { $first: "$category.updated_at" }
+                    }
+                },
+                {
+                    $sort: { name: 1 }
+                }
+            ];
+            const results = await articleCategoryCollection.aggregate(pipeline).toArray();
+            return results.map(category => (MoCategoryModel.fromDatabaseRecord(category)).details());
         } catch (error) {
-            logger.error(`Error saving user: ${error.message}`);
-            return false;
+            logger.error(`Error finding categories by article ID: ${error.message}`);
+            return [];
         }
     }
 
     async save() {
         try {
-            const connection = await getConnection();
-            const query = `
-                INSERT INTO ${ArticleCategory.TABLE_NAME} (article_id, category_id)
-                VALUES (?, ?)
-            `;
-            const [result] = await connection.execute(query, [
-                this.articleId,
-                this.categoryId
-            ]);
-            await connection.end();
+            const collection = await ArticleCategoryCollection.collection();
+            const document = {
+                article_id: new ObjectId(this.articleId),
+                category_id: new ObjectId(this.categoryId)
+            };
+            await collection.insertOne(document);
             return true;
         } catch (error) {
-            logger.error(`Error saving user: ${error.message}`);
+            logger.error(`Error saving article category: ${error.message}`);
             return false;
         }
     }
